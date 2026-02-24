@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #E8F0F9;
+  --color-primary-100: #C5D9F0;
+  --color-primary-200: #8BB3E1;
+  --color-primary-300: #518DD2;
+  --color-primary-400: #1767C3;
+  --color-primary-500: #003D7C;
+  --color-primary: #003D7C;
+  --color-primary-600: #003163;
+  --color-primary-700: #00254A;
+  --color-primary-800: #001932;
+  --color-primary-900: #000C19;
+
+  --color-accent-50: #FBF5E8;
+  --color-accent-100: #F5E6C4;
+  --color-accent-200: #ECCE8A;
+  --color-accent-300: #E2B650;
+  --color-accent-400: #D4A843;
+  --color-accent: #D4A843;
+  --color-accent-500: #C49A35;
+  --color-accent-600: #A47F2B;
+  --color-accent-700: #846420;
+  --color-accent-800: #644A16;
+  --color-accent-900: #44300B;
+
+  --color-dark-50: #F6F7FB;
+  --color-dark-100: #E2E5EF;
+  --color-dark-200: #C5CAD9;
+  --color-dark-300: #A8AFC3;
+  --color-dark-400: #8B92A8;
+  --color-dark-500: #5A6178;
+  --color-dark-600: #3D4460;
+  --color-dark-700: #252B48;
+  --color-dark-800: #151D30;
+  --color-dark-900: #0C1222;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+
+  --shadow-soft: 0 1px 3px rgba(0,61,124,0.04), 0 4px 12px rgba(0,61,124,0.06);
+  --shadow-medium: 0 2px 4px rgba(0,61,124,0.06), 0 8px 24px rgba(0,61,124,0.1);
+  --shadow-large: 0 4px 8px rgba(0,61,124,0.08), 0 16px 48px rgba(0,61,124,0.12);
+  --shadow-accent: 0 2px 8px rgba(212,168,67,0.3);
+  --shadow-accent-hover: 0 4px 16px rgba(212,168,67,0.4);
+
+  --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+  --animate-fade-in: fade-in 0.4s ease-out forwards;
+  --animate-slide-down: slide-down 0.2s ease-out forwards;
+
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slide-down {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #1A1A2E;
+  background-color: #F6F7FB;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+.dark body {
+  color: #E2E5EF;
+  background-color: #0C1222;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: #003D7C;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: #E2E5EF;
+}
+
+a {
+  color: #003D7C;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #D4A843;
+}
+
+::selection {
+  background-color: #003D7C;
+  color: #FFFFFF;
+}
+
+:focus-visible {
+  outline: 2px solid #D4A843;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
