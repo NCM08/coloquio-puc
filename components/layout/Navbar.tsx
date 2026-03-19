@@ -6,7 +6,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useTheme } from "@/components/ThemeProvider";
 import { Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
 
@@ -60,16 +59,22 @@ export default function Navbar() {
             boxShadow: scrolled ? (dark ? "0 1px 12px rgba(0,0,0,0.5)" : "var(--shadow-soft)") : "none",
         }}>
             {/* Logo */}
-            <Link href="/" className="nav-logo" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-            <Image
-                src={dark ? "/images/logo-puc-blanco.png" : "/images/logo-puc-azul.png"}
-                alt="Pontificia Universidad Católica de Chile"
-                width={300}
-                height={173}
-                className="nav-logo-img"
-                style={{ width: "auto", opacity: dark ? 0.85 : 1 }}
-                priority
-            />
+            <Link href="/" className="nav-logo" style={{ display: "flex", alignItems: "center", textDecoration: "none", gap: 12 }}>
+            <div style={{
+                width: 44, height: 44, borderRadius: 10,
+                backgroundColor: "var(--color-vibrant-cyan)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 15, fontWeight: 800, color: "#fff",
+                fontFamily: "var(--font-display)", flexShrink: 0,
+            }}>SC</div>
+            <div>
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, color: dark ? "#fff" : "var(--color-text-dark)", margin: 0, lineHeight: 1.25 }}>
+                Coloquio Sociología Clínica 2026
+                </p>
+                <p style={{ fontSize: 11, opacity: 0.5, textTransform: "uppercase", letterSpacing: 1, margin: 0 }}>
+                VIII Edición Internacional
+                </p>
+            </div>
             </Link>
 
             <div style={{ flex: 1 }} />
@@ -184,20 +189,17 @@ export default function Navbar() {
         <style>{`
             /* Desktop */
             .main-nav { height: 88px; }
-            .nav-logo-img { height: 52px; }
             .mobile-menu { top: 88px; }
 
             @media (max-width: 768px) {
             .nav-desktop { display: none !important; }
             .nav-mobile-only { display: flex !important; }
             .main-nav { height: 72px; padding: 0 16px !important; }
-            .nav-logo-img { height: 36px !important; }
             .mobile-menu { top: 72px !important; }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
             .main-nav { height: 80px; }
-            .nav-logo-img { height: 44px; }
             .mobile-menu { top: 80px; }
             }
 

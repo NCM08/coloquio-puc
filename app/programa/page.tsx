@@ -10,9 +10,10 @@ import Link from "next/link";
 import { ChevronRight, Clock, MapPin, Mic, Coffee, Users } from "lucide-react";
 
 const DAYS = [
-    { label: "Día 1", date: "Jueves 15 Oct" },
-    { label: "Día 2", date: "Viernes 16 Oct" },
-    { label: "Día 3", date: "Sábado 17 Oct" },
+    { label: "Lunes 9", date: "9 Nov — Pre-evento" },
+    { label: "Martes 10", date: "10 Nov — Día 1" },
+    { label: "Miércoles 11", date: "11 Nov — Día 2" },
+    { label: "Jueves 12", date: "12 Nov — Día 3" },
 ];
 
 type ScheduleItem = {
@@ -25,31 +26,38 @@ type ScheduleItem = {
 
 const SCHEDULE: Record<number, ScheduleItem[]> = {
     0: [
-        { time: "08:30 — 09:00", title: "Acreditación y bienvenida", location: "Hall Central", type: "break" },
-        { time: "09:00 — 10:30", title: "Ceremonia de inauguración y conferencia magistral", speaker: "Dra. María González", location: "Auditorio Principal", type: "keynote" },
-        { time: "10:30 — 11:00", title: "Coffee break", location: "Hall Central", type: "break" },
-        { time: "11:00 — 13:00", title: "Sesiones de ponencias paralelas", location: "Salas A1–A4", type: "session" },
-        { time: "13:00 — 14:30", title: "Almuerzo libre", location: "", type: "break" },
-        { time: "14:30 — 16:00", title: "Simposios temáticos", location: "Salas B1–B3", type: "session" },
-        { time: "16:00 — 16:30", title: "Coffee break", location: "Hall Central", type: "break" },
-        { time: "16:30 — 18:00", title: "Mesa redonda: Desafíos de la educación pública", location: "Auditorio Principal", type: "keynote" },
+        { time: "09:00 — 13:00", title: "Historias de vida — 60 años de la Villa La Reina. Trabajo en el territorio.", speaker: "Organiza: Grupo de Historias de Vida - Nodo Sur", location: "", type: "session" },
+        { time: "13:00 — 15:00", title: "Almuerzo comunitario", location: "", type: "break" },
     ],
     1: [
-        { time: "09:00 — 10:30", title: "Conferencia magistral", speaker: "Dr. Carlos Mendoza", location: "Auditorio Principal", type: "keynote" },
-        { time: "10:30 — 11:00", title: "Coffee break", location: "Hall Central", type: "break" },
-        { time: "11:00 — 13:00", title: "Sesiones de ponencias paralelas", location: "Salas A1–A4", type: "session" },
-        { time: "13:00 — 14:30", title: "Almuerzo libre", location: "", type: "break" },
-        { time: "14:30 — 16:00", title: "Sesión de pósters", location: "Hall de Exposiciones", type: "session" },
-        { time: "16:00 — 16:30", title: "Coffee break", location: "Hall Central", type: "break" },
-        { time: "16:30 — 18:00", title: "Simposios temáticos", location: "Salas B1–B3", type: "session" },
-        { time: "20:00", title: "Cena de networking", location: "Por confirmar", type: "social" },
+        { time: "09:00 — 12:00", title: "Asamblea Nodo Sur (híbrida)", location: "Sala UC [por definir]", type: "session" },
+        { time: "12:00 — 14:00", title: "Almuerzo libre", location: "", type: "break" },
+        { time: "14:00 — 15:00", title: "Registro / acreditación", location: "", type: "break" },
+        { time: "15:00 — 15:30", title: "Sesión 1. Bienvenida", location: "", type: "keynote" },
+        { time: "15:30 — 18:00", title: "Sesión 2. Homenaje a Presidente RISC — Vincent de Gaulejac", speaker: "Conferencia de Vincent de Gaulejac", location: "", type: "keynote" },
+        { time: "18:00 — 20:00", title: "Cóctel de celebración", location: "", type: "social" },
     ],
     2: [
-        { time: "09:00 — 10:30", title: "Conferencia magistral", speaker: "Dra. Ana Beatriz Silva", location: "Auditorio Principal", type: "keynote" },
-        { time: "10:30 — 11:00", title: "Coffee break", location: "Hall Central", type: "break" },
-        { time: "11:00 — 12:30", title: "Sesiones de ponencias paralelas", location: "Salas A1–A4", type: "session" },
-        { time: "12:30 — 13:30", title: "Panel de cierre: Perspectivas futuras", location: "Auditorio Principal", type: "keynote" },
-        { time: "13:30 — 14:00", title: "Ceremonia de clausura", location: "Auditorio Principal", type: "keynote" },
+        { time: "09:00 — 10:30", title: "Sesión 3. Conferencia 1. \"Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles\"", speaker: "Vincent de Gaulejac, Ana María Araujo, Teresa Carreteiro y Ana Correa", location: "", type: "keynote" },
+        { time: "10:30 — 11:00", title: "Pausa. Coffee Break", location: "", type: "break" },
+        { time: "11:00 — 12:15", title: "Sesión 4. Mesas de trabajo paralelas", location: "", type: "session" },
+        { time: "12:15 — 13:00", title: "Sesión 5. Presentación de libro del grupo de Historias de vida", location: "", type: "session" },
+        { time: "13:00 — 14:30", title: "Almuerzo", location: "", type: "break" },
+        { time: "14:30 — 16:00", title: "Sesión 6. Mesas de trabajo paralelas", location: "", type: "session" },
+        { time: "16:00 — 16:30", title: "Pausa. Coffee Break", location: "", type: "break" },
+        { time: "16:30 — 18:00", title: "Sesión 7. Conferencia 2. \"Transmisión de la Sociología Clínica y la Psicosociología latinoamericana de cara a la desintegración social\"", speaker: "Un representante por país: Argentina, Brasil, Chile, Colombia, España, México y Uruguay", location: "", type: "keynote" },
+        { time: "20:00", title: "Cena típica (inscripción voluntaria)", location: "", type: "social" },
+    ],
+    3: [
+        { time: "09:00 — 10:30", title: "Sesión 8. Conferencia 3. \"Reconfigurando el vínculo universitario y escolar\"", speaker: "Dariela Sharim, Fernando Yzaguirre, María Aparecida Penso", location: "", type: "keynote" },
+        { time: "10:30 — 11:00", title: "Pausa. Coffee Break", location: "", type: "break" },
+        { time: "11:00 — 12:15", title: "Sesión 9. Mesas de trabajo paralelas", location: "", type: "session" },
+        { time: "12:15 — 13:00", title: "Sesión 10. Presentación del libro de Ana María Araujo \"Les chemins de l'exil. Les luttes d'une femme d'amérique latine\"", location: "", type: "session" },
+        { time: "13:00 — 14:30", title: "Almuerzo", location: "", type: "break" },
+        { time: "14:30 — 16:00", title: "Sesión 12. Mesas de trabajo paralelas", location: "", type: "session" },
+        { time: "16:00 — 16:30", title: "Pausa. Coffee Break", location: "", type: "break" },
+        { time: "16:30 — 18:00", title: "Sesión 11. Conferencia 4. \"Nuevas repercusiones en el mundo del trabajo\"", speaker: "Matheus, Magda Garcés y otros ponentes [por confirmar]", location: "", type: "keynote" },
+        { time: "18:00 — 20:00", title: "Convivencia", location: "UC (patios)", type: "social" },
     ],
 };
 
@@ -84,7 +92,7 @@ export default function ProgramaPage() {
                 Programa
             </h1>
             <p style={{ fontSize: 18, opacity: 0.8, maxWidth: 600, lineHeight: 1.6 }}>
-                Tres días de conferencias, ponencias, mesas redondas y espacios de encuentro.
+                9 al 12 de noviembre 2026 · Campus San Joaquín, PUC, Santiago, Chile.
             </p>
             </div>
         </div>

@@ -6,18 +6,18 @@
 
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
-import { ChevronDown, GraduationCap, Brain, Globe, Heart, Scale, Monitor, Sprout, BookOpen } from "lucide-react";
+import { ChevronDown, Briefcase, GraduationCap, Heart, Globe, Monitor, MapPin, Navigation, Flame } from "lucide-react";
 import FadeInSection from "@/components/ui/FadeInSection";
 
 const EJES = [
-    { icon: GraduationCap, title: "Políticas educativas y reforma curricular", description: "Análisis de las políticas públicas en educación, sus impactos en la práctica docente y los procesos de reforma curricular a nivel nacional e internacional." },
-    { icon: Brain, title: "Neurociencia y aprendizaje", description: "Avances en neurociencia aplicada a la educación, estrategias de enseñanza basadas en evidencia y comprensión de los procesos cognitivos del aprendizaje." },
-    { icon: Globe, title: "Internacionalización de la educación", description: "Experiencias de internacionalización curricular, movilidad académica, cooperación interinstitucional y perspectivas comparadas en educación." },
-    { icon: Heart, title: "Inclusión y diversidad en el aula", description: "Estrategias pedagógicas para la atención a la diversidad, educación inclusiva, interculturalidad y equidad en el acceso al conocimiento." },
-    { icon: Scale, title: "Ética y formación ciudadana", description: "Rol de la educación en la formación ética, ciudadanía activa, educación para la democracia y responsabilidad social." },
-    { icon: Monitor, title: "Tecnología y educación digital", description: "Integración de tecnologías en la enseñanza, inteligencia artificial en educación, alfabetización digital y nuevas modalidades de aprendizaje." },
-    { icon: Sprout, title: "Educación y sostenibilidad", description: "Educación ambiental, desarrollo sostenible, pedagogías para el cambio climático y formación de conciencia ecológica." },
-    { icon: BookOpen, title: "Formación docente e identidad profesional", description: "Procesos de formación inicial y continua del profesorado, desarrollo profesional docente, identidad y bienestar del educador." },
+    { icon: Briefcase, title: "Mutaciones civilizatorias, transformaciones del mundo del trabajo", description: "Ponencias con diagnóstico y propuestas sobre los profundos cambios civilizatorios que reconfiguran el trabajo, los vínculos sociales y las formas de vida, con pistas para acciones de resistencia y transformación de imaginarios." },
+    { icon: GraduationCap, title: "Descomposición de la escuela, la universidad y de los sistemas educativos", description: "Análisis y propuestas frente a la crisis de las instituciones educativas: sus lógicas de descomposición, los desafíos para su transformación y las experiencias que abren caminos alternativos." },
+    { icon: Heart, title: "Claves y acciones desde el feminismo", description: "Contribuciones feministas al pensamiento crítico y a la acción transformadora: diagnósticos, propuestas y prácticas que desafían las estructuras patriarcales en la educación y en la vida social." },
+    { icon: Globe, title: "Colonialidad, pueblos indígenas y afrodescendientes", description: "Reflexiones y propuestas sobre colonialidad del saber y del poder, epistemologías otras, y las luchas y aportes de los pueblos indígenas y afrodescendientes por la transformación educativa y social." },
+    { icon: Monitor, title: "Nuevas tecnologías digitales: dilemas, ventajas y encrucijadas", description: "Examen crítico de las tecnologías digitales en la educación y la sociedad: sus promesas, sus riesgos y las encrucijadas éticas y políticas que plantean, con propuestas para una apropiación emancipadora." },
+    { icon: MapPin, title: "Militancias y territorios", description: "Experiencias de militancia y organización territorial como espacios de formación política y pedagógica, con propuestas para articular la acción educativa con la transformación de los territorios." },
+    { icon: Navigation, title: "Desplazamientos, migración e interculturalidad", description: "Diagnósticos y propuestas sobre los desplazamientos forzados y la migración, los desafíos de la interculturalidad y las posibilidades de construir convivencias y pedagogías desde la diversidad." },
+    { icon: Flame, title: "Juventudes: entre la pulsión de vida y de muerte", description: "Lecturas críticas y propuestas de acción sobre las condiciones de vida de las juventudes contemporáneas: sus expresiones, sus resistencias y las tensiones entre la pulsión de vida y las fuerzas que la amenazan." },
 ];
 
 export default function ThematicAxes() {
@@ -41,17 +41,16 @@ export default function ThematicAxes() {
             </div>
             </FadeInSection>
 
-            {/* FIX RESPONSIVE: minmax 280px en vez de 380px */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {EJES.map((eje, index) => {
                 const Icon = eje.icon;
                 const isOpen = openIndex === index;
                 return (
-                <FadeInSection key={index} delay={index * 0.06}>
+                <FadeInSection key={index} delay={index * 0.06} style={{ height: "100%" }}>
                     <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
                     style={{
-                        width: "100%", textAlign: "left", padding: 20, borderRadius: 12,
+                        width: "100%", height: "100%", textAlign: "left", padding: 20, borderRadius: 12,
                         border: `1px solid ${isOpen ? (dark ? "var(--color-accent-700)" : "var(--color-primary-200)") : (dark ? "var(--color-dark-700)" : "var(--color-dark-100)")}`,
                         backgroundColor: isOpen ? (dark ? "rgba(212,168,67,0.05)" : "var(--color-primary-50)") : (dark ? "var(--color-dark-900)" : "#FFFFFF"),
                         cursor: "pointer", transition: "all 0.2s", fontFamily: "var(--font-body)",

@@ -5,24 +5,24 @@
 "use client";
 
 import { useTheme } from "@/components/ThemeProvider";
-import { BookOpen, Users, Lightbulb } from "lucide-react";
+import { BookOpen, Users, Globe } from "lucide-react";
 import FadeInSection from "@/components/ui/FadeInSection";
 
 const HIGHLIGHTS = [
     {
-        icon: BookOpen,
-        number: "50+",
-        label: "Ponencias",
-        description: "Presentaciones de investigación",
-    },
-    {
         icon: Users,
-        number: "300+",
+        number: "500+",
         label: "Participantes",
-        description: "De Chile y Latinoamérica",
+        description: "Investigadores internacionales",
     },
     {
-        icon: Lightbulb,
+        icon: Globe,
+        number: "25+",
+        label: "Países",
+        description: "De América y Europa",
+    },
+    {
+        icon: BookOpen,
         number: "8",
         label: "Ejes temáticos",
         description: "Áreas de investigación",
@@ -74,8 +74,8 @@ export default function About() {
                     color: dark ? "var(--color-dark-100)" : "var(--color-primary)",
                 }}
                 >
-                Un espacio de encuentro{" "}
-                <span style={{ color: "var(--color-accent)" }}>académico</span>
+                Desintegración social:{" "}
+                <span style={{ color: "var(--color-vibrant-cyan)" }}>acciones de resistencia y nuevos imaginarios</span>
                 </h2>
 
                 <p
@@ -87,10 +87,10 @@ export default function About() {
                     maxWidth: 540,
                 }}
                 >
-                El Coloquio de Educación y Pedagogía de la Pontificia Universidad
-                Católica de Chile reúne a investigadores, académicos y profesionales
-                de la educación en torno a los desafíos contemporáneos del campo
-                educativo.
+                Este Coloquio Internacional es un espacio de encuentro y reflexión dialogada,
+                desde una perspectiva interdisciplinaria anclada en la <strong>Sociología Clínica
+                y la Psicosociología</strong>, en torno al proceso de desintegración social que
+                caracteriza al mundo contemporáneo.
                 </p>
 
                 <p
@@ -102,9 +102,10 @@ export default function About() {
                     maxWidth: 540,
                 }}
                 >
-                Este espacio busca promover el diálogo interdisciplinario, compartir
-                avances de investigación y fortalecer redes de colaboración entre
-                instituciones nacionales e internacionales.
+                A nivel global, la polarización se ha instalado como norma, la violencia alimenta
+                la confrontación y el otro es cada vez menos reconocido en su alteridad. Las
+                estructuras sociales conocidas hacen crisis frente a la acumulación de problemas
+                y dinámicas de desintegración social.
                 </p>
 
                 <p
@@ -115,9 +116,10 @@ export default function About() {
                     maxWidth: 540,
                 }}
                 >
-                Convocamos a la comunidad académica a participar activamente
-                en la construcción de conocimiento educativo desde la investigación
-                y la práctica docente.
+                El <strong>VIII Coloquio Internacional</strong> propone analizar estos procesos,
+                describir y comprender la desintegración social, y también <strong>proponer acciones
+                de resistencia y nuevos imaginarios posibles</strong> que contribuyan a la
+                recomposición del lazo social.
                 </p>
             </FadeInSection>
 

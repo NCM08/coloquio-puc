@@ -9,11 +9,11 @@ import { CalendarCheck, Send, CheckCircle, UserPlus, Mic } from "lucide-react";
 import FadeInSection from "@/components/ui/FadeInSection";
 
 const DATES = [
-    { icon: CalendarCheck, date: "1 Junio 2026", title: "Apertura de convocatoria", description: "Inicio del período para envío de propuestas de ponencias y pósters." },
-    { icon: Send, date: "15 Agosto 2026", title: "Cierre envío de propuestas", description: "Fecha límite para la recepción de resúmenes y propuestas." },
-    { icon: CheckCircle, date: "15 Septiembre 2026", title: "Notificación de aceptación", description: "Comunicación de resultados del proceso de revisión por pares." },
-    { icon: UserPlus, date: "1 Octubre 2026", title: "Cierre de inscripciones", description: "Último día para completar el registro y pago de inscripción." },
-    { icon: Mic, date: "15-17 Octubre 2026", title: "Coloquio", description: "Tres días de conferencias, ponencias, mesas redondas y networking." },
+    { icon: CalendarCheck, date: "Por definir", title: "Apertura de convocatoria", description: "Inicio del período para envío de propuestas de ponencias y pósters." },
+    { icon: Send, date: "Por definir", title: "Cierre envío de propuestas", description: "Fecha límite para la recepción de resúmenes y propuestas." },
+    { icon: CheckCircle, date: "Por definir", title: "Notificación de aceptación", description: "Comunicación de resultados del proceso de revisión por pares." },
+    { icon: UserPlus, date: "Por definir", title: "Cierre de inscripciones", description: "Último día para completar el registro y pago de inscripción." },
+    { icon: Mic, date: "10-12 Noviembre 2026", title: "Coloquio", description: "Tres días de conferencias, ponencias, mesas redondas y networking en el Campus San Joaquín de la Pontificia Universidad Católica de Chile, Santiago." },
 ];
 
 export default function ImportantDates() {

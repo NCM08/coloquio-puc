@@ -1,50 +1,55 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #E8F0F9;
-  --color-primary-100: #C5D9F0;
-  --color-primary-200: #8BB3E1;
-  --color-primary-300: #518DD2;
-  --color-primary-400: #1767C3;
-  --color-primary-500: #003D7C;
-  --color-primary: #003D7C;
-  --color-primary-600: #003163;
-  --color-primary-700: #00254A;
-  --color-primary-800: #001932;
-  --color-primary-900: #000C19;
+  /* === PRIMARY: Celeste UC — identidad del Coloquio (#00adfc) === */
+  --color-primary-50: #e6f7ff;
+  --color-primary-100: #baeafe;
+  --color-primary-200: #7dd5fd;
+  --color-primary-300: #40c0fc;
+  --color-primary-400: #1ab8fc;
+  --color-primary-500: #00adfc;
+  --color-primary: #00adfc;
+  --color-primary-600: #008fd4;
+  --color-primary-700: #0070a8;
+  --color-primary-800: #00527c;
+  --color-primary-900: #003350;
 
-  --color-accent-50: #FBF5E8;
-  --color-accent-100: #F5E6C4;
-  --color-accent-200: #ECCE8A;
-  --color-accent-300: #E2B650;
-  --color-accent-400: #D4A843;
-  --color-accent: #D4A843;
-  --color-accent-500: #C49A35;
-  --color-accent-600: #A47F2B;
-  --color-accent-700: #846420;
-  --color-accent-800: #644A16;
-  --color-accent-900: #44300B;
+  /* === ACCENT: Verde lima (#5fba24) === */
+  --color-accent-50: #f0f8e6;
+  --color-accent-100: #d8efbb;
+  --color-accent-200: #b5e07a;
+  --color-accent-300: #8ecd3e;
+  --color-accent: #5fba24;
+  --color-accent-500: #4e9a1e;
+  --color-accent-600: #3d7a17;
+  --color-accent-700: #2c5a11;
+  --color-accent-800: #1c3a0a;
+  --color-accent-900: #0c1d05;
 
-  --color-dark-50: #F6F7FB;
-  --color-dark-100: #E2E5EF;
-  --color-dark-200: #C5CAD9;
-  --color-dark-300: #A8AFC3;
-  --color-dark-400: #8B92A8;
-  --color-dark-500: #5A6178;
-  --color-dark-600: #3D4460;
-  --color-dark-700: #252B48;
-  --color-dark-800: #151D30;
-  --color-dark-900: #0C1222;
+  /* === DARK / NEUTRALES === */
+  --color-dark-50: #F5F5F5;
+  --color-dark-100: #E0E0E0;
+  --color-dark-200: #BDBDBD;
+  --color-dark-300: #9E9E9E;
+  --color-dark-400: #757575;
+  --color-dark-500: #616161;
+  --color-dark-600: #424242;
+  --color-dark-700: #303030;
+  --color-dark-800: #212121;
+  --color-dark-900: #121212;
 
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  /* === FUENTES: Open Sans (títulos) + Montserrat (cuerpo) === */
+  --font-display: 'Open Sans', 'Segoe UI', sans-serif;
+  --font-body: 'Montserrat', 'Segoe UI', sans-serif;
 
-  --shadow-soft: 0 1px 3px rgba(0,61,124,0.04), 0 4px 12px rgba(0,61,124,0.06);
-  --shadow-medium: 0 2px 4px rgba(0,61,124,0.06), 0 8px 24px rgba(0,61,124,0.1);
-  --shadow-large: 0 4px 8px rgba(0,61,124,0.08), 0 16px 48px rgba(0,61,124,0.12);
-  --shadow-accent: 0 2px 8px rgba(212,168,67,0.3);
-  --shadow-accent-hover: 0 4px 16px rgba(212,168,67,0.4);
+  /* === SOMBRAS === */
+  --shadow-soft: 0 1px 3px rgba(0,173,252,0.06), 0 4px 12px rgba(0,173,252,0.08);
+  --shadow-medium: 0 2px 4px rgba(0,173,252,0.08), 0 8px 24px rgba(0,173,252,0.12);
+  --shadow-large: 0 4px 8px rgba(0,173,252,0.1), 0 16px 48px rgba(0,173,252,0.15);
+  --shadow-accent: 0 2px 8px rgba(95,186,36,0.35);
+  --shadow-accent-hover: 0 4px 16px rgba(95,186,36,0.5);
 
+  /* === ANIMACIONES === */
   --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
   --animate-fade-in: fade-in 0.4s ease-out forwards;
   --animate-slide-down: slide-down 0.2s ease-out forwards;
@@ -65,50 +70,78 @@
   }
 }
 
+/* === PALETA OFICIAL — MANUAL DE NORMAS GRÁFICAS === */
+:root {
+  --color-background: #ffffff;
+  --color-text-dark: #424242;
+
+  /* Colores exactos del manual */
+  --color-verde-lima: #5fba24;
+  --color-verde-oscuro: #039a49;
+  --color-azul-claro: #00adfc;
+  --color-morado: #5841b3;
+  --color-rosa-magenta: #f5008c;
+  --color-rojo: #e33235;
+  --color-naranja: #f87e28;
+  --color-amarillo: #fdc100;
+  --color-gris: #424242;
+
+  /* Aliases semánticos para compatibilidad con componentes */
+  --color-vibrant-lime: #5fba24;
+  --color-vibrant-purple: #5841b3;
+  --color-vibrant-magenta: #f5008c;
+  --color-vibrant-cyan: #00adfc;
+  --color-vibrant-orange: #f87e28;
+  --color-vibrant-red: #e33235;
+  --color-vibrant-blue: #5841b3;
+  --color-vibrant-green: #039a49;
+}
+
 html {
   scroll-behavior: smooth;
+  font-size: 18px;
 }
 
 body {
   font-family: var(--font-body);
-  color: #1A1A2E;
-  background-color: #F6F7FB;
+  color: var(--color-text-dark);
+  background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
 }
 
 .dark body {
-  color: #E2E5EF;
-  background-color: #0C1222;
+  color: var(--color-dark-100);
+  background-color: var(--color-dark-900);
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   line-height: 1.2;
-  color: #003D7C;
+  color: var(--color-primary);
 }
 
 .dark h1, .dark h2, .dark h3, .dark h4 {
-  color: #E2E5EF;
+  color: var(--color-dark-100);
 }
 
 a {
-  color: #003D7C;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: #D4A843;
+  color: var(--color-vibrant-cyan);
 }
 
 ::selection {
-  background-color: #003D7C;
+  background-color: var(--color-primary);
   color: #FFFFFF;
 }
 
 :focus-visible {
-  outline: 2px solid #D4A843;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 4px;
 }

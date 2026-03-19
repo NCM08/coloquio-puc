@@ -113,8 +113,9 @@ export default function ConvocatoriaPage() {
                 Convocatoria
             </h1>
             <p style={{ fontSize: 18, opacity: 0.8, maxWidth: 600, lineHeight: 1.6 }}>
-                Invitamos a la comunidad académica a participar con sus
-                investigaciones y experiencias en el Coloquio de Educación y Pedagogía.
+                Invitamos a la comunidad nacional e internacional a participar en el
+                VIII Coloquio Internacional de Sociología Clínica y Psicosociología,
+                10, 11 y 12 de noviembre de 2026, Campus San Joaquín, PUC, Santiago, Chile.
             </p>
             </div>
         </div>
@@ -145,10 +146,10 @@ export default function ConvocatoriaPage() {
                 marginBottom: 16,
                 }}
             >
-                El Coloquio de Educación y Pedagogía de la PUC convoca a
-                investigadores, académicos, docentes y estudiantes de postgrado
-                a presentar sus trabajos en torno a los ejes temáticos definidos
-                para esta edición.
+                Este Coloquio Internacional pretende ser un espacio de encuentro y reflexión
+                dialogada, desde una perspectiva interdisciplinaria anclada en la Sociología
+                Clínica y la Psicosociología, en torno al proceso de desintegración social que
+                caracteriza al mundo contemporáneo.
             </p>
             <p
                 style={{
@@ -158,9 +159,26 @@ export default function ConvocatoriaPage() {
                 marginBottom: 16,
                 }}
             >
-                Las propuestas serán evaluadas mediante un proceso de revisión
-                ciega por pares, asegurando la calidad y rigor académico de las
-                presentaciones seleccionadas.
+                Nuestro propósito es promover un análisis de la actualidad, describiendo y
+                comprendiendo los procesos de desintegración social, y también proponer
+                <strong> acciones de resistencia y nuevos imaginarios posibles</strong>, distintos
+                de aquellos que sostienen exclusivamente la polarización o el imperio de lo
+                instantáneo. Esperamos contribuir al debate sobre la recomposición del lazo
+                social para la sociedad del mañana.
+            </p>
+            <p
+                style={{
+                fontSize: 17,
+                lineHeight: 1.8,
+                color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)",
+                marginBottom: 16,
+                }}
+            >
+                En continuidad con los coloquios anteriores, buscamos fomentar el intercambio
+                entre diversos mundos: académico, asociativo, artístico, entre otros. Esperamos
+                recibir reportes de investigaciones, experiencias, reflexiones y propuestas
+                prácticas de innovación, experimentación, cambio y transformación ancladas en
+                la Sociología Clínica y la Psicosociología.
             </p>
             <p
                 style={{
@@ -169,9 +187,10 @@ export default function ConvocatoriaPage() {
                 color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)",
                 }}
             >
-                Los trabajos aceptados serán publicados en las actas del coloquio
-                y los mejores serán invitados a enviar versiones extendidas para
-                su publicación en revistas académicas indexadas.
+                En cada uno de los ejes temáticos se espera recibir ponencias con diagnóstico,
+                pero por sobre todo con <strong>propuestas y pistas para crear acciones de
+                resistencia y transformación de imaginarios</strong>. Las propuestas serán
+                evaluadas mediante revisión ciega por pares.
             </p>
             </div>
 

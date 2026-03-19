@@ -13,7 +13,13 @@
 
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
+
+const LOGOS_ORGANIZA = [
+    { src: "/images/risc-logo.png", alt: "RISC – Réseau International de Sociologie Clinique", height: 90 },
+    { src: "/images/nodo-sur-logo.png", alt: "Nodo Sur RISC", height: 90 },
+];
 
 const QUICK_LINKS = [
     { label: "Convocatoria", href: "/convocatoria" },
@@ -53,6 +59,48 @@ export default function Footer() {
         }}
         >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+            {/* ====== BANDA ORGANIZA ====== */}
+            <div style={{
+                marginBottom: 48,
+                paddingBottom: 48,
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
+                textAlign: "center",
+            }}>
+                <p style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 3,
+                    color: "rgba(255,255,255,0.35)",
+                    marginBottom: 28,
+                }}>
+                    Organiza
+                </p>
+                <div style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 56,
+                    flexWrap: "wrap",
+                    backgroundColor: "#ffffff",
+                    borderRadius: 20,
+                    padding: "28px 56px",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
+                }}>
+                    {LOGOS_ORGANIZA.map((logo) => (
+                        <Image
+                            key={logo.alt}
+                            src={logo.src}
+                            alt={logo.alt}
+                            width={200}
+                            height={logo.height}
+                            style={{ objectFit: "contain", height: logo.height, width: "auto" }}
+                        />
+                    ))}
+                </div>
+            </div>
+
             {/* Grid principal */}
             <div
             style={{
@@ -68,20 +116,21 @@ export default function Footer() {
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
                 <div
                     style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 8,
-                    background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    backgroundColor: "var(--color-vibrant-cyan)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontFamily: "var(--font-display)",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     fontSize: 15,
                     color: "#fff",
+                    flexShrink: 0,
                     }}
                 >
-                    UC
+                    SC
                 </div>
                 <div>
                     <p style={{
@@ -89,7 +138,7 @@ export default function Footer() {
                     fontWeight: 700,
                     fontSize: 15,
                     }}>
-                    Coloquio PUC
+                    Coloquio Sociología Clínica 2026
                     </p>
                     <p style={{
                     fontSize: 11,
@@ -97,7 +146,7 @@ export default function Footer() {
                     textTransform: "uppercase",
                     letterSpacing: 1,
                     }}>
-                    Educación y Pedagogía
+                    VIII Edición Internacional
                     </p>
                 </div>
                 </div>
@@ -109,9 +158,9 @@ export default function Footer() {
                 maxWidth: 280,
                 marginBottom: 20,
                 }}>
-                Un espacio de encuentro académico para construir
-                conocimiento educativo desde la investigación
-                y la práctica docente.
+                Un espacio transdisciplinar que articula sociología,
+                psicoanálisis y psicosociología para comprender los
+                vínculos entre lo social y lo subjetivo.
                 </p>
 
                 {/* Contacto */}
@@ -267,10 +316,10 @@ export default function Footer() {
             }}
             >
             <p style={{ fontSize: 13, opacity: 0.4 }}>
-                © 2026 Pontificia Universidad Católica de Chile — Todos los derechos reservados
+                © 2026 Coloquio Internacional de Sociología Clínica — Todos los derechos reservados
             </p>
             <p style={{ fontSize: 13, opacity: 0.3 }}>
-                Facultad de Educación · Campus San Joaquín
+                VIII Edición · Santiago de Chile
             </p>
             </div>
         </div>
