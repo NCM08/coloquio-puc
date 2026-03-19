@@ -121,6 +121,14 @@ export default function ImageCarousel() {
     };
   }, [current, isPaused, paginate]);
 
+  // Precargar todas las imágenes del carrusel en segundo plano
+  useEffect(() => {
+    SLIDES.forEach((slide) => {
+      const img = new window.Image();
+      img.src = slide.image;
+    });
+  }, []);
+
   const slide = SLIDES[current];
 
   return (
@@ -147,6 +155,7 @@ export default function ImageCarousel() {
               src={slide.image}
               alt={slide.title}
               fill
+              sizes="100vw"
               style={{ objectFit: "cover", objectPosition: "center" }}
               priority={current === 0}
             />
