@@ -152,7 +152,7 @@ export default function Chatbot() {
             onClick={() => setIsOpen(true)}
             className="chatbot-fab"
             style={{
-                position: "fixed", bottom: 90, right: 24, zIndex: 100,
+                position: "fixed", bottom: 24, right: 24, zIndex: 50,
                 width: 60, height: 60, borderRadius: "50%", border: "none",
                 background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
                 color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
@@ -169,7 +169,7 @@ export default function Chatbot() {
             <div
             className="chatbot-panel"
             style={{
-                position: "fixed", bottom: 90, right: 24, zIndex: 100,
+                position: "fixed", bottom: 24, right: 24, zIndex: 50,
                 width: 380, maxHeight: "70vh",
                 borderRadius: 20, overflow: "hidden",
                 border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
@@ -237,7 +237,7 @@ export default function Chatbot() {
                     )}
                     <div style={{
                     maxWidth: "80%", padding: "10px 14px", borderRadius: 14,
-                    fontSize: 14, lineHeight: 1.6,
+                    fontSize: 14, lineHeight: 1.6, wordBreak: "break-word",
                     backgroundColor: msg.role === "user"
                         ? "var(--color-accent)"
                         : dark ? "var(--color-dark-800)" : "var(--color-dark-50)",
