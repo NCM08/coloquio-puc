@@ -8,7 +8,6 @@ import ThematicAxes from "@/components/sections/ThematicAxes";
 import ImportantDates from "@/components/sections/ImportantDates";
 import Speakers from "@/components/sections/Speakers";
 import MapSection from "@/components/sections/MapSection";
-import Organizers from "@/components/sections/Organizers";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <ImportantDates />
       <Speakers />
       <MapSection />
-      <Organizers />
     </>
   );
 }

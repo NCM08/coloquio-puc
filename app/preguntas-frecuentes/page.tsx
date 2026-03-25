@@ -20,7 +20,7 @@ const FAQ_DATA: FAQCategory[] = [
         title: "Inscripción y pagos",
         questions: [
         { q: "¿Cuánto cuesta inscribirse?", a: "Expositor: $50.000 CLP (USD $65). Asistente: $30.000 CLP (USD $40). Estudiante: $15.000 CLP (USD $20). Los valores son con tarifa preferencial hasta el 30 de septiembre de 2026." },
-        { q: "¿Hay descuento por inscripción grupal?", a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Escríbanos a coloquio@uc.cl para coordinar." },
+        { q: "¿Hay descuento por inscripción grupal?", a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Escríbanos a congresosociologiaclinica.2026@gmail.com para coordinar." },
         { q: "¿Cómo pago si soy extranjero?", a: "Aceptamos pagos internacionales vía transferencia bancaria en dólares o mediante PayPal. Al inscribirse, seleccione la opción 'Pago internacional' y recibirá instrucciones por correo." },
         { q: "¿Puedo obtener factura?", a: "Sí, emitimos facturas y boletas según corresponda. Ingrese su RUT o documento de identidad al momento de la inscripción." },
         { q: "¿Qué pasa si necesito cancelar?", a: "Devolución del 100% hasta 30 días antes del evento, 50% hasta 15 días antes. Después de esa fecha no se realizan devoluciones, pero puede transferir su inscripción a otra persona." },
@@ -173,12 +173,12 @@ export default function FAQPage() {
                 }}>
                 Escríbenos y te responderemos a la brevedad.
                 </p>
-                <a href="mailto:coloquio@uc.cl" style={{
+                <a href="mailto:congresosociologiaclinica.2026@gmail.com" style={{
                 display: "inline-flex", alignItems: "center", gap: 8, height: 48, padding: "0 24px",
                 backgroundColor: "var(--color-accent)", color: "#fff", fontSize: 15, fontWeight: 600,
                 borderRadius: 10, textDecoration: "none",
                 }}>
-                <Mail size={16} /> coloquio@uc.cl
+                <Mail size={16} /> congresosociologiaclinica.2026@gmail.com
                 </a>
             </div>
             </FadeInSection>

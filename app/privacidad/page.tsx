@@ -24,7 +24,7 @@ const SECTIONS = [
     },
     {
         title: "4. Base legal",
-        content: "El tratamiento de sus datos se basa en su consentimiento, otorgado al completar el formulario de inscripción o al contactarnos a través de este sitio. Usted puede retirar su consentimiento en cualquier momento escribiendo a coloquio@uc.cl.",
+        content: "El tratamiento de sus datos se basa en su consentimiento, otorgado al completar el formulario de inscripción o al contactarnos a través de este sitio. Usted puede retirar su consentimiento en cualquier momento escribiendo a congresosociologiaclinica.2026@gmail.com.",
     },
     {
         title: "5. Compartir datos con terceros",
@@ -36,7 +36,7 @@ const SECTIONS = [
     },
     {
         title: "7. Derechos del titular",
-        content: "Usted tiene derecho a acceder, rectificar, cancelar u oponerse al tratamiento de sus datos personales en cualquier momento. Para ejercer estos derechos, contacte al equipo organizador a través de coloquio@uc.cl, indicando su nombre completo y el derecho que desea ejercer.",
+        content: "Usted tiene derecho a acceder, rectificar, cancelar u oponerse al tratamiento de sus datos personales en cualquier momento. Para ejercer estos derechos, contacte al equipo organizador a través de congresosociologiaclinica.2026@gmail.com, indicando su nombre completo y el derecho que desea ejercer.",
     },
     {
         title: "8. Cookies y tecnologías de seguimiento",
@@ -118,8 +118,8 @@ export default function PrivacidadPage() {
             }}>
                 <p style={{ fontSize: 15, lineHeight: 1.6, color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)" }}>
                 Para cualquier consulta sobre esta política o el tratamiento de sus datos, contacte a:{" "}
-                <a href="mailto:coloquio@uc.cl" style={{ color: dark ? "var(--color-accent)" : "var(--color-primary)", fontWeight: 600, textDecoration: "none" }}>
-                    coloquio@uc.cl
+                <a href="mailto:congresosociologiaclinica.2026@gmail.com" style={{ color: dark ? "var(--color-accent)" : "var(--color-primary)", fontWeight: 600, textDecoration: "none" }}>
+                    congresosociologiaclinica.2026@gmail.com
                 </a>
                 </p>
             </div>

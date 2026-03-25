@@ -8,8 +8,9 @@ import Image from "next/image";
 import FadeInSection from "@/components/ui/FadeInSection";
 import { useTheme } from "@/components/ThemeProvider";
 
-const ORGANIZERS = [
-    { src: "/images/logo-uc.png",            alt: "Pontificia Universidad Católica de Chile" },
+const ORGANIZER_MAIN = { src: "/images/logo-uc.png", alt: "Pontificia Universidad Católica de Chile" };
+
+const ORGANIZER_FACULTIES = [
     { src: "/images/logo-educacion.png",      alt: "Facultad de Educación UC" },
     { src: "/images/logo-psicologia.png",     alt: "Escuela de Psicología UC" },
     { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC" },
@@ -21,6 +22,37 @@ const COLLABORATORS = [
 ];
 
 
+function LogoCard({
+    src,
+    alt,
+    dark,
+}: {
+    src: string;
+    alt: string;
+    dark: boolean;
+}) {
+    return (
+        <div
+            className={[
+                "flex items-center justify-center rounded-xl px-6 py-4",
+                "border transition-colors duration-200",
+                dark
+                    ? "bg-white border-[var(--color-dark-300)]"
+                    : "bg-white border-[var(--color-dark-100)]",
+            ].join(" ")}
+            style={{ minWidth: 120 }}
+        >
+            <Image
+                src={src}
+                alt={alt}
+                width={160}
+                height={80}
+                className="h-20 w-auto object-contain"
+            />
+        </div>
+    );
+}
+
 function LogoGrid({
     logos,
     dark,
@@ -31,25 +63,7 @@ function LogoGrid({
     return (
         <div className="flex flex-wrap justify-center gap-6 mt-6">
             {logos.map(({ src, alt }) => (
-                <div
-                    key={src}
-                    className={[
-                        "flex items-center justify-center rounded-xl px-6 py-4",
-                        "border transition-colors duration-200",
-                        dark
-                            ? "bg-white border-[var(--color-dark-300)]"
-                            : "bg-white border-[var(--color-dark-100)]",
-                    ].join(" ")}
-                    style={{ minWidth: 120 }}
-                >
-                    <Image
-                        src={src}
-                        alt={alt}
-                        width={160}
-                        height={80}
-                        className="h-20 w-auto object-contain"
-                    />
-                </div>
+                <LogoCard key={src} src={src} alt={alt} dark={dark} />
             ))}
         </div>
     );
@@ -98,7 +112,20 @@ export default function Organizers() {
                     >
                         Instituciones organizadoras
                     </h2>
-                    <LogoGrid logos={ORGANIZERS} dark={dark} />
+
+                    {/* Fila 1: Logo principal UC centrado */}
+                    <div className="flex justify-center mt-6">
+                        <LogoCard src={ORGANIZER_MAIN.src} alt={ORGANIZER_MAIN.alt} dark={dark} />
+                    </div>
+
+                    {/* Fila 2: 3 logos de facultades */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        {ORGANIZER_FACULTIES.map(({ src, alt }) => (
+                            <div key={src} className="flex justify-center">
+                                <LogoCard src={src} alt={alt} dark={dark} />
+                            </div>
+                        ))}
+                    </div>
                 </FadeInSection>
 
                 {/* ── DIVIDER ── */}

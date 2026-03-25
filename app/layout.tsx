@@ -5,6 +5,7 @@ import Chatbot from "@/components/ui/Chatbot";
 import AccessibilityWidget from "@/components/ui/AccessibilityWidget";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import Organizers from "@/components/sections/Organizers";
 
 export const metadata: Metadata = {
   title: "VIII Coloquio Internacional de Sociología Clínica 2026",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
+          <Organizers />
           <Footer />
           <Chatbot />
           <AccessibilityWidget />

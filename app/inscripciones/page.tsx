@@ -59,7 +59,7 @@ const FAQ = [
   },
   {
     q: "¿Hay descuento por inscripción grupal?",
-    a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Contáctenos a coloquio@uc.cl para coordinar.",
+    a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Contáctenos a congresosociologiaclinica.2026@gmail.com para coordinar.",
   },
   {
     q: "¿Qué pasa si necesito cancelar mi inscripción?",

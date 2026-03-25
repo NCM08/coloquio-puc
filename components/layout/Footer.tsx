@@ -122,7 +122,7 @@ export default function Footer() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.6 }}>
                     <Mail size={14} />
-                    <span>coloquio@uc.cl</span>
+                    <span>congresosociologiaclinica.2026@gmail.com</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.6 }}>
                     <Phone size={14} />

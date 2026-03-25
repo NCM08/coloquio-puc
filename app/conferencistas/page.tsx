@@ -168,7 +168,7 @@ export default function ConferencistasPage() {
                 }}>
                     Ver convocatoria <ExternalLink size={14} />
                 </Link>
-                <Link href="mailto:coloquio@uc.cl" style={{
+                <Link href="mailto:congresosociologiaclinica.2026@gmail.com" style={{
                     display: "inline-flex", alignItems: "center", gap: 8, height: 48, padding: "0 24px",
                     border: `1px solid ${dark ? "var(--color-dark-600)" : "var(--color-primary-200)"}`,
                     color: dark ? "var(--color-dark-200)" : "var(--color-primary)",

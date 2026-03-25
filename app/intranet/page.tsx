@@ -376,7 +376,7 @@ export default function IntranetPage() {
         >
           ¿Problemas para acceder?{" "}
           <a
-            href="mailto:coloquio@uc.cl"
+            href="mailto:congresosociologiaclinica.2026@gmail.com"
             style={{
               color: accentColor,
               fontWeight: 600,

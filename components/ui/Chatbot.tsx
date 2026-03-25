@@ -22,14 +22,14 @@ type Message = {
 // Base de conocimiento del coloquio
 const KNOWLEDGE_BASE = {
     fechas: "El VIII Coloquio Internacional de Sociología Clínica y Psicosociología se realizará del 10 al 12 de noviembre de 2026 en el Campus San Joaquín de la PUC, Santiago, Chile.",
-    inscripcion: "Hay tres tipos de inscripción: Expositor ($50.000 CLP / USD $65), Asistente ($30.000 CLP / USD $40), y Estudiante ($15.000 CLP / USD $20). Hay tarifa preferencial hasta el 30 de septiembre. Para grupos de 5+ personas de la misma institución hay 15% de descuento. Contactar a coloquio@uc.cl.",
+    inscripcion: "Hay tres tipos de inscripción: Expositor ($50.000 CLP / USD $65), Asistente ($30.000 CLP / USD $40), y Estudiante ($15.000 CLP / USD $20). Hay tarifa preferencial hasta el 30 de septiembre. Para grupos de 5+ personas de la misma institución hay 15% de descuento. Contactar a congresosociologiaclinica.2026@gmail.com.",
     propuestas: "Se aceptan propuestas en 4 modalidades: Ponencia individual (20 min, resumen mín. 500 palabras), Simposio temático (90 min, 3-4 presentaciones), Póster (resumen mín. 300 palabras), y Mesa redonda (60 min, 3-5 panelistas). Las propuestas deben enviarse de forma anónima (revisión ciega por pares) en español o portugués.",
     ejes: "Los 8 ejes temáticos son: 1) Mutaciones civilizatorias, transformaciones del mundo del trabajo, 2) Descomposición de la escuela, la universidad y de los sistemas educativos, 3) Claves y acciones desde el feminismo, 4) Colonialidad, pueblos indígenas y afrodescendientes, 5) Nuevas tecnologías digitales: dilemas, ventajas y encrucijadas, 6) Militancias y territorios, 7) Desplazamientos, migración e interculturalidad, 8) Juventudes: entre la pulsión de vida y de muerte. En cada eje se esperan ponencias con diagnóstico, pero por sobre todo con propuestas y pistas para crear acciones de resistencia y transformación de imaginarios.",
     ubicacion: "El coloquio se realiza en el Campus San Joaquín de la PUC, Av. Vicuña Mackenna 4860, Macul, Santiago, Chile. La estación de metro más cercana es San Joaquín (Línea 5), a 5 minutos caminando. Hay estacionamiento disponible ($2.000 CLP/día).",
     certificados: "Se entrega certificado de asistencia a todos los participantes inscritos y certificado de expositor a quienes presenten ponencias o pósters. Los trabajos aceptados se publican en las actas oficiales del coloquio con ISBN.",
     online: "El coloquio es presencial + online. Las conferencias magistrales y mesas redondas se transmiten en vivo. Los asistentes online reciben un link de acceso previo al evento.",
     cancelacion: "Devolución del 100% hasta 30 días antes del evento, 50% hasta 15 días antes. Después no hay devoluciones, pero se puede transferir la inscripción a otra persona.",
-    contacto: "Para consultas escribir a coloquio@uc.cl o llamar al +56 2 2354 0000. El coloquio es organizado por la Facultad de Educación de la Pontificia Universidad Católica de Chile.",
+    contacto: "Para consultas escribir a congresosociologiaclinica.2026@gmail.com o llamar al +56 2 2354 0000. El coloquio es organizado por la Facultad de Educación de la Pontificia Universidad Católica de Chile.",
     publicaciones: "Los trabajos aceptados se publican en las actas oficiales con ISBN. Los mejores trabajos son invitados a enviar versiones extendidas para publicación en revistas académicas indexadas. Las actas se publican aproximadamente 3 meses después del evento.",
     conferencistas: "Los conferencistas confirmados son: Vincent de Gaulejac (Francia, Presidente RISC — Sesiones 2 y 3), Ana María Araujo (Uruguay — Sesiones 3 y 10), Teresa Carreteiro (Brasil — Sesión 3), Ana Correa (Argentina — Sesión 3), Dariela Sharim (PUC Chile — Sesión 8), Fernando Yzaguirre (Sesión 8) y María Aparecida Penso (Brasil — Sesión 8). También participan Matheus, Magda Garcés y otros ponentes en la Conferencia 4 (Sesión 11).",
 };
@@ -91,7 +91,7 @@ function findAnswer(question: string): string {
 
     // Gracias
     if (q.match(/gracias|thank|agradec/))
-        return "¡De nada! Si tienes más preguntas sobre el coloquio, no dudes en consultarme. También puedes escribir a coloquio@uc.cl para consultas más específicas. 😊";
+        return "¡De nada! Si tienes más preguntas sobre el coloquio, no dudes en consultarme. También puedes escribir a congresosociologiaclinica.2026@gmail.com para consultas más específicas. 😊";
 
     // Default
     return "No tengo información específica sobre eso, pero puedo ayudarte con: fechas del coloquio, inscripciones y precios, envío de propuestas, ejes temáticos, conferencistas, ubicación, certificados, y modalidad online. ¿Sobre cuál de estos temas te gustaría saber?";
