@@ -13,13 +13,7 @@
 
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
-
-const LOGOS_ORGANIZA = [
-    { src: "/images/risc-logo.png", alt: "RISC – Réseau International de Sociologie Clinique", height: 90 },
-    { src: "/images/nodo-sur-logo.png", alt: "Nodo Sur RISC", height: 90 },
-];
 
 const QUICK_LINKS = [
     { label: "Convocatoria", href: "/convocatoria" },
@@ -59,47 +53,6 @@ export default function Footer() {
         }}
         >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-
-            {/* ====== BANDA ORGANIZA ====== */}
-            <div style={{
-                marginBottom: 48,
-                paddingBottom: 48,
-                borderBottom: "1px solid rgba(255,255,255,0.08)",
-                textAlign: "center",
-            }}>
-                <p style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 3,
-                    color: "rgba(255,255,255,0.35)",
-                    marginBottom: 28,
-                }}>
-                    Organiza
-                </p>
-                <div style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 56,
-                    flexWrap: "wrap",
-                    backgroundColor: "#ffffff",
-                    borderRadius: 20,
-                    padding: "28px 56px",
-                    boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
-                }}>
-                    {LOGOS_ORGANIZA.map((logo) => (
-                        <Image
-                            key={logo.alt}
-                            src={logo.src}
-                            alt={logo.alt}
-                            width={200}
-                            height={logo.height}
-                            style={{ objectFit: "contain", height: logo.height, width: "auto" }}
-                        />
-                    ))}
-                </div>
-            </div>
 
             {/* Grid principal */}
             <div
