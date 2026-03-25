@@ -37,7 +37,7 @@ function LogoGrid({
                         "flex items-center justify-center rounded-xl px-6 py-4",
                         "border transition-colors duration-200",
                         dark
-                            ? "bg-[var(--color-dark-900)] border-[var(--color-dark-700)]"
+                            ? "bg-white border-[var(--color-dark-300)]"
                             : "bg-white border-[var(--color-dark-100)]",
                     ].join(" ")}
                     style={{ minWidth: 120 }}
