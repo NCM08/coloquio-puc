@@ -16,8 +16,8 @@ const ORGANIZERS = [
 ];
 
 const COLLABORATORS = [
-    { src: "/logos/logo-risc.png",      alt: "RISC – Réseau International de Sociologie Clinique" },
-    { src: "/logos/logo-nodo-sur.png",  alt: "Nodo Sur RISC" },
+    { src: "/images/risc-logo.png",      alt: "RISC – Réseau International de Sociologie Clinique" },
+    { src: "/images/nodo-sur-logo.png",  alt: "Nodo Sur RISC" },
 ];
 
 
