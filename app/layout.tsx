@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Chatbot from "@/components/ui/Chatbot";
+import AccessibilityWidget from "@/components/ui/AccessibilityWidget";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
           <Chatbot />
+          <AccessibilityWidget />
         </ThemeProvider>
       </body>
     </html>
