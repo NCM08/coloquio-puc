@@ -217,9 +217,8 @@ export default function InscripcionesPage() {
 
         {/* ── Tabla de precios ──────────────────────────────────── */}
         <div
+          className="w-full overflow-x-auto shadow-md sm:rounded-lg"
           style={{
-            overflowX: "auto",
-            borderRadius: 14,
             border: `1px solid ${borderColor}`,
             backgroundColor: cardBg,
             boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
@@ -238,6 +237,7 @@ export default function InscripcionesPage() {
                     color: textPrimary,
                     borderBottom: `2px solid ${borderColor}`,
                     width: "50%",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Tipo de inscripción
@@ -253,11 +253,12 @@ export default function InscripcionesPage() {
                     borderLeft: `1px solid ${borderColor}`,
                     width: "25%",
                     lineHeight: 1.4,
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Valor para asistentes
                   <br />
-                  <span style={{ fontSize: 12, fontWeight: 400, color: textSecondary }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: textSecondary, whiteSpace: "normal" }}>
                     (no expositores)
                   </span>
                 </th>
@@ -271,6 +272,7 @@ export default function InscripcionesPage() {
                     borderBottom: `2px solid ${borderColor}`,
                     borderLeft: `1px solid ${borderColor}`,
                     width: "25%",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Valor para expositores
