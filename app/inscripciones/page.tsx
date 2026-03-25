@@ -7,308 +7,427 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, Check, AlertTriangle, ExternalLink } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info } from "lucide-react";
 
-const PLANES = [
-    {
-        title: "Asistente",
-        subtitle: "Solo asistencia al evento",
-        price: "$30.000",
-        priceForeign: "USD $40",
-        features: [
-        "Acceso a todas las conferencias",
-        "Acceso a sesiones de ponencias",
-        "Material del coloquio",
-        "Coffee breaks incluidos",
-        "Certificado de asistencia",
-        ],
-        highlighted: false,
-    },
-    {
-        title: "Expositor",
-        subtitle: "Presentación + asistencia",
-        price: "$50.000",
-        priceForeign: "USD $65",
-        features: [
-        "Todo lo incluido en Asistente",
-        "Presentación de ponencia o póster",
-        "Publicación en actas del coloquio",
-        "Certificado de expositor",
-        "Cena de networking",
-        ],
-        highlighted: true,
-    },
-    {
-        title: "Estudiante",
-        subtitle: "Pregrado y postgrado",
-        price: "$15.000",
-        priceForeign: "USD $20",
-        features: [
-        "Acceso a todas las conferencias",
-        "Acceso a sesiones de ponencias",
-        "Material del coloquio",
-        "Coffee breaks incluidos",
-        "Certificado de asistencia",
-        ],
-        highlighted: false,
-    },
+// ── Precios temporales ────────────────────────────────────────
+// Reemplazar con valores reales antes del lanzamiento
+const TABLA_PRECIOS = [
+  {
+    categoria: "Estudiantes de Pregrado",
+    descripcion: "Con credencial universitaria vigente",
+    preventa: "$XX.000 CLP",
+    regular: "$XX.000 CLP",
+    notas: null,
+  },
+  {
+    categoria: "Estudiantes de Posgrado",
+    descripcion: "Magíster, Doctorado y postdoctorado",
+    preventa: "$XX.000 CLP",
+    regular: "$XX.000 CLP",
+    notas: null,
+  },
+  {
+    categoria: "Expositores",
+    descripcion: "Presentación de ponencia o póster",
+    preventa: "$XX.000 CLP",
+    regular: "$XX.000 CLP",
+    notas: "Incluye certificado de expositor y publicación en actas",
+  },
+  {
+    categoria: "Asistentes / Público General",
+    descripcion: "Académicos/as, investigadores/as y público interesado",
+    preventa: "$XX.000 CLP",
+    regular: "$XX.000 CLP",
+    notas: null,
+  },
 ];
 
 const FAQ = [
-    {
-        q: "¿Cómo pago si soy extranjero?",
-        a: "Aceptamos pagos internacionales vía transferencia bancaria en dólares o mediante PayPal. Al momento de inscribirse, seleccione la opción 'Pago internacional' y recibirá las instrucciones por correo.",
-    },
-    {
-        q: "¿Puedo obtener factura?",
-        a: "Sí, emitimos facturas y boletas según corresponda. Ingrese su RUT o documento de identidad al momento de la inscripción.",
-    },
-    {
-        q: "¿Hay descuento por inscripción grupal?",
-        a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Contáctenos a coloquio@uc.cl para coordinar.",
-    },
-    {
-        q: "¿Qué pasa si necesito cancelar mi inscripción?",
-        a: "Se puede solicitar devolución del 100% hasta 30 días antes del evento, y del 50% hasta 15 días antes. Después de esa fecha no se realizan devoluciones.",
-    },
+  {
+    q: "¿Cómo pago si soy extranjero/a?",
+    a: "Aceptamos pagos internacionales vía transferencia bancaria en dólares o mediante PayPal. Al momento de inscribirse, seleccione la opción 'Pago internacional' y recibirá las instrucciones por correo.",
+  },
+  {
+    q: "¿Puedo obtener factura o boleta?",
+    a: "Sí, emitimos facturas y boletas según corresponda. Ingrese su RUT o documento de identidad al momento de la inscripción.",
+  },
+  {
+    q: "¿Hay descuento por inscripción grupal?",
+    a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Contáctenos a coloquio@uc.cl para coordinar.",
+  },
+  {
+    q: "¿Qué pasa si necesito cancelar mi inscripción?",
+    a: "Se puede solicitar devolución del 100% hasta 30 días antes del evento, y del 50% hasta 15 días antes. Después de esa fecha no se realizan devoluciones.",
+  },
 ];
 
 export default function InscripcionesPage() {
-    const { dark } = useTheme();
-    const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { dark } = useTheme();
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-    return (
-        <div
+  const bg = dark ? "var(--color-dark-900)" : "#F7F7F7";
+  const cardBg = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const borderColor = dark ? "var(--color-dark-700)" : "#DDDDDD";
+  const textPrimary = dark ? "var(--color-dark-100)" : "#424242";
+  const textSecondary = dark ? "var(--color-dark-400)" : "#6B6B6B";
+  const headerBg = dark ? "var(--color-dark-700)" : "#EEF2F7";
+  const accentColor = "var(--color-accent)";
+
+  return (
+    <div style={{ backgroundColor: bg, minHeight: "100vh", transition: "background-color 0.3s" }}>
+
+      {/* ── Encabezado de página ──────────────────────────────── */}
+      <div
         style={{
-            backgroundColor: dark ? "var(--color-dark-900)" : "var(--color-dark-50)",
-            minHeight: "100vh",
-            transition: "background-color 0.3s",
+          padding: "48px 24px",
+          backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-primary)",
+          color: "#FFFFFF",
         }}
-        >
-        {/* Page Header */}
+      >
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.7, marginBottom: 16 }}>
+            <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>Inicio</Link>
+            <ChevronRight size={14} />
+            <span>Inscripciones</span>
+          </div>
+          <h1
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(32px, 5vw, 48px)",
+              fontWeight: 700,
+              marginBottom: 12,
+            }}
+          >
+            Inscripciones
+          </h1>
+          <p style={{ fontSize: 19, opacity: 0.85, maxWidth: 620, lineHeight: 1.65 }}>
+            Seleccione el tipo de inscripción que corresponda y complete su registro. Los valores
+            incluyen acceso completo al evento, material del coloquio y certificado.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Contenido principal ───────────────────────────────── */}
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "56px 24px" }}>
+
+        {/* Banner preventa */}
         <div
-            style={{
-            padding: "48px 24px",
-            backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-primary)",
-            color: "#FFFFFF",
-            }}
+          style={{
+            padding: "20px 24px",
+            borderRadius: 12,
+            backgroundColor: dark ? "rgba(251,140,0,0.08)" : "rgba(251,140,0,0.06)",
+            border: "1px solid rgba(251,140,0,0.3)",
+            display: "flex",
+            gap: 14,
+            alignItems: "flex-start",
+            marginBottom: 48,
+          }}
         >
-            <div style={{ maxWidth: 800, margin: "0 auto" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, opacity: 0.6, marginBottom: 16 }}>
-                <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>Inicio</Link>
-                <ChevronRight size={14} />
-                <span>Inscripciones</span>
-            </div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, marginBottom: 12 }}>
-                Inscripciones
-            </h1>
-            <p style={{ fontSize: 18, opacity: 0.8, maxWidth: 600, lineHeight: 1.6 }}>
-                Selecciona el tipo de inscripción que corresponda y completa tu registro.
-            </p>
-            </div>
+          <AlertTriangle size={22} style={{ color: "#FB8C00", flexShrink: 0, marginTop: 2 }} />
+          <p style={{ fontSize: 17, color: textPrimary, lineHeight: 1.6, margin: 0 }}>
+            <strong>Inscripción con tarifa preferencial (preventa)</strong> disponible hasta el{" "}
+            <strong>30 de septiembre de 2026</strong>. Pasada esa fecha se aplica el valor regular.
+          </p>
         </div>
 
-        <div style={{ maxWidth: 1000, margin: "0 auto", padding: "64px 24px" }}>
+        {/* ── Tabla de valores ─────────────────────────────────── */}
+        <h2
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 28,
+            fontWeight: 700,
+            color: textPrimary,
+            marginBottom: 8,
+          }}
+        >
+          Tabla de valores
+        </h2>
+        <p style={{ fontSize: 16, color: textSecondary, marginBottom: 28, lineHeight: 1.6 }}>
+          Todos los valores están expresados en pesos chilenos (CLP) e incluyen IVA.
+        </p>
 
-            {/* Deadline banner */}
-            <div
+        {/* Tabla responsive: scroll horizontal en móvil */}
+        <div
+          style={{
+            overflowX: "auto",
+            borderRadius: 14,
+            border: `1px solid ${borderColor}`,
+            backgroundColor: cardBg,
+            boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
+            marginBottom: 56,
+          }}
+        >
+          <table
             style={{
-                padding: 20,
-                borderRadius: 12,
-                backgroundColor: dark ? "rgba(251,140,0,0.08)" : "rgba(251,140,0,0.06)",
-                border: "1px solid rgba(251,140,0,0.25)",
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
-                marginBottom: 48,
+              width: "100%",
+              borderCollapse: "collapse",
+              minWidth: 560,
             }}
-            >
-            <AlertTriangle size={20} style={{ color: "#FB8C00", flexShrink: 0 }} />
-            <p style={{ fontSize: 15, color: dark ? "var(--color-dark-200)" : "var(--color-dark-600)" }}>
-                <strong>Inscripción con tarifa preferencial</strong> hasta el 30 de septiembre de 2026.
-                Después de esa fecha, los valores aumentan un 20%.
-            </p>
-            </div>
-
-            {/* Pricing cards */}
-            <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: 24,
-                marginBottom: 64,
-            }}
-            >
-            {PLANES.map((plan, index) => (
-                <div
-                key={index}
-                style={{
-                    borderRadius: 16,
-                    border: plan.highlighted
-                    ? `2px solid var(--color-accent)`
-                    : `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
-                    overflow: "hidden",
-                    position: "relative",
-                    transition: "all 0.2s",
-                }}
-                >
-                {/* Badge "Recomendado" */}
-                {plan.highlighted && (
-                    <div
-                    style={{
-                        padding: "6px 16px",
-                        backgroundColor: "var(--color-accent)",
-                        color: "#fff",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        textAlign: "center",
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
-                    }}
-                    >
-                    Recomendado
-                    </div>
-                )}
-
-                <div style={{ padding: 32 }}>
-                    <h3
-                    style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: 24,
-                        fontWeight: 700,
-                        color: dark ? "var(--color-dark-100)" : "var(--color-dark-700)",
-                        marginBottom: 4,
-                    }}
-                    >
-                    {plan.title}
-                    </h3>
-                    <p style={{ fontSize: 14, color: dark ? "var(--color-dark-400)" : "var(--color-dark-500)", marginBottom: 20 }}>
-                    {plan.subtitle}
-                    </p>
-
-                    {/* Precio */}
-                    <div style={{ marginBottom: 8 }}>
-                    <span
-                        style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: 36,
-                        fontWeight: 700,
-                        color: plan.highlighted
-                            ? "var(--color-accent)"
-                            : dark ? "var(--color-dark-100)" : "var(--color-primary)",
-                        }}
-                    >
-                        {plan.price}
-                    </span>
-                    <span style={{ fontSize: 14, color: dark ? "var(--color-dark-400)" : "var(--color-dark-400)", marginLeft: 4 }}>
-                        CLP
-                    </span>
-                    </div>
-                    <p style={{ fontSize: 13, color: dark ? "var(--color-dark-500)" : "var(--color-dark-400)", marginBottom: 24 }}>
-                    Extranjeros: {plan.priceForeign}
-                    </p>
-
-                    {/* Features */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
-                    {plan.features.map((feat, i) => (
-                        <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                        <Check size={16} style={{ color: "#4CAF50", flexShrink: 0, marginTop: 2 }} />
-                        <span style={{ fontSize: 14, color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)", lineHeight: 1.5 }}>
-                            {feat}
-                        </span>
-                        </div>
-                    ))}
-                    </div>
-
-                    {/* CTA */}
-                    <Link
-                    href="#"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        height: 48,
-                        width: "100%",
-                        borderRadius: 10,
-                        fontSize: 15,
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        transition: "all 0.2s",
-                        backgroundColor: plan.highlighted ? "var(--color-accent)" : "transparent",
-                        color: plan.highlighted ? "#fff" : dark ? "var(--color-accent)" : "var(--color-primary)",
-                        border: plan.highlighted ? "none" : `1px solid ${dark ? "var(--color-dark-600)" : "var(--color-primary-200)"}`,
-                    }}
-                    >
-                    Inscribirse
-                    <ExternalLink size={14} />
-                    </Link>
-                </div>
-                </div>
-            ))}
-            </div>
-
-            {/* FAQ */}
-            <h2
-            style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 28,
-                fontWeight: 700,
-                color: dark ? "var(--color-dark-100)" : "var(--color-primary)",
-                marginBottom: 20,
-                textAlign: "center",
-            }}
-            >
-            Preguntas frecuentes
-            </h2>
-
-            <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
-            {FAQ.map((item, index) => (
-                <button
-                key={index}
-                onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                style={{
-                    width: "100%",
+          >
+            {/* Encabezado */}
+            <thead>
+              <tr style={{ backgroundColor: headerBg }}>
+                <th
+                  style={{
+                    padding: "18px 24px",
                     textAlign: "left",
-                    padding: 20,
-                    borderRadius: 12,
-                    border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-body)",
-                    transition: "all 0.2s",
-                }}
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: textPrimary,
+                    borderBottom: `2px solid ${borderColor}`,
+                    width: "45%",
+                  }}
                 >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ flex: 1, fontSize: 15, fontWeight: 600, color: dark ? "var(--color-dark-200)" : "var(--color-dark-700)" }}>
-                    {item.q}
-                    </span>
-                    <ChevronDown
-                    size={18}
-                    style={{
-                        color: "var(--color-dark-400)",
-                        transform: openFaq === index ? "rotate(180deg)" : "rotate(0)",
-                        transition: "transform 0.2s",
-                    }}
-                    />
-                </div>
-                {openFaq === index && (
-                    <p style={{
-                    marginTop: 12,
-                    paddingTop: 12,
-                    borderTop: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    fontSize: 14,
-                    lineHeight: 1.7,
-                    color: dark ? "var(--color-dark-400)" : "var(--color-dark-500)",
-                    }}>
-                    {item.a}
-                    </p>
-                )}
-                </button>
-            ))}
-            </div>
+                  Tipo de inscripción
+                </th>
+                <th
+                  style={{
+                    padding: "18px 24px",
+                    textAlign: "center",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: textPrimary,
+                    borderBottom: `2px solid ${borderColor}`,
+                    borderLeft: `1px solid ${borderColor}`,
+                    width: "27.5%",
+                  }}
+                >
+                  Preventa
+                  <br />
+                  <span style={{ fontSize: 13, fontWeight: 400, color: textSecondary }}>
+                    hasta 30 sept. 2026
+                  </span>
+                </th>
+                <th
+                  style={{
+                    padding: "18px 24px",
+                    textAlign: "center",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: textPrimary,
+                    borderBottom: `2px solid ${borderColor}`,
+                    borderLeft: `1px solid ${borderColor}`,
+                    width: "27.5%",
+                  }}
+                >
+                  Valor Regular
+                </th>
+              </tr>
+            </thead>
+
+            {/* Filas */}
+            <tbody>
+              {TABLA_PRECIOS.map((fila, idx) => {
+                const isLast = idx === TABLA_PRECIOS.length - 1;
+                const isEven = idx % 2 === 0;
+                const rowBg = isEven
+                  ? cardBg
+                  : dark ? "rgba(255,255,255,0.025)" : "#FAFAFA";
+
+                return (
+                  <tr key={idx} style={{ backgroundColor: rowBg }}>
+                    {/* Categoría */}
+                    <td
+                      style={{
+                        padding: "20px 24px",
+                        borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
+                        verticalAlign: "top",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 700,
+                          color: textPrimary,
+                          margin: "0 0 4px 0",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {fila.categoria}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: 15,
+                          color: textSecondary,
+                          margin: 0,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {fila.descripcion}
+                      </p>
+                      {fila.notas && (
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: 6,
+                            alignItems: "flex-start",
+                            marginTop: 8,
+                            padding: "8px 10px",
+                            borderRadius: 8,
+                            backgroundColor: dark
+                              ? "rgba(var(--color-accent-rgb), 0.08)"
+                              : "rgba(13, 71, 161, 0.05)",
+                          }}
+                        >
+                          <Info size={14} style={{ color: accentColor, flexShrink: 0, marginTop: 2 }} />
+                          <span style={{ fontSize: 13, color: textSecondary, lineHeight: 1.5 }}>
+                            {fila.notas}
+                          </span>
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Preventa */}
+                    <td
+                      style={{
+                        padding: "20px 24px",
+                        textAlign: "center",
+                        borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
+                        borderLeft: `1px solid ${borderColor}`,
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: 22,
+                          fontWeight: 700,
+                          color: accentColor,
+                          display: "block",
+                        }}
+                      >
+                        {fila.preventa}
+                      </span>
+                    </td>
+
+                    {/* Valor Regular */}
+                    <td
+                      style={{
+                        padding: "20px 24px",
+                        textAlign: "center",
+                        borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
+                        borderLeft: `1px solid ${borderColor}`,
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-display)",
+                          fontSize: 22,
+                          fontWeight: 700,
+                          color: textPrimary,
+                          display: "block",
+                        }}
+                      >
+                        {fila.regular}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
+
+        {/* ── Botón de inscripción ──────────────────────────────── */}
+        <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <Link
+            href="#"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "18px 40px",
+              borderRadius: 12,
+              backgroundColor: "var(--color-accent)",
+              color: "#FFFFFF",
+              fontFamily: "var(--font-display)",
+              fontSize: 19,
+              fontWeight: 700,
+              textDecoration: "none",
+              transition: "opacity 0.2s",
+              letterSpacing: 0.3,
+            }}
+          >
+            Ir al formulario de inscripción
+            <ExternalLink size={18} />
+          </Link>
+          <p style={{ fontSize: 15, color: textSecondary, marginTop: 14 }}>
+            El formulario abre en una nueva ventana. Tenga a mano su credencial institucional.
+          </p>
         </div>
-    );
+
+        {/* ── Preguntas frecuentes ──────────────────────────────── */}
+        <h2
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 28,
+            fontWeight: 700,
+            color: textPrimary,
+            marginBottom: 24,
+          }}
+        >
+          Preguntas frecuentes
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {FAQ.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => setOpenFaq(openFaq === index ? null : index)}
+              style={{
+                width: "100%",
+                textAlign: "left",
+                padding: "20px 24px",
+                borderRadius: 12,
+                border: `1px solid ${borderColor}`,
+                backgroundColor: cardBg,
+                cursor: "pointer",
+                fontFamily: "var(--font-body)",
+                transition: "all 0.2s",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span
+                  style={{
+                    flex: 1,
+                    fontSize: 17,
+                    fontWeight: 600,
+                    color: textPrimary,
+                    lineHeight: 1.45,
+                  }}
+                >
+                  {item.q}
+                </span>
+                <ChevronDown
+                  size={20}
+                  style={{
+                    color: textSecondary,
+                    flexShrink: 0,
+                    transform: openFaq === index ? "rotate(180deg)" : "rotate(0)",
+                    transition: "transform 0.2s",
+                  }}
+                />
+              </div>
+              {openFaq === index && (
+                <p
+                  style={{
+                    marginTop: 14,
+                    paddingTop: 14,
+                    borderTop: `1px solid ${borderColor}`,
+                    fontSize: 16,
+                    lineHeight: 1.75,
+                    color: textSecondary,
+                    margin: "14px 0 0 0",
+                  }}
+                >
+                  {item.a}
+                </p>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
