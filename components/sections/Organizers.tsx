@@ -1,5 +1,5 @@
 // ============================================================
-// components/sections/Organizers.tsx — ORGANIZAN / COLABORAN
+// components/sections/Organizers.tsx — ORGANIZAN
 // ============================================================
 
 "use client";
@@ -15,10 +15,6 @@ const ORGANIZERS = [
     { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC" },
 ];
 
-const COLLABORATORS = [
-    { src: "/images/risc-logo.png",      alt: "RISC" },
-    { src: "/images/nodo-sur-logo.png",  alt: "Nodo Sur" },
-];
 
 function LogoGrid({
     logos,
@@ -60,7 +56,6 @@ export default function Organizers() {
     const sectionBg = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
     const labelColor = "var(--color-dark-400)";
     const headingColor = dark ? "var(--color-dark-100)" : "var(--color-primary)";
-    const dividerColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
 
     return (
         <section
@@ -98,44 +93,6 @@ export default function Organizers() {
                         Instituciones organizadoras
                     </h2>
                     <LogoGrid logos={ORGANIZERS} dark={dark} />
-                </FadeInSection>
-
-                {/* ── DIVIDER ── */}
-                <div
-                    style={{
-                        margin: "56px auto",
-                        height: 1,
-                        maxWidth: 480,
-                        backgroundColor: dividerColor,
-                    }}
-                />
-
-                {/* ── COLABORAN ── */}
-                <FadeInSection delay={0.2}>
-                    <p
-                        style={{
-                            fontSize: 12,
-                            fontWeight: 600,
-                            textTransform: "uppercase",
-                            letterSpacing: 2,
-                            color: labelColor,
-                            marginBottom: 4,
-                        }}
-                    >
-                        Colaboran
-                    </p>
-                    <h2
-                        style={{
-                            fontSize: 22,
-                            fontWeight: 700,
-                            fontFamily: "var(--font-display)",
-                            color: headingColor,
-                            marginBottom: 0,
-                        }}
-                    >
-                        Colaboradores
-                    </h2>
-                    <LogoGrid logos={COLLABORATORS} dark={dark} />
                 </FadeInSection>
 
             </div>
