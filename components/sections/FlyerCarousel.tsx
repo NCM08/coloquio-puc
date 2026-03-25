@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RefreshCw } from "lucide-react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const flyers = [
   "/images/flyer-1.jpg",
@@ -165,20 +166,63 @@ export default function FlyerCarousel() {
             >
               &times;
             </button>
-            <div className="relative w-full rounded-lg overflow-hidden shadow-2xl">
-              <Image
-                src={lightboxSrc}
-                alt={`Flyer ampliado — Página ${lightboxPageNumber} de ${flyers.length}`}
-                width={800}
-                height={1067}
-                sizes="(max-width: 768px) 100vw, 800px"
-                className="w-full h-auto max-h-[85vh] object-contain"
-                priority
-              />
-            </div>
-            <p className="text-center text-white/80 text-sm font-medium mt-3 tracking-wide">
-              {lightboxPageNumber} / {flyers.length}
-            </p>
+            <TransformWrapper
+              initialScale={1}
+              minScale={0.5}
+              maxScale={5}
+              wheel={{ step: 0.1 }}
+              pinch={{ step: 5 }}
+            >
+              {({ zoomIn, zoomOut, resetTransform }) => (
+                <>
+                  <div className="relative w-full rounded-lg overflow-hidden shadow-2xl">
+                    <TransformComponent
+                      wrapperStyle={{ width: "100%", display: "block" }}
+                    >
+                      <Image
+                        src={lightboxSrc}
+                        alt={`Flyer ampliado — Página ${lightboxPageNumber} de ${flyers.length}`}
+                        width={800}
+                        height={1067}
+                        sizes="(max-width: 768px) 100vw, 800px"
+                        className="w-full h-auto max-h-[85vh] object-contain"
+                        priority
+                      />
+                    </TransformComponent>
+                  </div>
+
+                  {/* Zoom controls pill */}
+                  <div className="flex items-center justify-center gap-1 mt-3">
+                    <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5">
+                      <button
+                        onClick={() => zoomIn()}
+                        className="p-1.5 text-white/80 hover:text-white transition-colors rounded-full hover:bg-white/10"
+                        aria-label="Acercar"
+                      >
+                        <ZoomIn className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => zoomOut()}
+                        className="p-1.5 text-white/80 hover:text-white transition-colors rounded-full hover:bg-white/10"
+                        aria-label="Alejar"
+                      >
+                        <ZoomOut className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => resetTransform()}
+                        className="p-1.5 text-white/80 hover:text-white transition-colors rounded-full hover:bg-white/10"
+                        aria-label="Restablecer zoom"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                      <span className="text-white/50 text-xs font-medium pl-1 border-l border-white/20 ml-1">
+                        {lightboxPageNumber} / {flyers.length}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </TransformWrapper>
           </div>
         </div>
       )}
