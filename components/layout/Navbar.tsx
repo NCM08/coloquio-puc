@@ -13,6 +13,7 @@ import { Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
 const NAV_ITEMS = [
     { label: "Inicio", href: "/" },
     { label: "Convocatoria", href: "/convocatoria", hasDropdown: true },
+    { label: "Envío de propuestas", href: "/envio-propuestas" },
     { label: "Programa", href: "/programa" },
     { label: "Inscripción", href: "/inscripciones" },
 ];
@@ -20,7 +21,6 @@ const NAV_ITEMS = [
 const CONVOCATORIA_ITEMS = [
     { label: "Ejes temáticos", href: "/convocatoria#ejes" },
     { label: "Modalidades", href: "/convocatoria#modalidades" },
-    { label: "Envío de propuestas", href: "/envio-propuestas" },
 ];
 
 const SECONDARY_ITEMS = [
