@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw, FileText, AlertCircle } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw, FileText, AlertCircle, MapPin } from "lucide-react";
 
 // ── Tipo de cambio referencial ────────────────────────────────
 const CLP_POR_USD = 950;
@@ -483,6 +483,57 @@ export default function InscripcionesPage() {
           <p style={{ fontSize: 15, color: textSecondary, marginTop: 14 }}>
             El formulario abre en una nueva ventana. Tenga a mano su credencial institucional.
           </p>
+        </div>
+
+        {/* ── Tarjeta Hospedaje ─────────────────────────────────── */}
+        <div
+          style={{
+            padding: "32px 36px",
+            borderRadius: 16,
+            backgroundColor: dark ? "rgba(6,182,212,0.07)" : "#F0FDFE",
+            border: `1.5px solid ${dark ? "rgba(6,182,212,0.25)" : "rgba(6,182,212,0.35)"}`,
+            marginBottom: 48,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+            <MapPin size={24} style={{ color: "var(--color-vibrant-cyan)", flexShrink: 0 }} />
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 20,
+                fontWeight: 600,
+                color: textPrimary,
+                margin: 0,
+              }}
+            >
+              ¿Viajas desde fuera de Santiago?
+            </h2>
+          </div>
+          <p style={{ fontSize: 16, color: textSecondary, lineHeight: 1.75, margin: "0 0 24px 0" }}>
+            Hemos preparado una selección oficial de alojamientos seguros, verificados y con conexión directa en Metro
+            al Campus San Joaquín de la Universidad Católica para facilitar tu estadía.
+          </p>
+          <Link
+            href="/hospedaje"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "12px 24px",
+              borderRadius: 10,
+              border: `1.5px solid ${dark ? "rgba(6,182,212,0.5)" : "rgba(6,182,212,0.6)"}`,
+              backgroundColor: dark ? "rgba(6,182,212,0.12)" : "#FFFFFF",
+              color: dark ? "var(--color-vibrant-cyan)" : "var(--color-primary)",
+              fontSize: 15,
+              fontWeight: 600,
+              textDecoration: "none",
+              fontFamily: "var(--font-body)",
+              transition: "all 0.2s",
+            }}
+          >
+            <MapPin size={16} />
+            Ver opciones de alojamiento recomendadas
+          </Link>
         </div>
 
         {/* ── Preguntas frecuentes ──────────────────────────────── */}
