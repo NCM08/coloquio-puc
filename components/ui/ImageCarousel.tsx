@@ -8,34 +8,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { SlideData } from "@/types/coloquio";
 
 // ============================================================
-// 6 slides — usa los archivos exactos que subiste a /public/images/
-// (respeta mayúsculas/minúsculas en producción)
+// 5 slides — archivos en /public/images/ (respeta mayúsculas en producción)
+// Orden de prioridad visual: slide-3.JPG primero (imagen principal)
 // ============================================================
 const SLIDES: SlideData[] = [
   {
     id: 1,
-    image: "/images/slide-1.jpg",
-    title: "VIII Coloquio Internacional de Sociología Clínica y Psicosociología",
-    subtitle:
-      "Desintegración social en el mundo actual: acciones de resistencias y nuevos imaginarios posibles",
-    dateText: "10 — 12 de Noviembre 2026 · Santiago, Chile",
-    ctaText: "Conocer más",
-    ctaLink: "/convocatoria",
-    bgColor: "#00adfc",
-  },
-  {
-    id: 2,
-    image: "/images/slide-2.jpg",
-    title: "Convocatoria abierta",
-    subtitle:
-      "Presenta tu propuesta de investigación ante colegas de todo el mundo.",
-    dateText: "Cierre: 30 de junio 2026",
-    ctaText: "Enviar propuesta",
-    ctaLink: "/convocatoria",
-    bgColor: "#5841b3",
-  },
-  {
-    id: 3,
     image: "/images/slide-3.JPG",
     title: "Conferencistas magistrales",
     subtitle:
@@ -46,7 +24,7 @@ const SLIDES: SlideData[] = [
     bgColor: "#f5008c",
   },
   {
-    id: 4,
+    id: 2,
     image: "/images/slide-4.JPG",
     title: "Programa del coloquio",
     subtitle:
@@ -57,7 +35,7 @@ const SLIDES: SlideData[] = [
     bgColor: "#00adfc",
   },
   {
-    id: 5,
+    id: 3,
     image: "/images/slide-5.JPG",
     title: "Comunidad internacional",
     subtitle:
@@ -68,12 +46,23 @@ const SLIDES: SlideData[] = [
     bgColor: "#f87e28",
   },
   {
-    id: 6,
-    image: "/images/slide-6.jpg",
-    title: "Inscripciones abiertas",
+    id: 4,
+    image: "/images/slide-grupo.jpg",
+    title: "Una comunidad académica global",
     subtitle:
-      "Modalidad presencial en Santiago de Chile y transmisión en línea para participantes internacionales.",
-    dateText: "Precio anticipado disponible",
+      "Investigadores, clínicos y académicos de todo el mundo reunidos en torno a la Sociología Clínica.",
+    dateText: "10 — 12 de Noviembre 2026 · Santiago, Chile",
+    ctaText: "Conocer más",
+    ctaLink: "/convocatoria",
+    bgColor: "#5841b3",
+  },
+  {
+    id: 5,
+    image: "/images/slide-panel.jpg",
+    title: "Expositores y panelistas",
+    subtitle:
+      "Diálogos de alto nivel entre especialistas que marcan la agenda de la disciplina a nivel mundial.",
+    dateText: "Inscripciones abiertas · Precio anticipado",
     ctaText: "Inscribirse ahora",
     ctaLink: "/inscripciones",
     bgColor: "#5fba24",
@@ -156,7 +145,7 @@ export default function ImageCarousel() {
               alt={slide.title}
               fill
               sizes="100vw"
-              style={{ objectFit: "cover", objectPosition: "center" }}
+              className="object-cover object-center"
               priority={current === 0}
             />
 
