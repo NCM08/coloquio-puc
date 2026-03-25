@@ -22,10 +22,13 @@ export default function FlyerCarousel() {
   const getVisibleFlyers = () => {
     const visible = [];
     for (let i = 0; i < visibleCount; i++) {
-      visible.push(flyers[(startIndex + i) % flyers.length]);
+      const realIndex = (startIndex + i) % flyers.length;
+      visible.push({ src: flyers[realIndex], pageNumber: realIndex + 1 });
     }
     return visible;
   };
+
+  const lightboxPageNumber = lightboxSrc ? flyers.indexOf(lightboxSrc) + 1 : null;
 
   const restartInterval = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -82,27 +85,31 @@ export default function FlyerCarousel() {
           </button>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-1000 w-full">
-            {getVisibleFlyers().map((src, idx) => (
-              <button
-                key={`${src}-${idx}`}
-                onClick={() => openLightbox(src)}
-                className="group relative w-full overflow-hidden rounded-lg shadow-sm
-                           hover:scale-105 transition-transform duration-300 cursor-pointer
-                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-label="Ampliar flyer"
-              >
-                <div className="relative w-full aspect-[3/4]">
-                  <Image
-                    src={src}
-                    alt={`Flyer informativo ${idx + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
-                    priority={idx === 0}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg" />
-              </button>
+            {getVisibleFlyers().map(({ src, pageNumber }, idx) => (
+              <div key={`${src}-${idx}`} className="flex flex-col">
+                <button
+                  onClick={() => openLightbox(src)}
+                  className="group relative w-full overflow-hidden rounded-lg shadow-sm
+                             hover:scale-105 transition-transform duration-300 cursor-pointer
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  aria-label={`Ampliar flyer — Página ${pageNumber}`}
+                >
+                  <div className="relative w-full aspect-[3/4]">
+                    <Image
+                      src={src}
+                      alt={`Flyer informativo — Página ${pageNumber} de ${flyers.length}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                      priority={idx === 0}
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg" />
+                </button>
+                <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-3 font-medium">
+                  Página {pageNumber}
+                </p>
+              </div>
             ))}
           </div>
 
@@ -161,7 +168,7 @@ export default function FlyerCarousel() {
             <div className="relative w-full rounded-lg overflow-hidden shadow-2xl">
               <Image
                 src={lightboxSrc}
-                alt="Flyer ampliado"
+                alt={`Flyer ampliado — Página ${lightboxPageNumber} de ${flyers.length}`}
                 width={800}
                 height={1067}
                 sizes="(max-width: 768px) 100vw, 800px"
@@ -169,6 +176,9 @@ export default function FlyerCarousel() {
                 priority
               />
             </div>
+            <p className="text-center text-white/80 text-sm font-medium mt-3 tracking-wide">
+              {lightboxPageNumber} / {flyers.length}
+            </p>
           </div>
         </div>
       )}
