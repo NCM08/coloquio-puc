@@ -47,7 +47,7 @@ const SLIDES: SlideData[] = [
   },
   {
     id: 4,
-    image: "/images/slide-grupo.jpg",
+    image: "/images/slide-grupo.jpeg",
     title: "Una comunidad académica global",
     subtitle:
       "Investigadores, clínicos y académicos de todo el mundo reunidos en torno a la Sociología Clínica.",
@@ -58,7 +58,7 @@ const SLIDES: SlideData[] = [
   },
   {
     id: 5,
-    image: "/images/slide-panel.jpg",
+    image: "/images/slide-panel.jpeg",
     title: "Expositores y panelistas",
     subtitle:
       "Diálogos de alto nivel entre especialistas que marcan la agenda de la disciplina a nivel mundial.",

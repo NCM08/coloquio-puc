@@ -46,7 +46,7 @@ function LogoGrid({
                         alt={alt}
                         width={160}
                         height={80}
-                        className="h-20 w-auto object-contain dark:invert"
+                        className="h-20 w-auto object-contain"
                     />
                 </div>
             ))}
