@@ -25,7 +25,7 @@ export default function ThematicAxes() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <section style={{ padding: "96px 24px", backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-dark-50)", transition: "background-color 0.3s" }}>
+        <section className="py-16 md:py-24 px-4 md:px-8 lg:px-12" style={{ backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-dark-50)", transition: "background-color 0.3s" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
             <FadeInSection>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -41,7 +41,7 @@ export default function ThematicAxes() {
             </div>
             </FadeInSection>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {EJES.map((eje, index) => {
                 const Icon = eje.icon;
                 const isOpen = openIndex === index;

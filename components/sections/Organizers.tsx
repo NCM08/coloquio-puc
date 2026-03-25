@@ -64,8 +64,8 @@ export default function Organizers() {
 
     return (
         <section
+            className="py-12 md:py-20 px-4 md:px-8 lg:px-12"
             style={{
-                padding: "80px 24px",
                 backgroundColor: sectionBg,
                 transition: "background-color 0.3s",
             }}

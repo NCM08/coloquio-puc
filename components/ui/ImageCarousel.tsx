@@ -380,11 +380,21 @@ export default function ImageCarousel() {
             transform: none;
             width: 100%;
             border-radius: 0;
-            padding: 16px 20px 44px;
+            padding: 14px 16px 40px;
             backdrop-filter: none;
             background: rgba(6,6,18,0.90);
           }
           .carousel-logo-wrap { display: none; }
+          .carousel-box-subtitle {
+            font-size: 13px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 8px;
+          }
+          .carousel-box-date { font-size: 12px; margin-bottom: 12px; }
+          .carousel-cta { font-size: 14px; min-height: 44px; padding: 0 18px; }
           .carousel-arrow-left  { left: 8px; }
           .carousel-arrow-right { right: 8px; }
         }
