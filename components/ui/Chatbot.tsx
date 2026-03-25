@@ -39,7 +39,7 @@ function findAnswer(question: string): string {
 
     // Saludos
     if (q.match(/hola|buenos|buenas|hey|saludos/))
-        return "¡Hola! 👋 Soy el asistente virtual del Coloquio de Educación y Pedagogía PUC 2026. ¿En qué puedo ayudarte? Puedo responder sobre fechas, inscripciones, envío de propuestas, ejes temáticos, conferencistas y más.";
+        return "¡Hola! 👋 Soy el asistente virtual del VIII Coloquio Internacional de Sociología Clínica y Psicosociología 2026. ¿En qué puedo ayudarte? Puedo responder sobre fechas, inscripciones, envío de propuestas, ejes temáticos, conferencistas y más.";
 
     // Fechas
     if (q.match(/fecha|cuando|cuándo|calendario|plazo|deadline/))
@@ -115,7 +115,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
         role: "assistant",
-        content: "¡Hola! 👋 Soy el asistente virtual del Coloquio de Educación y Pedagogía PUC 2026. ¿En qué puedo ayudarte?",
+        content: "¡Hola! 👋 Soy el asistente virtual del VIII Coloquio Internacional de Sociología Clínica y Psicosociología 2026. ¿En qué puedo ayudarte?",
         },
     ]);
     const [input, setInput] = useState("");

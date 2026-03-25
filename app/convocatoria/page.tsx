@@ -35,7 +35,7 @@ const MODALIDADES = [
     {
         icon: BookOpen,
         title: "Mesa redonda",
-        description: "Espacio de debate de 60 minutos con 3-5 panelistas sobre temas transversales de la educación.",
+        description: "Espacio de diálogo de 60 minutos con 3-5 panelistas, inspirado en la Sociología Clínica, la Psicosociología y los Ejes Temáticos del coloquio.",
         requirements: "Propuesta con tema, justificación, lista de panelistas confirmados y preguntas orientadoras.",
     },
 ];
