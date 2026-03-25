@@ -34,13 +34,34 @@ export default function MapSection() {
             </FadeInSection>
 
             <div style={{ display: "flex", gap: 32, flexWrap: "wrap", alignItems: "stretch" }}>
-            <FadeInSection direction="left" style={{ flex: "1 1 500px", minHeight: 400, borderRadius: 16, overflow: "hidden", border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}` }}>
+            <FadeInSection direction="left" style={{ flex: "1 1 500px", borderRadius: 16, overflow: "hidden", border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`, display: "flex", flexDirection: "column" }}>
+                <div style={{ position: "relative", flex: 1, minHeight: 400 }}>
                 <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6175%2C-33.5010%2C-70.6075%2C-33.4940&layer=mapnik&marker=-33.4975%2C-70.6125"
-                style={{ width: "100%", height: "100%", minHeight: 400, border: "none", filter: dark ? "brightness(0.8) contrast(1.1) invert(0.92) hue-rotate(180deg)" : "none" }}
-                loading="lazy"
-                title="Mapa Campus San Joaquín PUC"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6175%2C-33.5010%2C-70.6075%2C-33.4940&layer=mapnik&marker=-33.4975%2C-70.6125"
+                    style={{ width: "100%", height: "100%", minHeight: 400, border: "none", filter: dark ? "brightness(0.8) contrast(1.1) invert(0.92) hue-rotate(180deg)" : "none", pointerEvents: "none" }}
+                    loading="lazy"
+                    title="Mapa Campus San Joaquín PUC"
                 />
+                </div>
+                <a
+                href="https://www.google.com/maps/search/?api=1&query=Campus+San+Joaquín+PUC+Av+Vicuña+Mackenna+4860+Macul+Santiago"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                    display: "block",
+                    textAlign: "center",
+                    padding: "14px 24px",
+                    backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-primary-50)",
+                    color: dark ? "var(--color-accent)" : "var(--color-primary)",
+                    fontWeight: 600,
+                    fontSize: 15,
+                    textDecoration: "none",
+                    borderTop: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
+                    transition: "background-color 0.2s",
+                }}
+                >
+                📍 Abrir en Google Maps
+                </a>
             </FadeInSection>
 
             <div style={{ flex: "0 1 360px", display: "flex", flexDirection: "column", gap: 16, minWidth: 280 }}>

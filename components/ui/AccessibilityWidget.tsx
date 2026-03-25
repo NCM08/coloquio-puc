@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { CaseSensitive } from "lucide-react";
 
-const FONT_SIZES = [18, 22, 26];
-const DEFAULT_INDEX = 0; // 18px — Normal
+const FONT_SIZES = ["100%", "110%", "120%"];
+const DEFAULT_INDEX = 0; // 100% — Normal
 const STORAGE_KEY = "a11y-font-index";
 
 export default function AccessibilityWidget() {
@@ -18,7 +18,7 @@ export default function AccessibilityWidget() {
     if (saved !== null) {
       const idx = parseInt(saved, 10);
       setFontIndex(idx);
-      document.documentElement.style.fontSize = `${FONT_SIZES[idx]}px`;
+      document.documentElement.style.fontSize = FONT_SIZES[idx];
     }
     const contrast = localStorage.getItem("a11y-contrast") === "true";
     setHighContrast(contrast);
@@ -28,7 +28,7 @@ export default function AccessibilityWidget() {
   const changeFontSize = (delta: number) => {
     setFontIndex((prev) => {
       const next = Math.min(Math.max(prev + delta, 0), FONT_SIZES.length - 1);
-      document.documentElement.style.fontSize = `${FONT_SIZES[next]}px`;
+      document.documentElement.style.fontSize = FONT_SIZES[next];
       localStorage.setItem(STORAGE_KEY, String(next));
       return next;
     });
@@ -45,7 +45,7 @@ export default function AccessibilityWidget() {
 
   const resetAll = () => {
     setFontIndex(DEFAULT_INDEX);
-    document.documentElement.style.fontSize = `${FONT_SIZES[DEFAULT_INDEX]}px`;
+    document.documentElement.style.fontSize = FONT_SIZES[DEFAULT_INDEX];
     localStorage.setItem(STORAGE_KEY, String(DEFAULT_INDEX));
     setHighContrast(false);
     document.documentElement.classList.remove("high-contrast");
@@ -77,7 +77,7 @@ export default function AccessibilityWidget() {
                 A-
               </button>
               <span className="w-9 text-center text-xs text-gray-500 dark:text-gray-400 tabular-nums">
-                {FONT_SIZES[fontIndex]}px
+                {FONT_SIZES[fontIndex]}
               </span>
               <button
                 onClick={() => changeFontSize(1)}
