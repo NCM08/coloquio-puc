@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const flyers = [
   "/images/flyer-1.jpg",
@@ -26,15 +27,30 @@ export default function FlyerCarousel() {
     return visible;
   };
 
-  useEffect(() => {
+  const restartInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setStartIndex((prev) => (prev + 1) % flyers.length);
     }, 7500);
+  };
 
+  useEffect(() => {
+    restartInterval();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const goToPrev = () => {
+    setStartIndex((prev) => (prev - 1 + flyers.length) % flyers.length);
+    restartInterval();
+  };
+
+  const goToNext = () => {
+    setStartIndex((prev) => (prev + 1) % flyers.length);
+    restartInterval();
+  };
 
   const openLightbox = (src: string) => {
     setLightboxSrc(src);
@@ -51,30 +67,56 @@ export default function FlyerCarousel() {
           Galería de Flyers Informativos
         </h2>
 
-        {/* Carousel grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-1000">
-          {getVisibleFlyers().map((src, idx) => (
-            <button
-              key={`${src}-${idx}`}
-              onClick={() => openLightbox(src)}
-              className="group relative w-full overflow-hidden rounded-lg shadow-sm
-                         hover:scale-105 transition-transform duration-300 cursor-pointer
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              aria-label="Ampliar flyer"
-            >
-              <div className="relative w-full aspect-[3/4]">
-                <Image
-                  src={src}
-                  alt={`Flyer informativo ${idx + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
-                  priority={idx === 0}
-                />
-              </div>
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg" />
-            </button>
-          ))}
+        {/* Carousel grid with navigation arrows */}
+        <div className="relative flex items-center">
+          {/* Arrow left */}
+          <button
+            onClick={goToPrev}
+            className="absolute -left-5 z-10 flex items-center justify-center
+                       w-10 h-10 rounded-full bg-white/60 shadow-md
+                       opacity-70 hover:opacity-100 transition-opacity duration-200
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Flyer anterior"
+          >
+            <ChevronLeft className="w-6 h-6 text-slate-700" />
+          </button>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-1000 w-full">
+            {getVisibleFlyers().map((src, idx) => (
+              <button
+                key={`${src}-${idx}`}
+                onClick={() => openLightbox(src)}
+                className="group relative w-full overflow-hidden rounded-lg shadow-sm
+                           hover:scale-105 transition-transform duration-300 cursor-pointer
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Ampliar flyer"
+              >
+                <div className="relative w-full aspect-[3/4]">
+                  <Image
+                    src={src}
+                    alt={`Flyer informativo ${idx + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                    priority={idx === 0}
+                  />
+                </div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg" />
+              </button>
+            ))}
+          </div>
+
+          {/* Arrow right */}
+          <button
+            onClick={goToNext}
+            className="absolute -right-5 z-10 flex items-center justify-center
+                       w-10 h-10 rounded-full bg-white/60 shadow-md
+                       opacity-70 hover:opacity-100 transition-opacity duration-200
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Siguiente flyer"
+          >
+            <ChevronRight className="w-6 h-6 text-slate-700" />
+          </button>
         </div>
 
         {/* Dot indicators */}
@@ -82,7 +124,10 @@ export default function FlyerCarousel() {
           {flyers.map((_, i) => (
             <button
               key={i}
-              onClick={() => setStartIndex(i)}
+              onClick={() => {
+                setStartIndex(i);
+                restartInterval();
+              }}
               className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
                 i === startIndex % flyers.length
                   ? "bg-blue-600"
@@ -97,11 +142,12 @@ export default function FlyerCarousel() {
       {/* Lightbox */}
       {lightboxSrc && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto
+                     bg-black/80 backdrop-blur-sm py-8"
           onClick={closeLightbox}
         >
           <div
-            className="relative max-w-3xl w-full mx-4"
+            className="relative w-full max-w-2xl mx-4 my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -112,13 +158,14 @@ export default function FlyerCarousel() {
             >
               &times;
             </button>
-            <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-2xl">
+            <div className="relative w-full rounded-lg overflow-hidden shadow-2xl">
               <Image
                 src={lightboxSrc}
                 alt="Flyer ampliado"
-                fill
-                sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain"
+                width={800}
+                height={1067}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="w-full h-auto max-h-[85vh] object-contain"
                 priority
               />
             </div>
