@@ -7,211 +7,280 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, Clock, MapPin, Mic, Coffee, Users } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
-const DAYS = [
-    { label: "Lunes 9", date: "9 Nov — Pre-evento" },
-    { label: "Martes 10", date: "10 Nov — Día 1" },
-    { label: "Miércoles 11", date: "11 Nov — Día 2" },
-    { label: "Jueves 12", date: "12 Nov — Día 3" },
-];
+// ── Estructura de datos del cronograma (DDD) ─────────────────
+type EventType = "keynote" | "session" | "break" | "social";
 
 type ScheduleItem = {
-    time: string;
-    title: string;
-    speaker?: string;
-    location: string;
-    type: "keynote" | "session" | "break" | "social";
+  time: string;
+  title: string;
+  type: EventType;
 };
+
+const DAYS = [
+  { label: "Lunes 9",      subtitle: "9 Nov · Pre-evento" },
+  { label: "Martes 10",    subtitle: "10 Nov · Día 1" },
+  { label: "Miércoles 11", subtitle: "11 Nov · Día 2" },
+  { label: "Jueves 12",    subtitle: "12 Nov · Día 3" },
+];
 
 const SCHEDULE: Record<number, ScheduleItem[]> = {
-    0: [
-        { time: "09:00 — 13:00", title: "Historias de vida — 60 años de la Villa La Reina. Trabajo en el territorio.", speaker: "Organiza: Grupo de Historias de Vida - Nodo Sur", location: "", type: "session" },
-        { time: "13:00 — 15:00", title: "Almuerzo comunitario", location: "", type: "break" },
-    ],
-    1: [
-        { time: "09:00 — 12:00", title: "Asamblea Nodo Sur (híbrida)", location: "Sala UC [por definir]", type: "session" },
-        { time: "12:00 — 14:00", title: "Almuerzo libre", location: "", type: "break" },
-        { time: "14:00 — 15:00", title: "Registro / acreditación", location: "", type: "break" },
-        { time: "15:00 — 15:30", title: "Sesión 1. Bienvenida", location: "", type: "keynote" },
-        { time: "15:30 — 18:00", title: "Sesión 2. Homenaje a Presidente RISC — Vincent de Gaulejac", speaker: "Conferencia de Vincent de Gaulejac", location: "", type: "keynote" },
-        { time: "18:00 — 20:00", title: "Cóctel de celebración", location: "", type: "social" },
-    ],
-    2: [
-        { time: "09:00 — 10:30", title: "Sesión 3. Conferencia 1. \"Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles\"", speaker: "Vincent de Gaulejac, Ana María Araujo, Teresa Carreteiro y Ana Correa", location: "", type: "keynote" },
-        { time: "10:30 — 11:00", title: "Pausa. Coffee Break", location: "", type: "break" },
-        { time: "11:00 — 12:15", title: "Sesión 4. Mesas de trabajo paralelas", location: "", type: "session" },
-        { time: "12:15 — 13:00", title: "Sesión 5. Presentación de libro del grupo de Historias de vida", location: "", type: "session" },
-        { time: "13:00 — 14:30", title: "Almuerzo", location: "", type: "break" },
-        { time: "14:30 — 16:00", title: "Sesión 6. Mesas de trabajo paralelas", location: "", type: "session" },
-        { time: "16:00 — 16:30", title: "Pausa. Coffee Break", location: "", type: "break" },
-        { time: "16:30 — 18:00", title: "Sesión 7. Conferencia 2. \"Transmisión de la Sociología Clínica y la Psicosociología latinoamericana de cara a la desintegración social\"", speaker: "Un representante por país: Argentina, Brasil, Chile, Colombia, España, México y Uruguay", location: "", type: "keynote" },
-        { time: "20:00", title: "Cena típica (inscripción voluntaria)", location: "", type: "social" },
-    ],
-    3: [
-        { time: "09:00 — 10:30", title: "Sesión 8. Conferencia 3. \"Reconfigurando el vínculo universitario y escolar\"", speaker: "Dariela Sharim, Fernando Yzaguirre, María Aparecida Penso", location: "", type: "keynote" },
-        { time: "10:30 — 11:00", title: "Pausa. Coffee Break", location: "", type: "break" },
-        { time: "11:00 — 12:15", title: "Sesión 9. Mesas de trabajo paralelas", location: "", type: "session" },
-        { time: "12:15 — 13:00", title: "Sesión 10. Presentación del libro de Ana María Araujo \"Les chemins de l'exil. Les luttes d'une femme d'amérique latine\"", location: "", type: "session" },
-        { time: "13:00 — 14:30", title: "Almuerzo", location: "", type: "break" },
-        { time: "14:30 — 16:00", title: "Sesión 12. Mesas de trabajo paralelas", location: "", type: "session" },
-        { time: "16:00 — 16:30", title: "Pausa. Coffee Break", location: "", type: "break" },
-        { time: "16:30 — 18:00", title: "Sesión 11. Conferencia 4. \"Nuevas repercusiones en el mundo del trabajo\"", speaker: "Matheus, Magda Garcés y otros ponentes [por confirmar]", location: "", type: "keynote" },
-        { time: "18:00 — 20:00", title: "Convivencia", location: "UC (patios)", type: "social" },
-    ],
+  0: [
+    {
+      time: "09:00 – 13:00",
+      title: "Historias de vida — 60 años de la Villa La Reina. Trabajo en el territorio.",
+      type: "session",
+    },
+    {
+      time: "13:00 – 15:00",
+      title: "Almuerzo comunitario",
+      type: "break",
+    },
+  ],
+  1: [
+    {
+      time: "09:00 – 12:00",
+      title: "Asamblea Nodo Sur (híbrida)",
+      type: "session",
+    },
+    {
+      time: "14:00 – 15:00",
+      title: "Registro / acreditación",
+      type: "break",
+    },
+    {
+      time: "15:00 – 15:30",
+      title: "Bienvenida",
+      type: "keynote",
+    },
+    {
+      time: "15:30 – 18:00",
+      title: "Homenaje a Presidente RISC — Vincent de Gaulejac",
+      type: "keynote",
+    },
+    {
+      time: "18:00 – 20:00",
+      title: "Cóctel de celebración",
+      type: "social",
+    },
+  ],
+  2: [
+    {
+      time: "09:00 – 10:30",
+      title: "Conferencia 1 · \"Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles\"",
+      type: "keynote",
+    },
+    {
+      time: "11:00 – 12:15",
+      title: "Mesas de trabajo paralelas",
+      type: "session",
+    },
+    {
+      time: "16:30 – 18:00",
+      title: "Conferencia 2 · \"Transmisión de la Sociología Clínica y la Psicosociología latinoamericana de cara a la desintegración social\"",
+      type: "keynote",
+    },
+    {
+      time: "20:00",
+      title: "Cena típica (inscripción voluntaria)",
+      type: "social",
+    },
+  ],
+  3: [
+    {
+      time: "09:00 – 10:30",
+      title: "Conferencia 3 · \"Reconfigurando el vínculo universitario y escolar\"",
+      type: "keynote",
+    },
+    {
+      time: "11:00 – 12:15",
+      title: "Mesas de trabajo paralelas",
+      type: "session",
+    },
+    {
+      time: "16:30 – 18:00",
+      title: "Conferencia 4 · \"Nuevas repercusiones en el mundo del trabajo\"",
+      type: "keynote",
+    },
+  ],
 };
 
-const TYPE_CONFIG = {
-    keynote: { icon: Mic, color: "var(--color-accent)" },
-    session: { icon: Users, color: "var(--color-primary)" },
-    break: { icon: Coffee, color: "var(--color-dark-400)" },
-    social: { icon: Users, color: "#4CAF50" },
+// Color de acento por tipo de evento
+const TYPE_ACCENT: Record<EventType, string> = {
+  keynote: "var(--color-accent)",
+  session: "var(--color-primary)",
+  break:   "var(--color-dark-300)",
+  social:  "#4CAF50",
 };
 
+// ── Componente principal ──────────────────────────────────────
 export default function ProgramaPage() {
-    const { dark } = useTheme();
-    const [activeDay, setActiveDay] = useState(0);
+  const { dark } = useTheme();
+  const [activeDay, setActiveDay] = useState(0);
 
-    return (
-        <div
+  const bg          = dark ? "var(--color-dark-900)" : "#F7F7F7";
+  const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const borderColor = dark ? "var(--color-dark-700)" : "#DDDDDD";
+  const textPrimary = dark ? "var(--color-dark-100)" : "#424242";
+  const textSecondary = dark ? "var(--color-dark-400)" : "#6B6B6B";
+  const tabBg       = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const tabBorder   = dark ? "var(--color-dark-700)" : "#DDDDDD";
+
+  return (
+    <div style={{ backgroundColor: bg, minHeight: "100vh", transition: "background-color 0.3s" }}>
+
+      {/* ── Encabezado ─────────────────────────────────────────── */}
+      <div
         style={{
-            backgroundColor: dark ? "var(--color-dark-900)" : "var(--color-dark-50)",
-            minHeight: "100vh",
-            transition: "background-color 0.3s",
+          padding: "48px 24px",
+          backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-primary)",
+          color: "#FFFFFF",
         }}
-        >
-        {/* Page Header */}
-        <div style={{ padding: "48px 24px", backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-primary)", color: "#FFFFFF" }}>
-            <div style={{ maxWidth: 800, margin: "0 auto" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, opacity: 0.6, marginBottom: 16 }}>
-                <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>Inicio</Link>
-                <ChevronRight size={14} />
-                <span>Programa</span>
-            </div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, marginBottom: 12 }}>
-                Programa
-            </h1>
-            <p style={{ fontSize: 18, opacity: 0.8, maxWidth: 600, lineHeight: 1.6 }}>
-                9 al 12 de noviembre 2026 · Campus San Joaquín, PUC, Santiago, Chile.
-            </p>
-            </div>
-        </div>
-
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 24px" }}>
-            {/* Day tabs */}
-            <div
+      >
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.7, marginBottom: 16 }}>
+            <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>Inicio</Link>
+            <ChevronRight size={14} />
+            <span>Programa</span>
+          </div>
+          <h1
             style={{
-                display: "flex",
-                gap: 4,
-                marginBottom: 40,
-                padding: 4,
-                borderRadius: 12,
-                backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
-                border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(32px, 5vw, 48px)",
+              fontWeight: 700,
+              marginBottom: 12,
             }}
-            >
-            {DAYS.map((day, index) => (
-                <button
+          >
+            Programa
+          </h1>
+          <p style={{ fontSize: 19, opacity: 0.85, maxWidth: 620, lineHeight: 1.65 }}>
+            9 al 12 de noviembre 2026 · Campus San Joaquín, PUC, Santiago, Chile.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Contenido principal ────────────────────────────────── */}
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 24px" }}>
+
+        {/* ── Pestañas de días ───────────────────────────────────── */}
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            marginBottom: 40,
+            padding: 4,
+            borderRadius: 14,
+            backgroundColor: tabBg,
+            border: `1px solid ${tabBorder}`,
+            boxShadow: dark ? "none" : "0 2px 8px rgba(0,0,0,0.06)",
+            flexWrap: "wrap",
+          }}
+        >
+          {DAYS.map((day, index) => {
+            const isActive = activeDay === index;
+            return (
+              <button
                 key={index}
                 onClick={() => setActiveDay(index)}
                 style={{
-                    flex: 1,
-                    padding: "14px 16px",
-                    borderRadius: 8,
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-body)",
-                    transition: "all 0.2s",
-                    backgroundColor: activeDay === index ? (dark ? "var(--color-accent)" : "var(--color-primary)") : "transparent",
-                    color: activeDay === index ? "#FFFFFF" : dark ? "var(--color-dark-400)" : "var(--color-dark-500)",
+                  flex: "1 1 auto",
+                  padding: "14px 20px",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-body)",
+                  transition: "all 0.2s",
+                  backgroundColor: isActive
+                    ? dark ? "var(--color-accent)" : "var(--color-primary)"
+                    : "transparent",
+                  color: isActive
+                    ? "#FFFFFF"
+                    : dark ? "var(--color-dark-300)" : "var(--color-dark-500)",
+                  boxShadow: isActive
+                    ? dark ? "var(--shadow-accent)" : "0 2px 8px rgba(0,173,252,0.25)"
+                    : "none",
                 }}
-                >
-                <div style={{ fontSize: 15, fontWeight: 600 }}>{day.label}</div>
-                <div style={{ fontSize: 12, opacity: 0.7 }}>{day.date}</div>
-                </button>
-            ))}
-            </div>
+              >
+                <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.2 }}>{day.label}</div>
+                <div style={{ fontSize: 12, opacity: 0.75, marginTop: 2 }}>{day.subtitle}</div>
+              </button>
+            );
+          })}
+        </div>
 
-            {/* Schedule items */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {SCHEDULE[activeDay].map((item, index) => {
-                const config = TYPE_CONFIG[item.type];
-                const Icon = config.icon;
-                const isBreak = item.type === "break";
+        {/* ── Tarjetas de eventos ────────────────────────────────── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {SCHEDULE[activeDay].map((item, index) => {
+            const accent = TYPE_ACCENT[item.type];
+            const isBreak = item.type === "break";
 
-                return (
+            return (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 24,
+                  padding: isBreak ? "16px 24px" : "24px 28px",
+                  borderRadius: 14,
+                  backgroundColor: isBreak
+                    ? dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)"
+                    : cardBg,
+                  border: `1px solid ${isBreak ? "transparent" : borderColor}`,
+                  borderLeft: `4px solid ${accent}`,
+                  boxShadow: isBreak || dark ? "none" : "0 2px 10px rgba(0,0,0,0.05)",
+                  opacity: isBreak ? 0.75 : 1,
+                  transition: "all 0.2s",
+                }}
+              >
+                {/* ── Hora (grande y en negrita) ─── */}
                 <div
-                    key={index}
-                    style={{
-                    display: "flex",
-                    gap: 16,
-                    padding: isBreak ? "12px 16px" : "20px 16px",
-                    borderRadius: 12,
-                    backgroundColor: isBreak
-                        ? "transparent"
-                        : dark ? "var(--color-dark-800)" : "#FFFFFF",
-                    border: isBreak
-                        ? "none"
-                        : `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    opacity: isBreak ? 0.6 : 1,
-                    alignItems: "flex-start",
-                    }}
+                  style={{
+                    minWidth: 130,
+                    flexShrink: 0,
+                    fontFamily: "var(--font-display)",
+                    fontSize: isBreak ? 18 : 22,
+                    fontWeight: 800,
+                    color: accent,
+                    lineHeight: 1.2,
+                    letterSpacing: "-0.5px",
+                  }}
                 >
-                    {/* Time */}
-                    <div style={{ minWidth: 110, flexShrink: 0 }}>
-                    <div style={{
-                        display: "flex", alignItems: "center", gap: 6,
-                        fontSize: 13, fontWeight: 600,
-                        color: dark ? "var(--color-dark-400)" : "var(--color-dark-500)",
-                    }}>
-                        <Clock size={13} />
-                        {item.time}
-                    </div>
-                    </div>
-
-                    {/* Icon */}
-                    <div
-                    style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 8,
-                        backgroundColor: dark ? "rgba(255,255,255,0.05)" : "var(--color-dark-50)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                    }}
-                    >
-                    <Icon size={16} style={{ color: config.color }} />
-                    </div>
-
-                    {/* Content */}
-                    <div style={{ flex: 1 }}>
-                    <p style={{
-                        fontSize: isBreak ? 14 : 15,
-                        fontWeight: isBreak ? 400 : 600,
-                        color: dark ? "var(--color-dark-200)" : "var(--color-dark-700)",
-                        marginBottom: item.speaker ? 4 : 0,
-                    }}>
-                        {item.title}
-                    </p>
-                    {item.speaker && (
-                        <p style={{ fontSize: 13, color: "var(--color-accent)", fontWeight: 500 }}>
-                        {item.speaker}
-                        </p>
-                    )}
-                    {item.location && (
-                        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4, fontSize: 12, color: dark ? "var(--color-dark-500)" : "var(--color-dark-400)" }}>
-                        <MapPin size={11} />
-                        {item.location}
-                        </div>
-                    )}
-                    </div>
+                  {item.time}
                 </div>
-                );
-            })}
-            </div>
+
+                {/* ── Separador vertical ─── */}
+                <div
+                  style={{
+                    width: 1,
+                    alignSelf: "stretch",
+                    backgroundColor: dark ? "var(--color-dark-700)" : "#E5E5E5",
+                    flexShrink: 0,
+                  }}
+                />
+
+                {/* ── Título del evento ─── */}
+                <div style={{ flex: 1 }}>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: isBreak ? 15 : 17,
+                      fontWeight: isBreak ? 400 : 600,
+                      color: isBreak ? textSecondary : textPrimary,
+                      margin: 0,
+                      lineHeight: 1.55,
+                    }}
+                  >
+                    {item.title}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
-        </div>
-    );
+
+      </div>
+    </div>
+  );
 }
