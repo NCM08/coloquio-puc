@@ -7,38 +7,44 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw } from "lucide-react";
 
-// ── Precios temporales ────────────────────────────────────────
-// Reemplazar con valores reales antes del lanzamiento
+// ── Tipo de cambio referencial ────────────────────────────────
+const CLP_POR_USD = 950;
+
+function clpToUsd(clp: number): string {
+  return `~USD $${Math.round(clp / CLP_POR_USD).toLocaleString("es-CL")}`;
+}
+
+function formatClp(clp: number): string {
+  return `$${clp.toLocaleString("es-CL")}`;
+}
+
+// ── Valores reales de inscripción ─────────────────────────────
 const TABLA_PRECIOS = [
   {
-    categoria: "Estudiantes de Pregrado",
-    descripcion: "Con credencial universitaria vigente",
-    preventa: "$XX.000 CLP",
-    regular: "$XX.000 CLP",
-    notas: null,
+    categoria: "Estudiantes de pregrado",
+    descripcion: null,
+    asistente: 13000,
+    expositor: 16000,
   },
   {
-    categoria: "Estudiantes de Posgrado",
+    categoria: "Egresados/as y profesionales de ciencias sociales, humanidades y artes",
+    descripcion: null,
+    asistente: 26000,
+    expositor: 34000,
+  },
+  {
+    categoria: "Estudiantes de posgrado",
     descripcion: "Magíster, Doctorado y postdoctorado",
-    preventa: "$XX.000 CLP",
-    regular: "$XX.000 CLP",
-    notas: null,
+    asistente: 38000,
+    expositor: 54000,
   },
   {
-    categoria: "Expositores",
-    descripcion: "Presentación de ponencia o póster",
-    preventa: "$XX.000 CLP",
-    regular: "$XX.000 CLP",
-    notas: "Incluye certificado de expositor y publicación en actas",
-  },
-  {
-    categoria: "Asistentes / Público General",
-    descripcion: "Académicos/as, investigadores/as y público interesado",
-    preventa: "$XX.000 CLP",
-    regular: "$XX.000 CLP",
-    notas: null,
+    categoria: "Académicos/as e investigadores/as",
+    descripcion: null,
+    asistente: 55000,
+    expositor: 80000,
   },
 ];
 
@@ -64,19 +70,20 @@ const FAQ = [
 export default function InscripcionesPage() {
   const { dark } = useTheme();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showUsd, setShowUsd] = useState(false);
 
-  const bg = dark ? "var(--color-dark-900)" : "#F7F7F7";
-  const cardBg = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const bg          = dark ? "var(--color-dark-900)" : "#F7F7F7";
+  const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
   const borderColor = dark ? "var(--color-dark-700)" : "#DDDDDD";
   const textPrimary = dark ? "var(--color-dark-100)" : "#424242";
   const textSecondary = dark ? "var(--color-dark-400)" : "#6B6B6B";
-  const headerBg = dark ? "var(--color-dark-700)" : "#EEF2F7";
+  const headerBg    = dark ? "var(--color-dark-700)" : "#EEF2F7";
   const accentColor = "var(--color-accent)";
 
   return (
     <div style={{ backgroundColor: bg, minHeight: "100vh", transition: "background-color 0.3s" }}>
 
-      {/* ── Encabezado de página ──────────────────────────────── */}
+      {/* ── Encabezado ────────────────────────────────────────── */}
       <div
         style={{
           padding: "48px 24px",
@@ -101,8 +108,8 @@ export default function InscripcionesPage() {
             Inscripciones
           </h1>
           <p style={{ fontSize: 19, opacity: 0.85, maxWidth: 620, lineHeight: 1.65 }}>
-            Seleccione el tipo de inscripción que corresponda y complete su registro. Los valores
-            incluyen acceso completo al evento, material del coloquio y certificado.
+            Seleccione el tipo de inscripción que corresponda y complete su registro.
+            Los valores incluyen acceso completo al evento y certificado.
           </p>
         </div>
       </div>
@@ -110,10 +117,10 @@ export default function InscripcionesPage() {
       {/* ── Contenido principal ───────────────────────────────── */}
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "56px 24px" }}>
 
-        {/* Banner preventa */}
+        {/* Banner inscripción temprana */}
         <div
           style={{
-            padding: "20px 24px",
+            padding: "18px 24px",
             borderRadius: 12,
             backgroundColor: dark ? "rgba(251,140,0,0.08)" : "rgba(251,140,0,0.06)",
             border: "1px solid rgba(251,140,0,0.3)",
@@ -124,29 +131,91 @@ export default function InscripcionesPage() {
           }}
         >
           <AlertTriangle size={22} style={{ color: "#FB8C00", flexShrink: 0, marginTop: 2 }} />
-          <p style={{ fontSize: 17, color: textPrimary, lineHeight: 1.6, margin: 0 }}>
-            <strong>Inscripción con tarifa preferencial (preventa)</strong> disponible hasta el{" "}
-            <strong>30 de septiembre de 2026</strong>. Pasada esa fecha se aplica el valor regular.
+          <p style={{ fontSize: 16, color: textPrimary, lineHeight: 1.65, margin: 0 }}>
+            <strong>Inscripción temprana</strong> disponible hasta el{" "}
+            <strong>30 de septiembre de 2026</strong>. Pasada esa fecha se aplicará un recargo.
           </p>
         </div>
 
-        {/* ── Tabla de valores ─────────────────────────────────── */}
-        <h2
+        {/* ── Encabezado de sección + botón conversión ─────────── */}
+        <div
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 28,
-            fontWeight: 700,
-            color: textPrimary,
-            marginBottom: 8,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 16,
+            marginBottom: 20,
           }}
         >
-          Tabla de valores
-        </h2>
-        <p style={{ fontSize: 16, color: textSecondary, marginBottom: 28, lineHeight: 1.6 }}>
-          Todos los valores están expresados en pesos chilenos (CLP) e incluyen IVA.
-        </p>
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 26,
+                fontWeight: 700,
+                color: textPrimary,
+                margin: "0 0 4px 0",
+              }}
+            >
+              Tabla de valores
+            </h2>
+            <p style={{ fontSize: 15, color: textSecondary, margin: 0 }}>
+              Valores en pesos chilenos (CLP) — incluyen IVA
+            </p>
+          </div>
 
-        {/* Tabla responsive: scroll horizontal en móvil */}
+          {/* Botón conversión CLP ↔ USD */}
+          <button
+            onClick={() => setShowUsd(!showUsd)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 20px",
+              borderRadius: 10,
+              border: `1.5px solid ${showUsd ? accentColor : borderColor}`,
+              backgroundColor: showUsd
+                ? dark ? "rgba(var(--color-accent-rgb),0.12)" : "rgba(13,71,161,0.06)"
+                : cardBg,
+              color: showUsd ? accentColor : textSecondary,
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "var(--font-body)",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <RefreshCw size={15} style={{ transition: "transform 0.3s", transform: showUsd ? "rotate(180deg)" : "none" }} />
+            {showUsd ? "Ver en CLP" : "Ver en USD"}
+          </button>
+        </div>
+
+        {/* Nota tipo de cambio (solo visible en modo USD) */}
+        {showUsd && (
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+              padding: "10px 16px",
+              borderRadius: 8,
+              backgroundColor: dark ? "rgba(255,255,255,0.04)" : "#F0F4FA",
+              border: `1px solid ${borderColor}`,
+              marginBottom: 16,
+            }}
+          >
+            <Info size={14} style={{ color: textSecondary, flexShrink: 0 }} />
+            <p style={{ fontSize: 13, color: textSecondary, margin: 0, lineHeight: 1.5 }}>
+              Conversión referencial usando tipo de cambio de{" "}
+              <strong style={{ color: textPrimary }}>1 USD = {CLP_POR_USD.toLocaleString("es-CL")} CLP</strong>.
+              El valor exacto puede variar al momento del pago.
+            </p>
+          </div>
+        )}
+
+        {/* ── Tabla de precios ──────────────────────────────────── */}
         <div
           style={{
             overflowX: "auto",
@@ -154,75 +223,70 @@ export default function InscripcionesPage() {
             border: `1px solid ${borderColor}`,
             backgroundColor: cardBg,
             boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
-            marginBottom: 56,
+            marginBottom: 52,
           }}
         >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              minWidth: 560,
-            }}
-          >
-            {/* Encabezado */}
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 520 }}>
             <thead>
               <tr style={{ backgroundColor: headerBg }}>
                 <th
                   style={{
                     padding: "18px 24px",
                     textAlign: "left",
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: 700,
                     color: textPrimary,
                     borderBottom: `2px solid ${borderColor}`,
-                    width: "45%",
+                    width: "50%",
                   }}
                 >
                   Tipo de inscripción
                 </th>
                 <th
                   style={{
-                    padding: "18px 24px",
+                    padding: "18px 20px",
                     textAlign: "center",
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: 700,
                     color: textPrimary,
                     borderBottom: `2px solid ${borderColor}`,
                     borderLeft: `1px solid ${borderColor}`,
-                    width: "27.5%",
+                    width: "25%",
+                    lineHeight: 1.4,
                   }}
                 >
-                  Preventa
+                  Valor para asistentes
                   <br />
-                  <span style={{ fontSize: 13, fontWeight: 400, color: textSecondary }}>
-                    hasta 30 sept. 2026
+                  <span style={{ fontSize: 12, fontWeight: 400, color: textSecondary }}>
+                    (no expositores)
                   </span>
                 </th>
                 <th
                   style={{
-                    padding: "18px 24px",
+                    padding: "18px 20px",
                     textAlign: "center",
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: 700,
                     color: textPrimary,
                     borderBottom: `2px solid ${borderColor}`,
                     borderLeft: `1px solid ${borderColor}`,
-                    width: "27.5%",
+                    width: "25%",
                   }}
                 >
-                  Valor Regular
+                  Valor para expositores
                 </th>
               </tr>
             </thead>
 
-            {/* Filas */}
             <tbody>
               {TABLA_PRECIOS.map((fila, idx) => {
                 const isLast = idx === TABLA_PRECIOS.length - 1;
-                const isEven = idx % 2 === 0;
-                const rowBg = isEven
-                  ? cardBg
-                  : dark ? "rgba(255,255,255,0.025)" : "#FAFAFA";
+                const rowBg  = idx % 2 !== 0
+                  ? dark ? "rgba(255,255,255,0.025)" : "#FAFAFA"
+                  : cardBg;
+
+                const valAsistente = showUsd ? clpToUsd(fila.asistente) : formatClp(fila.asistente);
+                const valExpositor = showUsd ? clpToUsd(fila.expositor) : formatClp(fila.expositor);
 
                 return (
                   <tr key={idx} style={{ backgroundColor: rowBg }}>
@@ -231,56 +295,31 @@ export default function InscripcionesPage() {
                       style={{
                         padding: "20px 24px",
                         borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
-                        verticalAlign: "top",
+                        verticalAlign: "middle",
                       }}
                     >
                       <p
                         style={{
-                          fontSize: 18,
-                          fontWeight: 700,
+                          fontSize: 17,
+                          fontWeight: 600,
                           color: textPrimary,
-                          margin: "0 0 4px 0",
-                          lineHeight: 1.4,
+                          margin: fila.descripcion ? "0 0 4px 0" : 0,
+                          lineHeight: 1.45,
                         }}
                       >
                         {fila.categoria}
                       </p>
-                      <p
-                        style={{
-                          fontSize: 15,
-                          color: textSecondary,
-                          margin: 0,
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {fila.descripcion}
-                      </p>
-                      {fila.notas && (
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: 6,
-                            alignItems: "flex-start",
-                            marginTop: 8,
-                            padding: "8px 10px",
-                            borderRadius: 8,
-                            backgroundColor: dark
-                              ? "rgba(var(--color-accent-rgb), 0.08)"
-                              : "rgba(13, 71, 161, 0.05)",
-                          }}
-                        >
-                          <Info size={14} style={{ color: accentColor, flexShrink: 0, marginTop: 2 }} />
-                          <span style={{ fontSize: 13, color: textSecondary, lineHeight: 1.5 }}>
-                            {fila.notas}
-                          </span>
-                        </div>
+                      {fila.descripcion && (
+                        <p style={{ fontSize: 14, color: textSecondary, margin: 0, lineHeight: 1.5 }}>
+                          {fila.descripcion}
+                        </p>
                       )}
                     </td>
 
-                    {/* Preventa */}
+                    {/* Asistente */}
                     <td
                       style={{
-                        padding: "20px 24px",
+                        padding: "20px 20px",
                         textAlign: "center",
                         borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
                         borderLeft: `1px solid ${borderColor}`,
@@ -290,20 +329,20 @@ export default function InscripcionesPage() {
                       <span
                         style={{
                           fontFamily: "var(--font-display)",
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: 700,
-                          color: accentColor,
-                          display: "block",
+                          color: textPrimary,
+                          transition: "all 0.2s",
                         }}
                       >
-                        {fila.preventa}
+                        {valAsistente}
                       </span>
                     </td>
 
-                    {/* Valor Regular */}
+                    {/* Expositor */}
                     <td
                       style={{
-                        padding: "20px 24px",
+                        padding: "20px 20px",
                         textAlign: "center",
                         borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
                         borderLeft: `1px solid ${borderColor}`,
@@ -313,13 +352,13 @@ export default function InscripcionesPage() {
                       <span
                         style={{
                           fontFamily: "var(--font-display)",
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: 700,
-                          color: textPrimary,
-                          display: "block",
+                          color: accentColor,
+                          transition: "all 0.2s",
                         }}
                       >
-                        {fila.regular}
+                        {valExpositor}
                       </span>
                     </td>
                   </tr>
@@ -361,10 +400,10 @@ export default function InscripcionesPage() {
         <h2
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: 28,
+            fontSize: 26,
             fontWeight: 700,
             color: textPrimary,
-            marginBottom: 24,
+            marginBottom: 20,
           }}
         >
           Preguntas frecuentes
@@ -388,15 +427,7 @@ export default function InscripcionesPage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span
-                  style={{
-                    flex: 1,
-                    fontSize: 17,
-                    fontWeight: 600,
-                    color: textPrimary,
-                    lineHeight: 1.45,
-                  }}
-                >
+                <span style={{ flex: 1, fontSize: 17, fontWeight: 600, color: textPrimary, lineHeight: 1.45 }}>
                   {item.q}
                 </span>
                 <ChevronDown
@@ -427,6 +458,7 @@ export default function InscripcionesPage() {
             </button>
           ))}
         </div>
+
       </div>
     </div>
   );
