@@ -50,6 +50,8 @@ export default function Footer() {
             backgroundColor: dark ? "var(--color-dark-900)" : "var(--color-primary-900)",
             color: "#FFFFFF",
             borderTop: `1px solid ${dark ? "var(--color-dark-700)" : "rgba(255,255,255,0.1)"}`,
+            width: "100%",
+            overflowX: "hidden",
         }}
         >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -58,7 +60,7 @@ export default function Footer() {
             <div
             style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))",
                 gap: 48,
                 marginBottom: 48,
             }}
@@ -217,6 +219,7 @@ export default function Footer() {
                     placeholder="correo@ejemplo.com"
                     style={{
                     flex: 1,
+                    minWidth: 0,
                     height: 40,
                     padding: "0 12px",
                     borderRadius: 8,

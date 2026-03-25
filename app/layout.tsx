@@ -29,7 +29,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>
+      <body style={{ overflowX: "hidden" }}>
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
