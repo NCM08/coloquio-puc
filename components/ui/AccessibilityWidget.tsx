@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { CaseSensitive } from "lucide-react";
 
-const FONT_SIZES = [14, 16, 18, 20, 22];
-const DEFAULT_INDEX = 1; // 16px
+const FONT_SIZES = [18, 22, 26];
+const DEFAULT_INDEX = 0; // 18px — Normal
 const STORAGE_KEY = "a11y-font-index";
 
 export default function AccessibilityWidget() {
@@ -120,7 +121,7 @@ export default function AccessibilityWidget() {
         className="w-11 h-11 rounded-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center text-xl hover:scale-105 active:scale-95 transition-transform"
         title="Accesibilidad"
       >
-        ♿
+        <CaseSensitive size={22} strokeWidth={2} />
       </button>
     </div>
   );
