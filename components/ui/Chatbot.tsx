@@ -19,19 +19,18 @@ type Message = {
     content: string;
 };
 
-// Base de conocimiento del coloquio
+// Base de conocimiento del coloquio — actualizada Sprint 5
 const KNOWLEDGE_BASE = {
-    fechas: "El VIII Coloquio Internacional de Sociología Clínica y Psicosociología se realizará del 10 al 12 de noviembre de 2026 en el Campus San Joaquín de la PUC, Santiago, Chile.",
-    inscripcion: "Hay tres tipos de inscripción: Expositor ($50.000 CLP / USD $65), Asistente ($30.000 CLP / USD $40), y Estudiante ($15.000 CLP / USD $20). Hay tarifa preferencial hasta el 30 de septiembre. Para grupos de 5+ personas de la misma institución hay 15% de descuento. Contactar a congresosociologiaclinica.2026@gmail.com.",
-    propuestas: "Se aceptan propuestas en 4 modalidades: Ponencia individual (20 min, resumen mín. 500 palabras), Simposio temático (90 min, 3-4 presentaciones), Póster (resumen mín. 300 palabras), y Mesa redonda (60 min, 3-5 panelistas). Las propuestas deben enviarse de forma anónima (revisión ciega por pares) en español o portugués.",
-    ejes: "Los 8 ejes temáticos son: 1) Mutaciones civilizatorias, transformaciones del mundo del trabajo, 2) Descomposición de la escuela, la universidad y de los sistemas educativos, 3) Claves y acciones desde el feminismo, 4) Colonialidad, pueblos indígenas y afrodescendientes, 5) Nuevas tecnologías digitales: dilemas, ventajas y encrucijadas, 6) Militancias y territorios, 7) Desplazamientos, migración e interculturalidad, 8) Juventudes: entre la pulsión de vida y de muerte. En cada eje se esperan ponencias con diagnóstico, pero por sobre todo con propuestas y pistas para crear acciones de resistencia y transformación de imaginarios.",
-    ubicacion: "El coloquio se realiza en el Campus San Joaquín de la PUC, Av. Vicuña Mackenna 4860, Macul, Santiago, Chile. La estación de metro más cercana es San Joaquín (Línea 5), a 5 minutos caminando. Hay estacionamiento disponible ($2.000 CLP/día).",
-    certificados: "Se entrega certificado de asistencia a todos los participantes inscritos y certificado de expositor a quienes presenten ponencias o pósters. Los trabajos aceptados se publican en las actas oficiales del coloquio con ISBN.",
-    online: "El coloquio es presencial + online. Las conferencias magistrales y mesas redondas se transmiten en vivo. Los asistentes online reciben un link de acceso previo al evento.",
-    cancelacion: "Devolución del 100% hasta 30 días antes del evento, 50% hasta 15 días antes. Después no hay devoluciones, pero se puede transferir la inscripción a otra persona.",
-    contacto: "Para consultas escribir a congresosociologiaclinica.2026@gmail.com o llamar al +56 2 2354 0000. El coloquio es organizado por la Facultad de Educación de la Pontificia Universidad Católica de Chile.",
-    publicaciones: "Los trabajos aceptados se publican en las actas oficiales con ISBN. Los mejores trabajos son invitados a enviar versiones extendidas para publicación en revistas académicas indexadas. Las actas se publican aproximadamente 3 meses después del evento.",
-    conferencistas: "Los conferencistas confirmados son: Vincent de Gaulejac (Francia, Presidente RISC — Sesiones 2 y 3), Ana María Araujo (Uruguay — Sesiones 3 y 10), Teresa Carreteiro (Brasil — Sesión 3), Ana Correa (Argentina — Sesión 3), Dariela Sharim (PUC Chile — Sesión 8), Fernando Yzaguirre (Sesión 8) y María Aparecida Penso (Brasil — Sesión 8). También participan Matheus, Magda Garcés y otros ponentes en la Conferencia 4 (Sesión 11).",
+    fechas: `Las fechas clave del VIII Coloquio Internacional de Sociología Clínica 2026 son:\n\n📅 27 de marzo 2026 — Apertura de convocatorias\n📝 8 de mayo 2026 — Cierre de recepción de ponencias\n🗓️ 20 de mayo 2026 — Plazo máximo de envío de propuestas\n✅ 8 de junio 2026 — Notificación de aceptación\n📋 8 de agosto 2026 — Publicación de la agenda final\n\nEl evento se realiza en Santiago de Chile, 2026.`,
+    pagos: `Los pagos se realizan ÚNICAMENTE a través de la plataforma Global 999.\n\nPolíticas importantes:\n• No existen descuentos grupales.\n• No se realizan devoluciones de dinero por cancelación.\n• No se emiten boletas oficiales. Solo se entrega un comprobante de pago válido para rendiciones institucionales.\n\nPara consultas sobre pagos, escriba a: congresosociologiaclinica.2026@gmail.com`,
+    propuestas: "Las propuestas deben enviarse antes del 20 de mayo de 2026. Se aceptan ponencias individuales en español o portugués, con revisión ciega por pares. Para más detalles sobre modalidades y requisitos, escriba a congresosociologiaclinica.2026@gmail.com",
+    ejes: "Los ejes temáticos incluyen: Mutaciones civilizatorias y el mundo del trabajo, Descomposición de los sistemas educativos, Feminismos, Colonialidad y pueblos indígenas, Nuevas tecnologías digitales, Militancias y territorios, Migración e interculturalidad, y Juventudes. Para información detallada consulte a congresosociologiaclinica.2026@gmail.com",
+    ubicacion: "El coloquio se realiza en Santiago de Chile, 2026. Para confirmar la sede exacta, escriba a congresosociologiaclinica.2026@gmail.com",
+    certificados: "Se entrega certificado de participación y de expositor según corresponda. Los trabajos aceptados se publican en las actas oficiales del coloquio con ISBN.",
+    online: "Para consultas sobre modalidad presencial u online, escriba a congresosociologiaclinica.2026@gmail.com",
+    contacto: "Para cualquier consulta, escriba al comité oficial: congresosociologiaclinica.2026@gmail.com\n\nHorario de atención: lunes a viernes de 9:00 a 18:00 hrs.",
+    publicaciones: "Los trabajos aceptados se publican en las actas oficiales con ISBN. Para más información escriba a congresosociologiaclinica.2026@gmail.com",
+    conferencistas: "Los conferencistas confirmados incluyen a Vincent de Gaulejac (Francia, Presidente RISC), Ana María Araujo (Uruguay), Teresa Carreteiro (Brasil), Ana Correa (Argentina), Dariela Sharim (PUC Chile) y María Aparecida Penso (Brasil), entre otros.",
 };
 
 function findAnswer(question: string): string {
@@ -39,18 +38,18 @@ function findAnswer(question: string): string {
 
     // Saludos
     if (q.match(/hola|buenos|buenas|hey|saludos/))
-        return "¡Hola! 👋 Soy el asistente virtual del VIII Coloquio Internacional de Sociología Clínica y Psicosociología 2026. ¿En qué puedo ayudarte? Puedo responder sobre fechas, inscripciones, envío de propuestas, ejes temáticos, conferencistas y más.";
+        return "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (Santiago de Chile, 2026). Estoy aquí para orientarle con información sobre fechas, pagos, propuestas y más. ¿En qué puedo ayudarle?";
 
     // Fechas
-    if (q.match(/fecha|cuando|cuándo|calendario|plazo|deadline/))
+    if (q.match(/fecha|cuando|cuándo|calendario|plazo|deadline|apertura|convocatoria|agenda/))
         return KNOWLEDGE_BASE.fechas;
 
-    // Inscripción y precios
-    if (q.match(/inscri|precio|costo|cuanto|cuánto|valor|pago|pagar|tarifa|descuento|grupo/))
-        return KNOWLEDGE_BASE.inscripcion;
+    // Pagos y política de pagos
+    if (q.match(/pago|pagar|global 999|tarifa|precio|costo|cuanto|cuánto|valor|descuento|grupo|boleta|factura|comprobante|devoluci|reembolso|cancel|anular/))
+        return KNOWLEDGE_BASE.pagos;
 
-    // Propuestas
-    if (q.match(/propuesta|enviar|envío|ponencia|poster|póster|simposio|mesa redonda|modalidad|resumen|abstract/))
+    // Propuestas y ponencias
+    if (q.match(/propuesta|enviar|envío|ponencia|poster|póster|simposio|mesa redonda|modalidad|resumen|abstract|inscri/))
         return KNOWLEDGE_BASE.propuestas;
 
     // Ejes temáticos
@@ -58,23 +57,19 @@ function findAnswer(question: string): string {
         return KNOWLEDGE_BASE.ejes;
 
     // Ubicación
-    if (q.match(/dónde|donde|ubicación|ubicacion|dirección|direccion|campus|llegar|metro|transporte|estacionamiento/))
+    if (q.match(/dónde|donde|ubicación|ubicacion|dirección|direccion|campus|llegar|metro|transporte|sede/))
         return KNOWLEDGE_BASE.ubicacion;
 
     // Certificados
     if (q.match(/certificado|diploma|constancia|acreditación/))
         return KNOWLEDGE_BASE.certificados;
 
-    // Online
-    if (q.match(/online|virtual|remoto|streaming|transmisión|transmision|híbrido|hibrido/))
+    // Online / modalidad
+    if (q.match(/online|virtual|remoto|streaming|transmisión|transmision|híbrido|hibrido|presencial/))
         return KNOWLEDGE_BASE.online;
 
-    // Cancelación
-    if (q.match(/cancel|devoluci|reembolso|anular/))
-        return KNOWLEDGE_BASE.cancelacion;
-
     // Contacto
-    if (q.match(/contacto|correo|email|teléfono|telefono|comunicar/))
+    if (q.match(/contacto|correo|email|comunicar|escribir|consulta/))
         return KNOWLEDGE_BASE.contacto;
 
     // Publicaciones
@@ -91,22 +86,21 @@ function findAnswer(question: string): string {
 
     // Gracias
     if (q.match(/gracias|thank|agradec/))
-        return "¡De nada! Si tienes más preguntas sobre el coloquio, no dudes en consultarme. También puedes escribir a congresosociologiaclinica.2026@gmail.com para consultas más específicas. 😊";
+        return "¡Con mucho gusto! Si tiene alguna otra consulta, no dude en escribirnos. También puede contactar al comité directamente en congresosociologiaclinica.2026@gmail.com 😊";
 
-    // Default
-    return "No tengo información específica sobre eso, pero puedo ayudarte con: fechas del coloquio, inscripciones y precios, envío de propuestas, ejes temáticos, conferencistas, ubicación, certificados, y modalidad online. ¿Sobre cuál de estos temas te gustaría saber?";
+    // Default — nunca inventar información
+    return "No cuento con información específica sobre eso en este momento. Le recomiendo escribir directamente al comité organizador para obtener una respuesta precisa:\n\n📧 congresosociologiaclinica.2026@gmail.com\n\nTambién puedo ayudarle con: fechas clave, pagos y políticas, envío de propuestas, ejes temáticos o datos de contacto.";
 }
 
 function getTypingDelay() {
     return 600 + Math.random() * 800;
 }
 
-// Sugerencias rápidas
+// Sugerencias rápidas — Sprint 5
 const QUICK_SUGGESTIONS = [
-    "¿Cuáles son las fechas?",
-    "¿Cuánto cuesta inscribirse?",
-    "¿Cómo envío una propuesta?",
-    "¿Dónde se realiza?",
+    "📅 Ver fechas importantes",
+    "💳 ¿Cómo funciona el pago?",
+    "✉️ Correo de contacto",
 ];
 
 export default function Chatbot() {
@@ -115,7 +109,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
         role: "assistant",
-        content: "¡Hola! 👋 Soy el asistente virtual del VIII Coloquio Internacional de Sociología Clínica y Psicosociología 2026. ¿En qué puedo ayudarte?",
+        content: "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (Santiago de Chile, 2026). Puedo orientarle sobre fechas, pagos, propuestas y contacto. ¿En qué puedo ayudarle?",
         },
     ]);
     const [input, setInput] = useState("");
@@ -158,7 +152,7 @@ export default function Chatbot() {
             onClick={() => setIsOpen(true)}
             className="chatbot-fab"
             style={{
-                position: "fixed", bottom: 24, right: 24, zIndex: 100,
+                position: "fixed", bottom: 90, right: 24, zIndex: 100,
                 width: 60, height: 60, borderRadius: "50%", border: "none",
                 background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
                 color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
@@ -175,7 +169,7 @@ export default function Chatbot() {
             <div
             className="chatbot-panel"
             style={{
-                position: "fixed", bottom: 24, right: 24, zIndex: 100,
+                position: "fixed", bottom: 90, right: 24, zIndex: 100,
                 width: 380, maxHeight: "70vh",
                 borderRadius: 20, overflow: "hidden",
                 border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
@@ -205,13 +199,19 @@ export default function Chatbot() {
                 </div>
                 <button
                 onClick={() => setIsOpen(false)}
+                title="Cerrar asistente"
+                aria-label="Cerrar asistente"
                 style={{
-                    width: 32, height: 32, borderRadius: 8, border: "none",
-                    backgroundColor: "rgba(255,255,255,0.1)", color: "#fff",
+                    width: 40, height: 40, borderRadius: 10, border: "2px solid rgba(255,255,255,0.3)",
+                    backgroundColor: "rgba(255,255,255,0.15)", color: "#fff",
                     cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                    transition: "background-color 0.2s",
+                    flexShrink: 0,
                 }}
+                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.3)"; }}
+                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)"; }}
                 >
-                <X size={16} />
+                <X size={20} strokeWidth={2.5} />
                 </button>
             </div>
 
@@ -358,12 +358,12 @@ export default function Chatbot() {
             @media (max-width: 480px) {
             .chatbot-panel {
                 width: calc(100vw - 32px) !important;
-                bottom: 16px !important;
+                bottom: 80px !important;
                 right: 16px !important;
                 max-height: 80vh !important;
             }
             .chatbot-fab {
-                bottom: 16px !important;
+                bottom: 80px !important;
                 right: 16px !important;
             }
             }
