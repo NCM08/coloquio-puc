@@ -8,6 +8,7 @@ import ThematicAxes from "@/components/sections/ThematicAxes";
 import ImportantDates from "@/components/sections/ImportantDates";
 import Speakers from "@/components/sections/Speakers";
 import MapSection from "@/components/sections/MapSection";
+import FlyerCarousel from "@/components/sections/FlyerCarousel";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <ThematicAxes />
       <ImportantDates />
       <Speakers />
+      <FlyerCarousel />
       <MapSection />
     </>
   );
