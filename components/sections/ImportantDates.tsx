@@ -9,10 +9,10 @@ import { CalendarCheck, Send, CheckCircle, UserPlus, Mic } from "lucide-react";
 import FadeInSection from "@/components/ui/FadeInSection";
 
 const DATES = [
-    { icon: CalendarCheck, date: "Por definir", title: "Apertura de convocatoria", description: "Inicio del período para envío de propuestas de ponencias y pósters." },
-    { icon: Send, date: "Por definir", title: "Cierre envío de propuestas", description: "Fecha límite para la recepción de resúmenes y propuestas." },
-    { icon: CheckCircle, date: "Por definir", title: "Notificación de aceptación", description: "Comunicación de resultados del proceso de revisión por pares." },
-    { icon: UserPlus, date: "Por definir", title: "Cierre de inscripciones", description: "Último día para completar el registro y pago de inscripción." },
+    { icon: CalendarCheck, date: "27 de Marzo 2026", title: "Apertura de convocatoria", description: "Inicio oficial del período de recepción de ponencias, simposios, pósters y mesas redondas para el VIII Coloquio." },
+    { icon: Send, date: "8 de Mayo 2026", title: "Cierre de recepción de ponencias", description: "Fecha límite para el ingreso de resúmenes y propuestas al sistema de evaluación por pares." },
+    { icon: CheckCircle, date: "8 de Junio 2026", title: "Notificación de aceptación", description: "Comunicación oficial de resultados del proceso de revisión ciega: aceptación o rechazo de cada propuesta." },
+    { icon: UserPlus, date: "8 de Agosto 2026", title: "Agenda final del coloquio", description: "Publicación de la agenda definitiva con horarios, salas y expositores confirmados." },
     { icon: Mic, date: "10-12 Noviembre 2026", title: "Coloquio", description: "Tres días de conferencias, ponencias, mesas redondas y networking en el Campus San Joaquín de la Pontificia Universidad Católica de Chile, Santiago." },
 ];
 
