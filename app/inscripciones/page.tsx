@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw, FileText, AlertCircle } from "lucide-react";
 
 // ── Tipo de cambio referencial ────────────────────────────────
 const CLP_POR_USD = 950;
@@ -51,19 +51,15 @@ const TABLA_PRECIOS = [
 const FAQ = [
   {
     q: "¿Cómo pago si soy extranjero/a?",
-    a: "Aceptamos pagos internacionales vía transferencia bancaria en dólares o mediante PayPal. Al momento de inscribirse, seleccione la opción 'Pago internacional' y recibirá las instrucciones por correo.",
+    a: "Aceptamos pagos internacionales a través de la plataforma Global 999. Al momento de inscribirse, seleccione la opción 'Pago internacional' y recibirá las instrucciones por correo.",
   },
   {
     q: "¿Puedo obtener factura o boleta?",
-    a: "Sí, emitimos facturas y boletas según corresponda. Ingrese su RUT o documento de identidad al momento de la inscripción.",
-  },
-  {
-    q: "¿Hay descuento por inscripción grupal?",
-    a: "Sí, para grupos de 5 o más personas de la misma institución ofrecemos un 15% de descuento. Contáctenos a congresosociologiaclinica.2026@gmail.com para coordinar.",
+    a: "El coloquio no emite boletas oficiales. Una vez procesado su pago mediante Global 999, se le entregará un comprobante de pago estándar, válido para procesos de validación y rendición ante su institución.",
   },
   {
     q: "¿Qué pasa si necesito cancelar mi inscripción?",
-    a: "Se puede solicitar devolución del 100% hasta 30 días antes del evento, y del 50% hasta 15 días antes. Después de esa fecha no se realizan devoluciones.",
+    a: "Toda inscripción y pago realizado es definitivo. No se realizarán devoluciones de dinero bajo ninguna circunstancia, independientemente del motivo de cancelación.",
   },
 ];
 
@@ -368,6 +364,97 @@ export default function InscripcionesPage() {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* ── Políticas de Pago y Condiciones importantes ──────── */}
+        <div
+          style={{
+            padding: "32px 36px",
+            borderRadius: 14,
+            backgroundColor: dark ? "rgba(255,255,255,0.03)" : "#F8F9FB",
+            border: `1px solid ${dark ? "rgba(255,255,255,0.08)" : "#E2E8F0"}`,
+            marginBottom: 52,
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 22,
+              fontWeight: 700,
+              color: textPrimary,
+              margin: "0 0 28px 0",
+            }}
+          >
+            Políticas de Pago y Condiciones importantes
+          </h2>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+            {/* Comprobantes */}
+            <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+              <Info
+                size={20}
+                style={{ color: "var(--color-accent)", flexShrink: 0, marginTop: 2 }}
+              />
+              <div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: textPrimary, margin: "0 0 4px 0" }}>
+                  Comprobantes de pago
+                </p>
+                <p style={{ fontSize: 15, color: textSecondary, margin: 0, lineHeight: 1.7 }}>
+                  El coloquio no emite boletas oficiales. Una vez procesado su pago mediante{" "}
+                  <strong style={{ color: textPrimary }}>Global 999</strong>, se le entregará un comprobante de pago
+                  estándar, el cual es válido para procesos de validación y rendición ante su institución.
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                height: 1,
+                backgroundColor: dark ? "rgba(255,255,255,0.07)" : "#E2E8F0",
+              }}
+            />
+
+            {/* Inscripciones individuales */}
+            <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+              <FileText
+                size={20}
+                style={{ color: "var(--color-accent)", flexShrink: 0, marginTop: 2 }}
+              />
+              <div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: textPrimary, margin: "0 0 4px 0" }}>
+                  Inscripciones individuales
+                </p>
+                <p style={{ fontSize: 15, color: textSecondary, margin: 0, lineHeight: 1.7 }}>
+                  Los valores indicados son por persona. No contamos con opciones de descuento por inscripción grupal.
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                height: 1,
+                backgroundColor: dark ? "rgba(255,255,255,0.07)" : "#E2E8F0",
+              }}
+            />
+
+            {/* Política de cancelación */}
+            <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+              <AlertCircle
+                size={20}
+                style={{ color: "#E53E3E", flexShrink: 0, marginTop: 2 }}
+              />
+              <div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: textPrimary, margin: "0 0 4px 0" }}>
+                  Política de Cancelación — Sin devoluciones
+                </p>
+                <p style={{ fontSize: 15, color: textSecondary, margin: 0, lineHeight: 1.7 }}>
+                  Toda inscripción y pago realizado es definitivo. En caso de cancelar su postulación o no poder
+                  asistir al evento, <strong style={{ color: "#E53E3E" }}>no se realizarán devoluciones de dinero
+                  bajo ninguna circunstancia</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ── Botón de inscripción ──────────────────────────────── */}
