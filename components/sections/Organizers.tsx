@@ -1,75 +1,144 @@
 // ============================================================
-// components/sections/Organizers.tsx — ORGANIZADORES (ANIMADO)
+// components/sections/Organizers.tsx — ORGANIZAN / COLABORAN
 // ============================================================
 
 "use client";
 
-import { useTheme } from "@/components/ThemeProvider";
+import Image from "next/image";
 import FadeInSection from "@/components/ui/FadeInSection";
+import { useTheme } from "@/components/ThemeProvider";
 
-const ORGANIZER = { name: "Pontificia Universidad Católica de Chile", subtitle: "Facultad de Educación" };
+const ORGANIZERS = [
+    { src: "/images/logo-uc.png",            alt: "Pontificia Universidad Católica de Chile" },
+    { src: "/images/logo-educacion.png",      alt: "Facultad de Educación UC" },
+    { src: "/images/logo-psicologia.png",     alt: "Escuela de Psicología UC" },
+    { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC" },
+];
 
-const COLLABORATORS = ["Universidad de Chile", "MINEDUC", "CONICYT", "UNESCO Chile", "OEI", "CEPPE UC"];
+const COLLABORATORS = [
+    { src: "/images/risc-logo.png",      alt: "RISC" },
+    { src: "/images/nodo-sur-logo.png",  alt: "Nodo Sur" },
+];
+
+function LogoGrid({
+    logos,
+    dark,
+}: {
+    logos: { src: string; alt: string }[];
+    dark: boolean;
+}) {
+    return (
+        <div className="flex flex-wrap justify-center gap-6 mt-6">
+            {logos.map(({ src, alt }) => (
+                <div
+                    key={src}
+                    className={[
+                        "flex items-center justify-center rounded-xl px-6 py-4",
+                        "border transition-colors duration-200",
+                        dark
+                            ? "bg-[var(--color-dark-900)] border-[var(--color-dark-700)]"
+                            : "bg-white border-[var(--color-dark-100)]",
+                    ].join(" ")}
+                    style={{ minWidth: 120 }}
+                >
+                    <Image
+                        src={src}
+                        alt={alt}
+                        width={160}
+                        height={80}
+                        className="h-20 w-auto object-contain dark:invert"
+                    />
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default function Organizers() {
     const { dark } = useTheme();
 
-    return (
-        <section style={{ padding: "80px 24px", backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-dark-50)", transition: "background-color 0.3s" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <FadeInSection>
-            <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: dark ? "var(--color-dark-400)" : "var(--color-dark-400)", marginBottom: 16 }}>
-                Organiza
-            </p>
-            <div style={{
-                display: "inline-flex", alignItems: "center", gap: 16, padding: "20px 32px", borderRadius: 16,
-                border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                backgroundColor: dark ? "var(--color-dark-900)" : "#FFFFFF", marginBottom: 48,
-            }}>
-                <div style={{
-                width: 48, height: 48, borderRadius: 12,
-                background: dark ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))" : "linear-gradient(135deg, var(--color-primary), var(--color-primary-400))",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, color: "#fff",
-                }}>UC</div>
-                <div style={{ textAlign: "left" }}>
-                <p style={{ fontSize: 16, fontWeight: 700, fontFamily: "var(--font-display)", color: dark ? "var(--color-dark-100)" : "var(--color-primary)" }}>{ORGANIZER.name}</p>
-                <p style={{ fontSize: 13, color: dark ? "var(--color-dark-400)" : "var(--color-dark-500)" }}>{ORGANIZER.subtitle}</p>
-                </div>
-            </div>
-            </FadeInSection>
+    const sectionBg = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
+    const labelColor = "var(--color-dark-400)";
+    const headingColor = dark ? "var(--color-dark-100)" : "var(--color-primary)";
+    const dividerColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
 
-            <FadeInSection delay={0.2}>
-            <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: dark ? "var(--color-dark-400)" : "var(--color-dark-400)", marginBottom: 20 }}>
-                Colaboran
-            </p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                {COLLABORATORS.map((name, index) => (
+    return (
+        <section
+            style={{
+                padding: "80px 24px",
+                backgroundColor: sectionBg,
+                transition: "background-color 0.3s",
+            }}
+        >
+            <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+
+                {/* ── ORGANIZAN ── */}
+                <FadeInSection>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                            letterSpacing: 2,
+                            color: labelColor,
+                            marginBottom: 4,
+                        }}
+                    >
+                        Organizan
+                    </p>
+                    <h2
+                        style={{
+                            fontSize: 22,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-display)",
+                            color: headingColor,
+                            marginBottom: 0,
+                        }}
+                    >
+                        Instituciones organizadoras
+                    </h2>
+                    <LogoGrid logos={ORGANIZERS} dark={dark} />
+                </FadeInSection>
+
+                {/* ── DIVIDER ── */}
                 <div
-                    key={index}
                     style={{
-                    padding: "12px 20px", borderRadius: 10,
-                    border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    backgroundColor: dark ? "var(--color-dark-900)" : "#FFFFFF",
-                    fontSize: 13, fontWeight: 500,
-                    color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)",
-                    transition: "all 0.2s", cursor: "default",
+                        margin: "56px auto",
+                        height: 1,
+                        maxWidth: 480,
+                        backgroundColor: dividerColor,
                     }}
-                    onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = dark ? "var(--color-accent-700)" : "var(--color-primary-200)";
-                    e.currentTarget.style.color = dark ? "var(--color-accent)" : "var(--color-primary)";
-                    }}
-                    onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
-                    e.currentTarget.style.color = dark ? "var(--color-dark-300)" : "var(--color-dark-500)";
-                    }}
-                >
-                    {name}
-                </div>
-                ))}
+                />
+
+                {/* ── COLABORAN ── */}
+                <FadeInSection delay={0.2}>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                            letterSpacing: 2,
+                            color: labelColor,
+                            marginBottom: 4,
+                        }}
+                    >
+                        Colaboran
+                    </p>
+                    <h2
+                        style={{
+                            fontSize: 22,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-display)",
+                            color: headingColor,
+                            marginBottom: 0,
+                        }}
+                    >
+                        Colaboradores
+                    </h2>
+                    <LogoGrid logos={COLLABORATORS} dark={dark} />
+                </FadeInSection>
+
             </div>
-            </FadeInSection>
-        </div>
         </section>
     );
 }
