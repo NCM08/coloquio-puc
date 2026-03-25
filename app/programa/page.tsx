@@ -19,7 +19,6 @@ type ScheduleItem = {
 };
 
 const DAYS = [
-  { label: "Lunes 9",      subtitle: "9 Nov · Pre-evento" },
   { label: "Martes 10",    subtitle: "10 Nov · Día 1" },
   { label: "Miércoles 11", subtitle: "11 Nov · Día 2" },
   { label: "Jueves 12",    subtitle: "12 Nov · Día 3" },
@@ -27,18 +26,6 @@ const DAYS = [
 
 const SCHEDULE: Record<number, ScheduleItem[]> = {
   0: [
-    {
-      time: "09:00 – 13:00",
-      title: "Historias de vida — 60 años de la Villa La Reina. Trabajo en el territorio.",
-      type: "session",
-    },
-    {
-      time: "13:00 – 15:00",
-      title: "Almuerzo comunitario",
-      type: "break",
-    },
-  ],
-  1: [
     {
       time: "09:00 – 12:00",
       title: "Asamblea Nodo Sur (híbrida)",
@@ -65,7 +52,7 @@ const SCHEDULE: Record<number, ScheduleItem[]> = {
       type: "social",
     },
   ],
-  2: [
+  1: [
     {
       time: "09:00 – 10:30",
       title: "Conferencia 1 · \"Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles\"",
@@ -87,7 +74,7 @@ const SCHEDULE: Record<number, ScheduleItem[]> = {
       type: "social",
     },
   ],
-  3: [
+  2: [
     {
       time: "09:00 – 10:30",
       title: "Conferencia 3 · \"Reconfigurando el vínculo universitario y escolar\"",
