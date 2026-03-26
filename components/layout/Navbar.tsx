@@ -137,7 +137,7 @@ export default function Navbar() {
                 </button>
 
                 {/* CTA Inscribirse (oculto en móvil) */}
-                <Link href="/inscripciones" className="hidden md:flex items-center" style={{
+                <Link href="/inscripcion" className="hidden md:flex items-center" style={{
                     height: 44, padding: "0 24px",
                     background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
                     color: "#fff", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-body)",
@@ -211,7 +211,7 @@ export default function Navbar() {
 
                 {/* CTA móvil */}
                 <Link
-                    href="/inscripciones"
+                    href="/inscripcion"
                     onClick={() => setMobileOpen(false)}
                     className="block w-full text-center mt-6 py-4 rounded-xl font-semibold text-base no-underline"
                     style={{

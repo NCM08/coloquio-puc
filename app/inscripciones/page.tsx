@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ExternalLink, Info, RefreshCw, FileText, AlertCircle, MapPin } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ArrowRight, Info, RefreshCw, FileText, AlertCircle, MapPin, ClipboardList } from "lucide-react";
 
 // ── Tipo de cambio referencial ────────────────────────────────
 const CLP_POR_USD = 950;
@@ -457,31 +457,72 @@ export default function InscripcionesPage() {
           </div>
         </div>
 
-        {/* ── Botón de inscripción ──────────────────────────────── */}
-        <div style={{ textAlign: "center", marginBottom: 72 }}>
+        {/* ── CTA: Ir al Formulario ─────────────────────────────── */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: 72,
+            padding: "48px 32px",
+            borderRadius: 20,
+            background: dark
+              ? "linear-gradient(135deg, rgba(13,71,161,0.18), rgba(0,150,136,0.12))"
+              : "linear-gradient(135deg, rgba(13,71,161,0.06), rgba(0,150,136,0.06))",
+            border: `1.5px solid ${dark ? "rgba(13,71,161,0.35)" : "rgba(13,71,161,0.18)"}`,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 14,
+                backgroundColor: "var(--color-accent)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ClipboardList size={28} color="#fff" />
+            </div>
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 26,
+              fontWeight: 700,
+              color: textPrimary,
+              margin: "0 0 10px 0",
+            }}
+          >
+            ¿Listo para inscribirte?
+          </h2>
+          <p style={{ fontSize: 17, color: textSecondary, margin: "0 0 28px 0", lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
+            Una vez revisados los valores y condiciones, completa tu registro en el formulario oficial del coloquio.
+          </p>
           <Link
-            href="#"
+            href="/inscripcion"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: 10,
-              padding: "18px 40px",
+              padding: "18px 44px",
               borderRadius: 12,
-              backgroundColor: "var(--color-accent)",
+              background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
               color: "#FFFFFF",
               fontFamily: "var(--font-display)",
               fontSize: 19,
               fontWeight: 700,
               textDecoration: "none",
-              transition: "opacity 0.2s",
+              boxShadow: "var(--shadow-accent)",
+              transition: "opacity 0.2s, transform 0.2s",
               letterSpacing: 0.3,
             }}
           >
-            Ir al formulario de inscripción
-            <ExternalLink size={18} />
+            Ir al Formulario de Inscripción
+            <ArrowRight size={20} />
           </Link>
-          <p style={{ fontSize: 15, color: textSecondary, marginTop: 14 }}>
-            El formulario abre en una nueva ventana. Tenga a mano su credencial institucional.
+          <p style={{ fontSize: 14, color: textSecondary, marginTop: 16 }}>
+            Tenga a mano su credencial institucional antes de comenzar.
           </p>
         </div>
 

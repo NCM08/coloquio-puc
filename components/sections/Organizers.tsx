@@ -48,6 +48,7 @@ function LogoCard({
                 width={160}
                 height={80}
                 className="h-20 w-auto object-contain"
+                style={{ width: "auto", height: "auto" }}
             />
         </div>
     );

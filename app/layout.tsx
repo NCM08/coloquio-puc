@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" suppressHydrationWarning className={`${openSans.variable} ${montserrat.variable}`}>
+    <html lang="es" suppressHydrationWarning data-scroll-behavior="smooth" className={`${openSans.variable} ${montserrat.variable}`}>
       <body style={{ overflowX: "hidden" }}>
         <ThemeProvider>
           <Navbar />
