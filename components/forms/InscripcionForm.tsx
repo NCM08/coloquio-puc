@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-import { inscripcionSchema, type InscripcionFormData } from "@/lib/validations/inscripcion";
-import { submitInscripcion } from "@/app/actions/inscripcionActions";
+import { inscripcionSchema, type InscripcionFormData } from "@/lib/validations/inscripcionSchema";
+import { procesarInscripcion } from "@/app/actions/inscripcion";
 
 // ── Constantes ────────────────────────────────────────────────
 const PASOS = ["Datos Personales", "Calidad y Ponencia", "Comprobante de Pago"];
@@ -221,10 +221,10 @@ export default function InscripcionForm() {
       fd.append("comprobante_pago", data.comprobante_pago[0]);
     }
 
-    const result = await submitInscripcion(fd);
+    const result = await procesarInscripcion(fd);
     setSubmitResult({
       success: result.success,
-      error:   result.error,
+      error:   result.success ? undefined : result.message,
       id:      result.inscripcionId,
     });
   };
@@ -353,6 +353,8 @@ export default function InscripcionForm() {
               style={inputStyle(dark, !!errors.nacionalidad)}
             />
           </Field>
+
+          {/* <InstitutionFields /> */}
         </div>
       )}
 
@@ -377,6 +379,7 @@ export default function InscripcionForm() {
             >
               <option value="asistente">Asistente (sin presentación de ponencia)</option>
               <option value="expositor">Expositor/a (con presentación de ponencia)</option>
+              <option value="estudiante">Estudiante (tarifa especial)</option>
             </select>
           </Field>
 

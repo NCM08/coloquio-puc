@@ -31,7 +31,7 @@ export default function InscripcionPage() {
           color: "#FFFFFF",
         }}
       >
-        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+        <div style={{ maxWidth: 768, margin: "0 auto" }}>
           {/* Breadcrumb */}
           <nav
             style={{
@@ -65,11 +65,13 @@ export default function InscripcionPage() {
               lineHeight: 1.2,
             }}
           >
-            Formulario de Inscripción
+            Inscripción Oficial al Coloquio
           </h1>
           <p style={{ fontSize: 17, opacity: 0.85, maxWidth: 580, lineHeight: 1.65, margin: 0 }}>
             Complete los tres pasos a continuación para registrar su participación en el
-            VIII Coloquio Internacional de Sociología Clínica 2026.
+            VIII Coloquio Internacional de Sociología Clínica 2026. Sus datos personales
+            y documentos adjuntos son tratados con estricta confidencialidad y almacenados
+            de forma segura mediante cifrado SSL.
           </p>
 
           {/* Indicadores de seguridad */}
@@ -99,7 +101,7 @@ export default function InscripcionPage() {
       </div>
 
       {/* ── Contenedor principal ──────────────────────────────── */}
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: "48px 24px 80px" }}>
+      <div style={{ maxWidth: 768, margin: "0 auto", padding: "48px 24px 80px" }}>
 
         {/* ── Aviso importante antes del formulario ────────────── */}
         <div
