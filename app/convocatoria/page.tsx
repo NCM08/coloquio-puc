@@ -454,10 +454,10 @@ export default function ConvocatoriaPage() {
             </p>
           </div>
 
-          {/* ── Timeline vertical ─────────────────────────────── */}
+          {/* ── Timeline vertical (5 hitos regulares) ────────── */}
           <div style={{ position: "relative" }}>
 
-            {/* Línea vertical de fondo */}
+            {/* Línea vertical — solo abarca los 5 hitos regulares */}
             <div
               style={{
                 position: "absolute",
@@ -503,13 +503,7 @@ export default function ConvocatoriaPage() {
 
                       {/* Espacio entre hitos */}
                       {!isLast && (
-                        <div
-                          style={{
-                            width: 3,
-                            height: 40,
-                            backgroundColor: "transparent",
-                          }}
-                        />
+                        <div style={{ width: 3, height: 40, backgroundColor: "transparent" }} />
                       )}
                     </div>
 
@@ -576,51 +570,54 @@ export default function ConvocatoriaPage() {
                 );
               })}
             </div>
+          </div>
 
-            {/* Hito final: El Coloquio */}
-            <div
-              style={{
-                marginTop: 32,
-                padding: "28px 32px",
-                borderRadius: 16,
-                background: dark
-                  ? "linear-gradient(135deg, rgba(0,173,252,0.12), rgba(88,65,179,0.12))"
-                  : "linear-gradient(135deg, var(--color-primary-50), rgba(88,65,179,0.06))",
-                border: `1.5px solid ${dark ? "rgba(0,173,252,0.25)" : "var(--color-primary-200)"}`,
-                display: "flex",
-                alignItems: "center",
-                gap: 20,
-                flexWrap: "wrap",
-              }}
-            >
+          {/* ── Hito final: El Coloquio — FUERA del contenedor de la línea ── */}
+          <div style={{ display: "flex", gap: 24, alignItems: "flex-start", marginTop: 40 }}>
+
+            {/* Icono alineado igual que los demás hitos */}
+            <div style={{ flexShrink: 0 }}>
               <div
                 style={{
-                  width: 60,
-                  height: 60,
+                  width: 56,
+                  height: 56,
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative",
+                  zIndex: 10,
                   flexShrink: 0,
                   boxShadow: "var(--shadow-medium)",
                 }}
               >
-                <CalendarDays size={28} style={{ color: "#fff" }} />
-              </div>
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--color-primary)", marginBottom: 6 }}>
-                  Evento principal
-                </p>
-                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 700, color: textPrimary, marginBottom: 4 }}>
-                  10, 11 y 12 de Noviembre de 2026
-                </h3>
-                <p style={{ fontSize: 16, color: textSecondary, margin: 0, lineHeight: 1.6 }}>
-                  VIII Coloquio Internacional — Campus San Joaquín, Pontificia Universidad Católica de Chile, Santiago.
-                </p>
+                <CalendarDays size={26} style={{ color: "#fff" }} />
               </div>
             </div>
 
+            {/* Tarjeta de contenido — sin el icono dentro */}
+            <div
+              style={{
+                flex: 1,
+                padding: "20px 28px",
+                borderRadius: 16,
+                background: dark
+                  ? "linear-gradient(135deg, rgba(0,173,252,0.12), rgba(88,65,179,0.12))"
+                  : "linear-gradient(135deg, var(--color-primary-50), rgba(88,65,179,0.06))",
+                border: `1.5px solid ${dark ? "rgba(0,173,252,0.25)" : "var(--color-primary-200)"}`,
+              }}
+            >
+              <p style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, color: "var(--color-primary)", marginBottom: 6 }}>
+                Evento principal
+              </p>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 700, color: textPrimary, marginBottom: 4 }}>
+                10, 11 y 12 de Noviembre de 2026
+              </h3>
+              <p style={{ fontSize: 16, color: textSecondary, margin: 0, lineHeight: 1.6 }}>
+                VIII Coloquio Internacional — Campus San Joaquín, Pontificia Universidad Católica de Chile, Santiago.
+              </p>
+            </div>
           </div>
         </section>
 
