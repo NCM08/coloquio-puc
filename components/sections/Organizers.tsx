@@ -36,11 +36,11 @@ function LogoCard({
             className={[
                 "flex items-center justify-center rounded-xl px-6 py-4",
                 "border transition-colors duration-200",
+                "w-full sm:w-72 md:w-64",
                 dark
                     ? "bg-white border-[var(--color-dark-300)]"
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
-            style={{ minWidth: 120 }}
         >
             <Image
                 src={src}
@@ -119,11 +119,9 @@ export default function Organizers() {
                     </div>
 
                     {/* Fila 2: 3 logos de facultades */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 mt-6 max-w-4xl mx-auto">
                         {ORGANIZER_FACULTIES.map(({ src, alt }) => (
-                            <div key={src} className="flex justify-center">
-                                <LogoCard src={src} alt={alt} dark={dark} />
-                            </div>
+                            <LogoCard key={src} src={src} alt={alt} dark={dark} />
                         ))}
                     </div>
                 </FadeInSection>
