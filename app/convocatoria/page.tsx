@@ -470,6 +470,7 @@ export default function ConvocatoriaPage() {
                   ? "linear-gradient(to bottom, rgba(0,173,252,0.4), rgba(88,65,179,0.4))"
                   : "linear-gradient(to bottom, var(--color-primary-200), var(--color-vibrant-purple))",
                 opacity: 0.5,
+                zIndex: 0,
               }}
             />
 
@@ -486,15 +487,15 @@ export default function ConvocatoriaPage() {
                           width: 56,
                           height: 56,
                           borderRadius: "50%",
-                          backgroundColor: hito.bg,
+                          backgroundColor: dark ? "var(--color-dark-900)" : "#FFFFFF",
+                          boxShadow: `0 0 0 100px ${hito.bg} inset, 0 2px 12px ${hito.bg}`,
                           border: `2.5px solid ${hito.border}`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          zIndex: 1,
                           position: "relative",
+                          zIndex: 10,
                           flexShrink: 0,
-                          boxShadow: `0 2px 12px ${hito.bg}`,
                         }}
                       >
                         <CalendarDays size={26} style={{ color: hito.color }} />
