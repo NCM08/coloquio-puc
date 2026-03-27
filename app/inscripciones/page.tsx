@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ArrowRight, Info, RefreshCw, FileText, AlertCircle, MapPin, ClipboardList } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, ArrowRight, Info, RefreshCw, FileText, AlertCircle, MapPin, ClipboardList, ExternalLink } from "lucide-react";
 
 // ── Tipo de cambio referencial ────────────────────────────────
 const CLP_POR_USD = 950;
