@@ -43,9 +43,8 @@ export const personalSchema = z.object({
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
 export const asistenciaSchema = z.object({
-  calidad_asistencia: z.enum(["asistente", "expositor", "estudiante"], {
-    errorMap: () => ({ message: "Seleccione una calidad de asistencia" }),
-  }),
+  // CORRECCIÓN: Sintaxis pura sin objeto de errorMap
+  calidad_asistencia: z.enum(["asistente", "expositor", "estudiante"]),
   titulo_ponencia: z.string().optional(),
   eje_tematico:    z.string().optional(),
   archivo_ponencia: z.custom<FileList>().optional(),
