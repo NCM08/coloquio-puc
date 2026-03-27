@@ -68,9 +68,8 @@ export const perfilSchema = z.object({
 
 // ── Esquema de Paso 1: Calidad y Ponencia ─────────────────────
 export const asistenciaSchema = z.object({
-  calidad_asistencia: z.enum(["asistente", "expositor"], {
-    errorMap: () => ({ message: "Seleccione una calidad de asistencia" }),
-  }),
+  // CORRECCIÓN: Sintaxis segura para el enum en Zod
+  calidad_asistencia: z.enum(["asistente", "expositor", "estudiante"]),
   titulo_ponencia: z.string().optional(),
   eje_tematico: z.string().optional(),
   archivo_ponencia: z.custom<FileList>().optional(),
