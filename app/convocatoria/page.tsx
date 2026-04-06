@@ -84,35 +84,35 @@ const EJES = [
 const MODALIDADES = [
   {
     icon: Presentation,
-    title: "Ponencia individual",
+    title: "Ponencia (15 a 20 minutos)",
     description:
-      "Presentación oral de 20 minutos sobre resultados de investigación, seguida de 10 minutos de discusión.",
+      "Presentación oral de 15 a 20 minutos sobre resultados de investigación o reflexiones teóricas, seguida de espacio para preguntas y discusión.",
     requirements:
       "Resumen de 500 palabras mínimo, indicando eje temático, metodología y principales hallazgos.",
   },
   {
     icon: Users,
-    title: "Simposio temático",
+    title: "Mesas temáticas (60 a 90 minutos)",
     description:
-      "Sesión de 90 minutos con 3–4 presentaciones articuladas en torno a un tema común, con moderador.",
+      "Sesión de 60 a 90 minutos articulada en torno a un tema común, con 3–4 presentaciones coordinadas y moderador.",
     requirements:
-      "Propuesta conjunta con resumen general del simposio y resúmenes individuales de cada ponencia.",
+      "Propuesta conjunta con resumen general de la mesa y resúmenes individuales de cada participante.",
   },
   {
     icon: FileText,
-    title: "Póster",
+    title: "Posters académicos",
     description:
       "Presentación visual en formato póster con sesión dedicada para discusión con los asistentes.",
     requirements:
-      "Resumen de 300 palabras con objetivos, metodología y resultados preliminares.",
+      "Resumen de 300 palabras mínimo con objetivos, metodología y resultados preliminares.",
   },
   {
-    icon: BookOpen,
-    title: "Mesa redonda",
+    icon: Flame,
+    title: "Intervenciones artísticas y muestras audiovisuales",
     description:
-      "Espacio de diálogo de 60 minutos con 3–5 panelistas, inspirado en la Sociología Clínica, la Psicosociología y los Ejes Temáticos del coloquio.",
+      "Espacio para intervenciones artísticas, performances y muestras audiovisuales vinculadas a los ejes temáticos del coloquio. Las performances tendrán una duración máxima de 30 minutos.",
     requirements:
-      "Propuesta con tema, justificación, lista de panelistas confirmados y preguntas orientadoras.",
+      "Propuesta descriptiva de la intervención con justificación de su relación con los ejes temáticos y requerimientos técnicos.",
   },
 ];
 
@@ -259,9 +259,12 @@ export default function ConvocatoriaPage() {
             <p style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, color: "var(--color-accent)", marginBottom: 8 }}>
               Sección 1
             </p>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700, color: dark ? "var(--color-dark-100)" : "var(--color-primary)", margin: "0 0 8px 0" }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700, color: dark ? "var(--color-dark-100)" : "var(--color-primary)", margin: "0 0 12px 0" }}>
               Ejes Temáticos
             </h2>
+            <p style={{ fontSize: 16, color: textPrimary, lineHeight: 1.75, maxWidth: 680, marginBottom: 10 }}>
+              En cada uno de los ejes temáticos se espera recibir ponencias con diagnóstico, pero por sobre todo con propuestas y pistas para crear acciones de resistencia y transformación de imaginarios.
+            </p>
             <p style={{ fontSize: 16, color: textSecondary, lineHeight: 1.65, maxWidth: 680 }}>
               Las propuestas deben inscribirse en uno de los ocho ejes temáticos definidos a partir del trabajo de{" "}
               <strong style={{ color: textPrimary }}>Vincent de Gaulejac</strong> y el equipo organizador.

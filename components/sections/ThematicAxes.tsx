@@ -35,6 +35,9 @@ export default function ThematicAxes() {
                 <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, lineHeight: 1.2, color: dark ? "var(--color-dark-100)" : "var(--color-primary)", marginBottom: 16 }}>
                 Ejes Temáticos
                 </h2>
+                <p style={{ fontSize: 17, color: dark ? "var(--color-dark-300)" : "var(--color-dark-700)", maxWidth: 680, margin: "0 auto 12px auto", lineHeight: 1.75 }}>
+                En cada uno de los ejes temáticos se espera recibir ponencias con diagnóstico, pero por sobre todo con propuestas y pistas para crear acciones de resistencia y transformación de imaginarios.
+                </p>
                 <p style={{ fontSize: 17, color: dark ? "var(--color-dark-400)" : "var(--color-dark-500)", maxWidth: 600, margin: "0 auto", lineHeight: 1.7 }}>
                 El coloquio se organiza en torno a estos ejes que articulan las discusiones y presentaciones de los participantes.
                 </p>

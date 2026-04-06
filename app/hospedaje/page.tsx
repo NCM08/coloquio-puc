@@ -93,6 +93,15 @@ const BOUTIQUE: Hostal[] = [
     direccion: "Ricardo Matte Pérez 0270, Providencia",
     sitio: "https://hostalalmenas.cl/",
   },
+  {
+    numero: 8,
+    nombre: "Hotel Plaza Ñuñoa",
+    rating: 4.5,
+    tag: "Recomendado — cerca del campus",
+    presupuesto: "Consultar en sitio web",
+    direccion: "Ñuñoa, Santiago",
+    sitio: "https://hotelplazanunoa.com/gallery/",
+  },
 ];
 
 // ── Componente: fila de rating con estrellas amarillas ─────────

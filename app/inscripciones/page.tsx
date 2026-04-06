@@ -366,6 +366,65 @@ export default function InscripcionesPage() {
           </table>
         </div>
 
+        {/* ── Datos Bancarios para Transferencia ───────────────── */}
+        <div
+          style={{
+            padding: "32px 36px",
+            borderRadius: 14,
+            backgroundColor: dark ? "rgba(0,173,252,0.06)" : "#F0F9FF",
+            border: `1.5px solid ${dark ? "rgba(0,173,252,0.3)" : "rgba(0,173,252,0.35)"}`,
+            marginBottom: 52,
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 22,
+              fontWeight: 700,
+              color: textPrimary,
+              margin: "0 0 6px 0",
+            }}
+          >
+            Datos bancarios para transferencia
+          </h2>
+          <p style={{ fontSize: 15, color: textSecondary, margin: "0 0 24px 0", lineHeight: 1.6 }}>
+            Una vez realizada la transferencia, envíe el comprobante al correo del coloquio indicando su nombre completo y categoría de inscripción.
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 16,
+            }}
+          >
+            {[
+              { label: "Titular", value: "Romina Estivalia Díaz Meza" },
+              { label: "RUT", value: "17.188.251-6" },
+              { label: "Banco", value: "Global66" },
+              { label: "Tipo de cuenta", value: "Cuenta Vista" },
+              { label: "N° de cuenta", value: "10327090" },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                style={{
+                  padding: "14px 18px",
+                  borderRadius: 10,
+                  backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
+                  border: `1px solid ${dark ? "var(--color-dark-700)" : "#DDEEF8"}`,
+                }}
+              >
+                <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: textSecondary, margin: "0 0 4px 0" }}>
+                  {label}
+                </p>
+                <p style={{ fontSize: 16, fontWeight: 700, color: textPrimary, margin: 0 }}>
+                  {value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* ── Políticas de Pago y Condiciones importantes ──────── */}
         <div
           style={{
