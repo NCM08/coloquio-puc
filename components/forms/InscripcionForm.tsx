@@ -11,6 +11,7 @@ import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCir
 import { useTheme } from "@/components/ThemeProvider";
 import { inscripcionSchema, type InscripcionFormData } from "@/lib/validations/inscripcionSchema";
 import { procesarInscripcion } from "@/app/actions/inscripcion";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 // ── Constantes ────────────────────────────────────────────────
 const PASOS = ["Datos Personales", "Calidad y Ponencia", "Comprobante de Pago"];
@@ -158,6 +159,7 @@ export default function InscripcionForm() {
   const { dark } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [submitResult, setSubmitResult] = useState<{ success: boolean; error?: string; id?: string } | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
   const textPrimary = dark ? "var(--color-dark-100)" : "#111827";
@@ -219,6 +221,10 @@ export default function InscripcionForm() {
 
     if (data.comprobante_pago?.[0]) {
       fd.append("comprobante_pago", data.comprobante_pago[0]);
+    }
+
+    if (turnstileToken) {
+      fd.append("turnstile_token", turnstileToken);
     }
 
     const result = await procesarInscripcion(fd);
@@ -655,6 +661,18 @@ export default function InscripcionForm() {
         </div>
       )}
 
+      {/* ── Turnstile (solo en el último paso) ───────────────── */}
+      {currentStep === PASOS.length - 1 && (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => setTurnstileToken(null)}
+          />
+        </div>
+      )}
+
       {/* ── Botones de navegación ─────────────────────────── */}
       <div
         style={{
@@ -721,7 +739,7 @@ export default function InscripcionForm() {
         ) : (
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -729,11 +747,11 @@ export default function InscripcionForm() {
               padding: "14px 36px",
               borderRadius: 10,
               border: "none",
-              backgroundColor: isSubmitting ? "#6B7280" : "var(--color-accent)",
+              backgroundColor: (isSubmitting || !turnstileToken) ? "#6B7280" : "var(--color-accent)",
               color: "#FFFFFF",
               fontSize: 16,
               fontWeight: 700,
-              cursor: isSubmitting ? "not-allowed" : "pointer",
+              cursor: (isSubmitting || !turnstileToken) ? "not-allowed" : "pointer",
               fontFamily: "var(--font-display)",
               transition: "background-color 0.2s",
               letterSpacing: 0.3,

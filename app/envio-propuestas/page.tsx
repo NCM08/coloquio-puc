@@ -23,6 +23,7 @@ import {
   Flame,
 } from "lucide-react";
 import { enviarPropuesta } from "@/app/actions/propuestas";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 // ── Ejes Temáticos (alineados con ThematicAxes) ───────────────
 const EJES_TEMATICOS = [
@@ -72,6 +73,7 @@ export default function EnvioPropuestasPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   // Colores contextuales
   const bg           = dark ? "var(--color-dark-900)" : "#F7F7F7";
@@ -123,6 +125,10 @@ export default function EnvioPropuestasPage() {
     // Si el archivo fue soltado via drag & drop, asegurar que esté en el FormData
     if (archivoFile) {
       formData.set("archivo", archivoFile);
+    }
+
+    if (turnstileToken) {
+      formData.set("turnstile_token", turnstileToken);
     }
 
     const result = await enviarPropuesta(formData);
@@ -719,11 +725,21 @@ export default function EnvioPropuestasPage() {
                 </div>
               </fieldset>
 
+              {/* ── Turnstile anti-bot ── */}
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
+              </div>
+
               {/* ── Botón de envío ── */}
               <div style={{ textAlign: "center" }}>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !turnstileToken}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -740,20 +756,20 @@ export default function EnvioPropuestasPage() {
                     fontFamily: "var(--font-display)",
                     fontSize: 20,
                     fontWeight: 700,
-                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                    cursor: (isSubmitting || !turnstileToken) ? "not-allowed" : "pointer",
                     letterSpacing: 0.3,
                     boxShadow: "var(--shadow-accent)",
                     transition: "opacity 0.2s, box-shadow 0.2s",
-                    opacity: isSubmitting ? 0.7 : 1,
+                    opacity: (isSubmitting || !turnstileToken) ? 0.7 : 1,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isSubmitting) {
+                    if (!isSubmitting && turnstileToken) {
                       (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent-hover)";
                       (e.currentTarget as HTMLButtonElement).style.opacity = "0.93";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isSubmitting) {
+                    if (!isSubmitting && turnstileToken) {
                       (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent)";
                       (e.currentTarget as HTMLButtonElement).style.opacity = "1";
                     }

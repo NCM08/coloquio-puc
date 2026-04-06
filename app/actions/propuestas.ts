@@ -4,6 +4,23 @@ import { supabase } from "@/lib/supabase";
 
 export async function enviarPropuesta(formData: FormData) {
   try {
+    // ── Validación Turnstile ──────────────────────────────────
+    const turnstileToken = formData.get("turnstile_token") as string;
+    if (!turnstileToken) {
+      return { error: "Fallo la validación de seguridad anti-bots." };
+    }
+    const tsResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: new URLSearchParams({
+        secret:   process.env.TURNSTILE_SECRET_KEY ?? "",
+        response: turnstileToken,
+      }),
+    });
+    const tsData = await tsResponse.json();
+    if (!tsData.success) {
+      return { error: "Fallo la validación de seguridad anti-bots." };
+    }
+
     const nombre      = formData.get("nombre")      as string;
     const correo      = formData.get("correo")      as string;
     const institucion = formData.get("institucion") as string;

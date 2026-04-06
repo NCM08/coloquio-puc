@@ -39,6 +39,23 @@ export async function procesarInscripcion(
   formData: FormData
 ): Promise<ActionResult> {
   try {
+    // ── Validación Turnstile ──────────────────────────────────
+    const turnstileToken = formData.get("turnstile_token") as string;
+    if (!turnstileToken) {
+      return { success: false, message: "Fallo la validación de seguridad anti-bots." };
+    }
+    const tsResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: new URLSearchParams({
+        secret:   process.env.TURNSTILE_SECRET_KEY ?? "",
+        response: turnstileToken,
+      }),
+    });
+    const tsData = await tsResponse.json();
+    if (!tsData.success) {
+      return { success: false, message: "Fallo la validación de seguridad anti-bots." };
+    }
+
     // a) Extraer y validar campos de texto
     const nombre             = (formData.get("nombre")             as string)?.trim();
     const apellidos          = (formData.get("apellidos")          as string)?.trim();
