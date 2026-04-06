@@ -19,13 +19,13 @@ type Message = {
     content: string;
 };
 
-// Base de conocimiento del coloquio — actualizada Sprint 5
+// Base de conocimiento del coloquio — actualizada Operación Rastrillo 2026
 const KNOWLEDGE_BASE = {
-    fechas: `Las fechas clave del VIII Coloquio Internacional de Sociología Clínica 2026 son:\n\n📅 27 de marzo 2026 — Apertura de convocatorias\n📝 8 de mayo 2026 — Cierre de recepción de ponencias\n🗓️ 20 de mayo 2026 — Plazo máximo de envío de propuestas\n✅ 8 de junio 2026 — Notificación de aceptación\n📋 8 de agosto 2026 — Publicación de la agenda final\n\nEl evento se realiza en Santiago de Chile, 2026.`,
-    pagos: `Los pagos se realizan ÚNICAMENTE a través de la plataforma Global 999.\n\nPolíticas importantes:\n• No existen descuentos grupales.\n• No se realizan devoluciones de dinero por cancelación.\n• No se emiten boletas oficiales. Solo se entrega un comprobante de pago válido para rendiciones institucionales.\n\nPara consultas sobre pagos, escriba a: congresosociologiaclinica.2026@gmail.com`,
-    propuestas: "Las propuestas deben enviarse antes del 20 de mayo de 2026. Se aceptan ponencias individuales en español o portugués, con revisión ciega por pares. Para más detalles sobre modalidades y requisitos, escriba a congresosociologiaclinica.2026@gmail.com",
-    ejes: "Los ejes temáticos incluyen: Mutaciones civilizatorias y el mundo del trabajo, Descomposición de los sistemas educativos, Feminismos, Colonialidad y pueblos indígenas, Nuevas tecnologías digitales, Militancias y territorios, Migración e interculturalidad, y Juventudes. Para información detallada consulte a congresosociologiaclinica.2026@gmail.com",
-    ubicacion: "El coloquio se realiza en Santiago de Chile, 2026. Para confirmar la sede exacta, escriba a congresosociologiaclinica.2026@gmail.com",
+    fechas: `Las fechas clave del VIII Coloquio Internacional de Sociología Clínica 2026 son:\n\n📅 27 de marzo 2026 — Apertura de convocatorias (¡YA ABIERTA!)\n📝 8 de mayo 2026 — Cierre de recepción de ponencias\n🗓️ 20 de mayo 2026 — Plazo máximo de envío de propuestas\n✅ 8 de junio 2026 — Notificación de aceptación\n📋 8 de agosto 2026 — Publicación de la agenda final\n🎤 10, 11 y 12 de noviembre de 2026 — Coloquio\n\nEl evento se realiza en el Campus San Joaquín, Pontificia Universidad Católica de Chile (PUC), Macul, Santiago, Chile.`,
+    pagos: `Los pagos se realizan mediante transferencia bancaria a los siguientes datos:\n\n🏦 Banco: Global66\n👤 Titular: Romina Estivalia Díaz Meza\n🪪 RUT: 17.188.251-6\n🏷️ Tipo de cuenta: Cuenta Vista\n🔢 N° de cuenta: 10327090\n\nPolíticas importantes:\n• No existen descuentos grupales.\n• No se realizan devoluciones de dinero por cancelación.\n• No se emiten boletas oficiales. Solo se entrega un comprobante de pago válido para rendiciones institucionales.\n\nPara consultas sobre pagos, escriba a: congresosociologiaclinica.2026@gmail.com`,
+    propuestas: `La fase de inscripción y recepción de propuestas YA ESTÁ ABIERTA desde el 27 de marzo de 2026.\n\nEl plazo límite para envío de propuestas es el 20 de mayo de 2026.\n\nLos 4 formatos válidos para participar son:\n1. Ponencias (15 a 20 minutos)\n2. Mesas temáticas (60 a 90 minutos, 3-4 presentaciones)\n3. Posters académicos\n4. Intervenciones artísticas y muestras audiovisuales\n\nTodas las propuestas se envían de forma anónima para revisión ciega por pares. Se aceptan propuestas en español y portugués. Para más detalles, escriba a congresosociologiaclinica.2026@gmail.com`,
+    ejes: `Los 8 ejes temáticos oficiales del coloquio son:\n\n1. Mutaciones civilizatorias, transformaciones del mundo del trabajo\n2. Descomposición de la escuela, la universidad y de los sistemas educativos\n3. Claves y acciones desde el feminismo\n4. Colonialidad, pueblos indígenas y afrodescendientes\n5. Nuevas tecnologías digitales: dilemas, ventajas y encrucijadas\n6. Militancias y territorios\n7. Desplazamientos, migración e interculturalidad\n8. Juventudes: entre la pulsión de vida y de muerte\n\nPara información detallada consulte a congresosociologiaclinica.2026@gmail.com`,
+    ubicacion: "El coloquio se realiza los días 10, 11 y 12 de noviembre de 2026 en el Campus San Joaquín, Pontificia Universidad Católica de Chile (PUC), Av. Vicuña Mackenna 4860, Macul, Santiago, Chile. La estación de metro más cercana es San Joaquín (Línea 5).",
     certificados: "Se entrega certificado de participación y de expositor según corresponda. Los trabajos aceptados se publican en las actas oficiales del coloquio con ISBN.",
     online: "Para consultas sobre modalidad presencial u online, escriba a congresosociologiaclinica.2026@gmail.com",
     contacto: "Para cualquier consulta, escriba al comité oficial: congresosociologiaclinica.2026@gmail.com\n\nHorario de atención: lunes a viernes de 9:00 a 18:00 hrs.",
@@ -38,18 +38,18 @@ function findAnswer(question: string): string {
 
     // Saludos
     if (q.match(/hola|buenos|buenas|hey|saludos/))
-        return "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (Santiago de Chile, 2026). Estoy aquí para orientarle con información sobre fechas, pagos, propuestas y más. ¿En qué puedo ayudarle?";
+        return "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (10, 11 y 12 de noviembre de 2026, Campus San Joaquín, PUC, Santiago, Chile). La fase de inscripción y recepción de propuestas YA está abierta. ¿En qué puedo ayudarle?";
 
     // Fechas
     if (q.match(/fecha|cuando|cuándo|calendario|plazo|deadline|apertura|convocatoria|agenda/))
         return KNOWLEDGE_BASE.fechas;
 
     // Pagos y política de pagos
-    if (q.match(/pago|pagar|global 999|tarifa|precio|costo|cuanto|cuánto|valor|descuento|grupo|boleta|factura|comprobante|devoluci|reembolso|cancel|anular/))
+    if (q.match(/pago|pagar|global66|global 66|banco|transferencia|cuenta|rut|tarifa|precio|costo|cuanto|cuánto|valor|descuento|grupo|boleta|factura|comprobante|devoluci|reembolso|cancel|anular/))
         return KNOWLEDGE_BASE.pagos;
 
     // Propuestas y ponencias
-    if (q.match(/propuesta|enviar|envío|ponencia|poster|póster|simposio|mesa redonda|modalidad|resumen|abstract|inscri/))
+    if (q.match(/propuesta|enviar|envío|ponencia|poster|póster|mesa temática|mesa redonda|intervención|artística|modalidad|resumen|abstract|inscri|formato|participar/))
         return KNOWLEDGE_BASE.propuestas;
 
     // Ejes temáticos
@@ -109,7 +109,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
         role: "assistant",
-        content: "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (Santiago de Chile, 2026). Puedo orientarle sobre fechas, pagos, propuestas y contacto. ¿En qué puedo ayudarle?",
+        content: "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (10, 11 y 12 de noviembre de 2026 · Campus San Joaquín, PUC, Santiago, Chile). 🟢 La fase de inscripción y recepción de propuestas YA está abierta. Puedo orientarle sobre fechas, pagos, propuestas y contacto. ¿En qué puedo ayudarle?",
         },
     ]);
     const [input, setInput] = useState("");

@@ -51,11 +51,11 @@ const TABLA_PRECIOS = [
 const FAQ = [
   {
     q: "¿Cómo pago si soy extranjero/a?",
-    a: "Aceptamos pagos internacionales a través de la plataforma Global 999. Al momento de inscribirse, seleccione la opción 'Pago internacional' y recibirá las instrucciones por correo.",
+    a: "Aceptamos pagos internacionales mediante transferencia bancaria a través de Global66. Los datos bancarios están disponibles en esta misma página. Para coordinar su pago internacional, escríbanos a congresosociologiaclinica.2026@gmail.com",
   },
   {
     q: "¿Puedo obtener factura o boleta?",
-    a: "El coloquio no emite boletas oficiales. Una vez procesado su pago mediante Global 999, se le entregará un comprobante de pago estándar, válido para procesos de validación y rendición ante su institución.",
+    a: "El coloquio no emite boletas oficiales. Una vez realizada su transferencia a través de Global66, se le entregará un comprobante de pago estándar, válido para procesos de validación y rendición ante su institución.",
   },
   {
     q: "¿Qué pasa si necesito cancelar mi inscripción?",
@@ -459,8 +459,8 @@ export default function InscripcionesPage() {
                   Comprobantes de pago
                 </p>
                 <p style={{ fontSize: 15, color: textSecondary, margin: 0, lineHeight: 1.7 }}>
-                  El coloquio no emite boletas oficiales. Una vez procesado su pago mediante{" "}
-                  <strong style={{ color: textPrimary }}>Global 999</strong>, se le entregará un comprobante de pago
+                  El coloquio no emite boletas oficiales. Una vez realizada su transferencia a{" "}
+                  <strong style={{ color: textPrimary }}>Global66</strong>, se le entregará un comprobante de pago
                   estándar, el cual es válido para procesos de validación y rendición ante su institución.
                 </p>
               </div>
