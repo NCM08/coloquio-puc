@@ -487,6 +487,65 @@ export default function InscripcionForm() {
       ──────────────────────────────────────────────────── */}
       {currentStep === 2 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* Datos bancarios seguros */}
+          <div
+            style={{
+              padding: "24px 28px",
+              borderRadius: 14,
+              backgroundColor: dark ? "rgba(0,173,252,0.07)" : "#EFF8FF",
+              border: `1.5px solid ${dark ? "rgba(0,173,252,0.3)" : "rgba(0,173,252,0.4)"}`,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: dark ? "#60C8F5" : "#0284C7",
+                margin: "0 0 4px 0",
+                textTransform: "uppercase",
+                letterSpacing: 0.6,
+              }}
+            >
+              Datos para la transferencia bancaria
+            </p>
+            <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.65, margin: "0 0 20px 0" }}>
+              Realiza la transferencia por el monto correspondiente a tu categoría y sube el comprobante aquí.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: 12,
+              }}
+            >
+              {[
+                { label: "Titular", value: "Romina Estivalia Díaz Meza" },
+                { label: "RUT", value: "17.188.251-6" },
+                { label: "Banco", value: "Global66" },
+                { label: "Tipo de cuenta", value: "Cuenta Vista" },
+                { label: "N° de cuenta", value: "10327090" },
+              ].map(({ label, value }) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: "12px 16px",
+                    borderRadius: 10,
+                    backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
+                    border: `1px solid ${dark ? "rgba(0,173,252,0.2)" : "#BFDFEF"}`,
+                  }}
+                >
+                  <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.7, color: textMuted, margin: "0 0 3px 0" }}>
+                    {label}
+                  </p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: dark ? "var(--color-dark-100)" : "#111827", margin: 0 }}>
+                    {value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Instrucciones de pago */}
           <div
             style={{
@@ -507,7 +566,7 @@ export default function InscripcionForm() {
               Instrucciones de pago
             </p>
             <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.7, margin: 0 }}>
-              Realice su transferencia bancaria a la cuenta indicada en la convocatoria y
+              Realice su transferencia bancaria a la cuenta indicada arriba y
               adjunte el comprobante a continuación. El pago será verificado por el equipo
               organizador en un plazo de <strong style={{ color: textPrimary }}>2 a 5 días hábiles</strong>.
             </p>

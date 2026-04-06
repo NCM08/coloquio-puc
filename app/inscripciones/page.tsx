@@ -51,7 +51,7 @@ const TABLA_PRECIOS = [
 const FAQ = [
   {
     q: "¿Cómo pago si soy extranjero/a?",
-    a: "Aceptamos pagos internacionales mediante transferencia bancaria a través de Global66. Los datos bancarios están disponibles en esta misma página. Para coordinar su pago internacional, escríbanos a congresosociologiaclinica.2026@gmail.com",
+    a: "Aceptamos pagos internacionales mediante transferencia bancaria a través de Global66. Los datos bancarios exactos se proporcionan de forma segura en el Paso 3 del Formulario de Inscripción. Para coordinar su pago internacional, escríbanos a congresosociologiaclinica.2026@gmail.com",
   },
   {
     q: "¿Puedo obtener factura o boleta?",
@@ -366,7 +366,7 @@ export default function InscripcionesPage() {
           </table>
         </div>
 
-        {/* ── Datos Bancarios para Transferencia ───────────────── */}
+        {/* ── Aviso seguro de datos bancarios ──────────────────── */}
         <div
           style={{
             padding: "32px 36px",
@@ -374,54 +374,30 @@ export default function InscripcionesPage() {
             backgroundColor: dark ? "rgba(0,173,252,0.06)" : "#F0F9FF",
             border: `1.5px solid ${dark ? "rgba(0,173,252,0.3)" : "rgba(0,173,252,0.35)"}`,
             marginBottom: 52,
+            display: "flex",
+            gap: 18,
+            alignItems: "flex-start",
           }}
         >
-          <h2
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 22,
-              fontWeight: 700,
-              color: textPrimary,
-              margin: "0 0 6px 0",
-            }}
-          >
-            Datos bancarios para transferencia
-          </h2>
-          <p style={{ fontSize: 15, color: textSecondary, margin: "0 0 24px 0", lineHeight: 1.6 }}>
-            Una vez realizada la transferencia, envíe el comprobante al correo del coloquio indicando su nombre completo y categoría de inscripción.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: 16,
-            }}
-          >
-            {[
-              { label: "Titular", value: "Romina Estivalia Díaz Meza" },
-              { label: "RUT", value: "17.188.251-6" },
-              { label: "Banco", value: "Global66" },
-              { label: "Tipo de cuenta", value: "Cuenta Vista" },
-              { label: "N° de cuenta", value: "10327090" },
-            ].map(({ label, value }) => (
-              <div
-                key={label}
-                style={{
-                  padding: "14px 18px",
-                  borderRadius: 10,
-                  backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
-                  border: `1px solid ${dark ? "var(--color-dark-700)" : "#DDEEF8"}`,
-                }}
-              >
-                <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: textSecondary, margin: "0 0 4px 0" }}>
-                  {label}
-                </p>
-                <p style={{ fontSize: 16, fontWeight: 700, color: textPrimary, margin: 0 }}>
-                  {value}
-                </p>
-              </div>
-            ))}
+          <Info size={24} style={{ color: dark ? "#60C8F5" : "#0284C7", flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 20,
+                fontWeight: 700,
+                color: textPrimary,
+                margin: "0 0 10px 0",
+              }}
+            >
+              Datos bancarios para transferencia
+            </h2>
+            <p style={{ fontSize: 15, color: textSecondary, margin: 0, lineHeight: 1.75 }}>
+              Por motivos de seguridad, los datos exactos para realizar la transferencia bancaria (RUT y Número de Cuenta)
+              se te proporcionarán de forma segura en el{" "}
+              <strong style={{ color: textPrimary }}>Paso 3 del Formulario de Inscripción</strong>,
+              una vez que hayas ingresado tus datos personales.
+            </p>
           </div>
         </div>
 
