@@ -22,6 +22,7 @@ import {
   Navigation,
   Flame,
 } from "lucide-react";
+import { enviarPropuesta } from "@/app/actions/propuestas";
 
 // ── Ejes Temáticos (alineados con ThematicAxes) ───────────────
 const EJES_TEMATICOS = [
@@ -64,7 +65,13 @@ export default function EnvioPropuestasPage() {
   const { dark } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [archivoNombre, setArchivoNombre] = useState<string | null>(null);
+  const [archivoFile, setArchivoFile] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
+
+  // Estados del formulario
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   // Colores contextuales
   const bg           = dark ? "var(--color-dark-900)" : "#F7F7F7";
@@ -80,14 +87,20 @@ export default function EnvioPropuestasPage() {
   // ── Manejadores de archivo ──────────────────────────────────
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) setArchivoNombre(file.name);
+    if (file) {
+      setArchivoNombre(file.name);
+      setArchivoFile(file);
+    }
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) setArchivoNombre(file.name);
+    if (file) {
+      setArchivoNombre(file.name);
+      setArchivoFile(file);
+    }
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -97,6 +110,30 @@ export default function EnvioPropuestasPage() {
 
   function handleDragLeave() {
     setDragOver(false);
+  }
+
+  // ── Envío del formulario ────────────────────────────────────
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+
+    // Si el archivo fue soltado via drag & drop, asegurar que esté en el FormData
+    if (archivoFile) {
+      formData.set("archivo", archivoFile);
+    }
+
+    const result = await enviarPropuesta(formData);
+
+    setIsSubmitting(false);
+
+    if (result.error) {
+      setError(result.error);
+    } else if (result.success) {
+      setSuccess(true);
+    }
   }
 
   // ── Estilos reutilizables ───────────────────────────────────
@@ -310,7 +347,7 @@ export default function EnvioPropuestasPage() {
           </div>
         </section>
 
-        {/* ════ FORMULARIO ═════════════════════════════════════ */}
+        {/* ════ FORMULARIO / ÉXITO ═════════════════════════════ */}
         <section>
           <h2
             style={{
@@ -328,323 +365,439 @@ export default function EnvioPropuestasPage() {
             Sus datos de contacto son confidenciales y no se incluirán en el proceso de revisión.
           </p>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            style={{
-              backgroundColor: cardBg,
-              borderRadius: 16,
-              border: `1px solid ${borderColor}`,
-              padding: "40px 36px",
-              boxShadow: dark ? "none" : "0 2px 16px rgba(0,0,0,0.06)",
-            }}
-          >
-            {/* ── Datos personales ── */}
-            <fieldset style={{ border: "none", padding: 0, margin: "0 0 36px 0" }}>
-              <legend
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: dark ? "var(--color-primary-300)" : primaryColor,
-                  marginBottom: 24,
-                  paddingBottom: 10,
-                  borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
-                  width: "100%",
-                }}
-              >
-                Datos del autor / autora
-              </legend>
-
-              {/* Nombre completo */}
-              <div style={fieldStyle}>
-                <label htmlFor="nombre" style={labelStyle}>
-                  Nombre completo <span style={{ color: "#D32F2F" }}>*</span>
-                </label>
-                <input
-                  id="nombre"
-                  name="nombre"
-                  type="text"
-                  required
-                  placeholder="Ej.: María González Pérez"
-                  style={inputStyle}
-                  autoComplete="name"
-                />
-              </div>
-
-              {/* Correo electrónico */}
-              <div style={fieldStyle}>
-                <label htmlFor="correo" style={labelStyle}>
-                  Correo electrónico <span style={{ color: "#D32F2F" }}>*</span>
-                </label>
-                <input
-                  id="correo"
-                  name="correo"
-                  type="email"
-                  required
-                  placeholder="Ej.: maria.gonzalez@universidad.cl"
-                  style={inputStyle}
-                  autoComplete="email"
-                />
-                <p style={{ fontSize: 14, color: textSecondary, marginTop: 6, lineHeight: 1.5 }}>
-                  Recibirá la confirmación de recepción en este correo.
-                </p>
-              </div>
-
-              {/* Institución */}
-              <div style={{ ...fieldStyle, marginBottom: 0 }}>
-                <label htmlFor="institucion" style={labelStyle}>
-                  Institución de afiliación <span style={{ color: "#D32F2F" }}>*</span>
-                </label>
-                <input
-                  id="institucion"
-                  name="institucion"
-                  type="text"
-                  required
-                  placeholder="Ej.: Pontificia Universidad Católica de Chile"
-                  style={inputStyle}
-                  autoComplete="organization"
-                />
-              </div>
-            </fieldset>
-
-            {/* ── Eje Temático ── */}
-            <fieldset style={{ border: "none", padding: 0, margin: "0 0 36px 0" }}>
-              <legend
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: dark ? "var(--color-primary-300)" : primaryColor,
-                  marginBottom: 24,
-                  paddingBottom: 10,
-                  borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
-                  width: "100%",
-                }}
-              >
-                Eje Temático
-              </legend>
-
-              <div style={fieldStyle}>
-                <label htmlFor="eje" style={labelStyle}>
-                  Seleccione el Eje Temático de su propuesta <span style={{ color: "#D32F2F" }}>*</span>
-                </label>
-                <div style={{ position: "relative" }}>
-                  <select
-                    id="eje"
-                    name="eje"
-                    required
-                    defaultValue=""
-                    style={{
-                      ...inputStyle,
-                      appearance: "none",
-                      paddingRight: 44,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <option value="" disabled>— Elija un eje temático —</option>
-                    {EJES_TEMATICOS.map((eje, i) => (
-                      <option key={i} value={eje.label}>
-                        {eje.label}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Flecha decorativa del select */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 14,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      pointerEvents: "none",
-                      color: textSecondary,
-                    }}
-                  >
-                    ▼
-                  </div>
-                </div>
-                <p style={{ fontSize: 14, color: textSecondary, marginTop: 8, lineHeight: 1.5 }}>
-                  Si su propuesta abarca más de un eje, elija el más representativo.
-                  Puede indicar los ejes secundarios en el documento adjunto.
-                </p>
-              </div>
-            </fieldset>
-
-            {/* ── Archivo ── */}
-            <fieldset style={{ border: "none", padding: 0, margin: "0 0 44px 0" }}>
-              <legend
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: dark ? "var(--color-primary-300)" : primaryColor,
-                  marginBottom: 24,
-                  paddingBottom: 10,
-                  borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
-                  width: "100%",
-                }}
-              >
-                Documento de propuesta
-              </legend>
-
-              <label htmlFor="archivo" style={labelStyle}>
-                Subir archivo <span style={{ color: "#D32F2F" }}>*</span>
-              </label>
-
-              {/* Zona drag & drop */}
+          {/* ── Pantalla de Éxito ── */}
+          {success ? (
+            <div
+              style={{
+                backgroundColor: cardBg,
+                borderRadius: 16,
+                border: `1px solid ${borderColor}`,
+                padding: "64px 40px",
+                boxShadow: dark ? "none" : "0 2px 16px rgba(0,0,0,0.06)",
+                textAlign: "center",
+              }}
+            >
               <div
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: `2.5px dashed ${dragOver ? accentColor : borderColor}`,
-                  borderRadius: 14,
-                  padding: "40px 24px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  backgroundColor: dragOver
-                    ? dark ? "rgba(95,186,36,0.06)" : "rgba(95,186,36,0.04)"
-                    : dark ? "var(--color-dark-900)" : "#FAFAFA",
-                  transition: "all 0.2s",
-                  userSelect: "none",
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  backgroundColor: dark ? "rgba(95,186,36,0.12)" : "rgba(95,186,36,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 28px",
                 }}
               >
-                <input
-                  id="archivo"
-                  name="archivo"
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  required
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                  aria-label="Subir archivo de propuesta (PDF o Word)"
-                />
-
-                {archivoNombre ? (
-                  <>
-                    <CheckCircle
-                      size={40}
-                      style={{ color: accentColor, marginBottom: 12 }}
-                    />
-                    <p
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 700,
-                        color: accentColor,
-                        marginBottom: 6,
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {archivoNombre}
-                    </p>
-                    <p style={{ fontSize: 15, color: textSecondary }}>
-                      Archivo seleccionado. Haga clic para cambiarlo.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <FileUp
-                      size={44}
-                      style={{
-                        color: dark ? "var(--color-dark-500)" : "var(--color-dark-300)",
-                        marginBottom: 16,
-                      }}
-                    />
-                    <p
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 600,
-                        color: textPrimary,
-                        marginBottom: 8,
-                      }}
-                    >
-                      Arrastre su archivo aquí
-                    </p>
-                    <p style={{ fontSize: 16, color: textSecondary, marginBottom: 20 }}>
-                      o haga clic para buscarlo en su computador
-                    </p>
-
-                    {/* Botón buscar archivo */}
-                    <div
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "12px 28px",
-                        borderRadius: 10,
-                        backgroundColor: dark ? "var(--color-dark-700)" : "var(--color-dark-100)",
-                        color: textPrimary,
-                        fontSize: 16,
-                        fontWeight: 600,
-                        fontFamily: "var(--font-body)",
-                        border: `1.5px solid ${borderColor}`,
-                        cursor: "pointer",
-                      }}
-                    >
-                      <FileText size={18} />
-                      Buscar archivo
-                    </div>
-
-                    <p style={{ fontSize: 14, color: textSecondary, marginTop: 16 }}>
-                      Formatos aceptados: <strong>PDF</strong> o <strong>Word (.docx)</strong> · Máximo 10 MB
-                    </p>
-                  </>
-                )}
+                <CheckCircle size={44} style={{ color: accentColor }} />
               </div>
-            </fieldset>
 
-            {/* ── Botón de envío ── */}
-            <div style={{ textAlign: "center" }}>
-              <button
-                type="submit"
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(26px, 4vw, 36px)",
+                  fontWeight: 700,
+                  color: textPrimary,
+                  marginBottom: 16,
+                  lineHeight: 1.2,
+                }}
+              >
+                ¡Propuesta enviada con éxito!
+              </h3>
+
+              <p
+                style={{
+                  fontSize: 18,
+                  color: textSecondary,
+                  lineHeight: 1.75,
+                  maxWidth: 520,
+                  margin: "0 auto 12px",
+                }}
+              >
+                Muchas gracias por su postulación al Coloquio. Hemos recibido su propuesta
+                correctamente y la hemos registrado en nuestro sistema.
+              </p>
+              <p
+                style={{
+                  fontSize: 18,
+                  color: textSecondary,
+                  lineHeight: 1.75,
+                  maxWidth: 520,
+                  margin: "0 auto 40px",
+                }}
+              >
+                En los próximos días recibirá un correo de confirmación con información
+                sobre el proceso de evaluación y los próximos pasos.
+              </p>
+
+              <Link
+                href="/"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  gap: 12,
-                  width: "100%",
-                  maxWidth: 480,
-                  minHeight: 56,
-                  padding: "0 40px",
+                  gap: 10,
+                  padding: "14px 36px",
                   borderRadius: 12,
-                  border: "none",
                   backgroundColor: accentColor,
                   color: "#FFFFFF",
                   fontFamily: "var(--font-display)",
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: 700,
-                  cursor: "pointer",
-                  letterSpacing: 0.3,
+                  textDecoration: "none",
                   boxShadow: "var(--shadow-accent)",
-                  transition: "opacity 0.2s, box-shadow 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent-hover)";
-                  (e.currentTarget as HTMLButtonElement).style.opacity = "0.93";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent)";
-                  (e.currentTarget as HTMLButtonElement).style.opacity = "1";
+                  letterSpacing: 0.3,
                 }}
               >
-                <Send size={22} />
-                Enviar Propuesta
-              </button>
-
-              <p style={{ fontSize: 15, color: textSecondary, marginTop: 16, lineHeight: 1.6 }}>
-                Al enviar, confirma que su propuesta cumple con todos los requisitos
-                de la convocatoria.{" "}
-                <Link
-                  href="/convocatoria"
-                  style={{ color: dark ? "var(--color-primary-300)" : primaryColor, textDecoration: "underline" }}
-                >
-                  Ver convocatoria completa
-                </Link>
-                .
-              </p>
+                Volver al inicio
+              </Link>
             </div>
-          </form>
+          ) : (
+            /* ── Formulario ── */
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                backgroundColor: cardBg,
+                borderRadius: 16,
+                border: `1px solid ${borderColor}`,
+                padding: "40px 36px",
+                boxShadow: dark ? "none" : "0 2px 16px rgba(0,0,0,0.06)",
+              }}
+            >
+              {/* ── Datos personales ── */}
+              <fieldset style={{ border: "none", padding: 0, margin: "0 0 36px 0" }}>
+                <legend
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: dark ? "var(--color-primary-300)" : primaryColor,
+                    marginBottom: 24,
+                    paddingBottom: 10,
+                    borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
+                    width: "100%",
+                  }}
+                >
+                  Datos del autor / autora
+                </legend>
+
+                {/* Nombre completo */}
+                <div style={fieldStyle}>
+                  <label htmlFor="nombre" style={labelStyle}>
+                    Nombre completo <span style={{ color: "#D32F2F" }}>*</span>
+                  </label>
+                  <input
+                    id="nombre"
+                    name="nombre"
+                    type="text"
+                    required
+                    placeholder="Ej.: María González Pérez"
+                    style={inputStyle}
+                    autoComplete="name"
+                  />
+                </div>
+
+                {/* Correo electrónico */}
+                <div style={fieldStyle}>
+                  <label htmlFor="correo" style={labelStyle}>
+                    Correo electrónico <span style={{ color: "#D32F2F" }}>*</span>
+                  </label>
+                  <input
+                    id="correo"
+                    name="correo"
+                    type="email"
+                    required
+                    placeholder="Ej.: maria.gonzalez@universidad.cl"
+                    style={inputStyle}
+                    autoComplete="email"
+                  />
+                  <p style={{ fontSize: 14, color: textSecondary, marginTop: 6, lineHeight: 1.5 }}>
+                    Recibirá la confirmación de recepción en este correo.
+                  </p>
+                </div>
+
+                {/* Institución */}
+                <div style={{ ...fieldStyle, marginBottom: 0 }}>
+                  <label htmlFor="institucion" style={labelStyle}>
+                    Institución de afiliación <span style={{ color: "#D32F2F" }}>*</span>
+                  </label>
+                  <input
+                    id="institucion"
+                    name="institucion"
+                    type="text"
+                    required
+                    placeholder="Ej.: Pontificia Universidad Católica de Chile"
+                    style={inputStyle}
+                    autoComplete="organization"
+                  />
+                </div>
+              </fieldset>
+
+              {/* ── Eje Temático ── */}
+              <fieldset style={{ border: "none", padding: 0, margin: "0 0 36px 0" }}>
+                <legend
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: dark ? "var(--color-primary-300)" : primaryColor,
+                    marginBottom: 24,
+                    paddingBottom: 10,
+                    borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
+                    width: "100%",
+                  }}
+                >
+                  Eje Temático
+                </legend>
+
+                <div style={fieldStyle}>
+                  <label htmlFor="eje" style={labelStyle}>
+                    Seleccione el Eje Temático de su propuesta <span style={{ color: "#D32F2F" }}>*</span>
+                  </label>
+                  <div style={{ position: "relative" }}>
+                    <select
+                      id="eje"
+                      name="eje"
+                      required
+                      defaultValue=""
+                      style={{
+                        ...inputStyle,
+                        appearance: "none",
+                        paddingRight: 44,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <option value="" disabled>— Elija un eje temático —</option>
+                      {EJES_TEMATICOS.map((eje, i) => (
+                        <option key={i} value={eje.label}>
+                          {eje.label}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Flecha decorativa del select */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 14,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        pointerEvents: "none",
+                        color: textSecondary,
+                      }}
+                    >
+                      ▼
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 14, color: textSecondary, marginTop: 8, lineHeight: 1.5 }}>
+                    Si su propuesta abarca más de un eje, elija el más representativo.
+                    Puede indicar los ejes secundarios en el documento adjunto.
+                  </p>
+                </div>
+              </fieldset>
+
+              {/* ── Archivo ── */}
+              <fieldset style={{ border: "none", padding: 0, margin: "0 0 44px 0" }}>
+                <legend
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: dark ? "var(--color-primary-300)" : primaryColor,
+                    marginBottom: 24,
+                    paddingBottom: 10,
+                    borderBottom: `2px solid ${dark ? "var(--color-dark-700)" : "var(--color-primary-100)"}`,
+                    width: "100%",
+                  }}
+                >
+                  Documento de propuesta
+                </legend>
+
+                <label htmlFor="archivo" style={labelStyle}>
+                  Subir archivo <span style={{ color: "#D32F2F" }}>*</span>
+                </label>
+
+                {/* Zona drag & drop */}
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    border: `2.5px dashed ${dragOver ? accentColor : borderColor}`,
+                    borderRadius: 14,
+                    padding: "40px 24px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    backgroundColor: dragOver
+                      ? dark ? "rgba(95,186,36,0.06)" : "rgba(95,186,36,0.04)"
+                      : dark ? "var(--color-dark-900)" : "#FAFAFA",
+                    transition: "all 0.2s",
+                    userSelect: "none",
+                  }}
+                >
+                  <input
+                    id="archivo"
+                    name="archivo"
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    required={!archivoFile}
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                    aria-label="Subir archivo de propuesta (PDF o Word)"
+                  />
+
+                  {archivoNombre ? (
+                    <>
+                      <CheckCircle
+                        size={40}
+                        style={{ color: accentColor, marginBottom: 12 }}
+                      />
+                      <p
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 700,
+                          color: accentColor,
+                          marginBottom: 6,
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {archivoNombre}
+                      </p>
+                      <p style={{ fontSize: 15, color: textSecondary }}>
+                        Archivo seleccionado. Haga clic para cambiarlo.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <FileUp
+                        size={44}
+                        style={{
+                          color: dark ? "var(--color-dark-500)" : "var(--color-dark-300)",
+                          marginBottom: 16,
+                        }}
+                      />
+                      <p
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 600,
+                          color: textPrimary,
+                          marginBottom: 8,
+                        }}
+                      >
+                        Arrastre su archivo aquí
+                      </p>
+                      <p style={{ fontSize: 16, color: textSecondary, marginBottom: 20 }}>
+                        o haga clic para buscarlo en su computador
+                      </p>
+
+                      {/* Botón buscar archivo */}
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "12px 28px",
+                          borderRadius: 10,
+                          backgroundColor: dark ? "var(--color-dark-700)" : "var(--color-dark-100)",
+                          color: textPrimary,
+                          fontSize: 16,
+                          fontWeight: 600,
+                          fontFamily: "var(--font-body)",
+                          border: `1.5px solid ${borderColor}`,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <FileText size={18} />
+                        Buscar archivo
+                      </div>
+
+                      <p style={{ fontSize: 14, color: textSecondary, marginTop: 16 }}>
+                        Formatos aceptados: <strong>PDF</strong> o <strong>Word (.docx)</strong> · Máximo 10 MB
+                      </p>
+                    </>
+                  )}
+                </div>
+              </fieldset>
+
+              {/* ── Botón de envío ── */}
+              <div style={{ textAlign: "center" }}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                    width: "100%",
+                    maxWidth: 480,
+                    minHeight: 56,
+                    padding: "0 40px",
+                    borderRadius: 12,
+                    border: "none",
+                    backgroundColor: accentColor,
+                    color: "#FFFFFF",
+                    fontFamily: "var(--font-display)",
+                    fontSize: 20,
+                    fontWeight: 700,
+                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                    letterSpacing: 0.3,
+                    boxShadow: "var(--shadow-accent)",
+                    transition: "opacity 0.2s, box-shadow 0.2s",
+                    opacity: isSubmitting ? 0.7 : 1,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting) {
+                      (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent-hover)";
+                      (e.currentTarget as HTMLButtonElement).style.opacity = "0.93";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSubmitting) {
+                      (e.currentTarget as HTMLButtonElement).style.boxShadow = "var(--shadow-accent)";
+                      (e.currentTarget as HTMLButtonElement).style.opacity = "1";
+                    }
+                  }}
+                >
+                  <Send size={22} />
+                  {isSubmitting ? "Enviando Propuesta..." : "Enviar Propuesta"}
+                </button>
+
+                {/* Mensaje de error */}
+                {error && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      padding: "12px 20px",
+                      borderRadius: 10,
+                      backgroundColor: dark ? "rgba(211,47,47,0.12)" : "#FFF5F5",
+                      border: "1.5px solid #D32F2F",
+                      color: "#D32F2F",
+                      fontSize: 16,
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                      maxWidth: 480,
+                      margin: "16px auto 0",
+                    }}
+                  >
+                    {error}
+                  </div>
+                )}
+
+                <p style={{ fontSize: 15, color: textSecondary, marginTop: 16, lineHeight: 1.6 }}>
+                  Al enviar, confirma que su propuesta cumple con todos los requisitos
+                  de la convocatoria.{" "}
+                  <Link
+                    href="/convocatoria"
+                    style={{ color: dark ? "var(--color-primary-300)" : primaryColor, textDecoration: "underline" }}
+                  >
+                    Ver convocatoria completa
+                  </Link>
+                  .
+                </p>
+              </div>
+            </form>
+          )}
         </section>
 
       </div>
