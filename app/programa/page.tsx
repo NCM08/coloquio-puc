@@ -7,15 +7,16 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
-// ── Estructura de datos del cronograma (DDD) ─────────────────
-type EventType = "keynote" | "session" | "break" | "social";
+// ── Estructura de datos del cronograma ───────────────────────
+type EventType = "keynote" | "session" | "break" | "lunch" | "social";
 
 type ScheduleItem = {
   time: string;
   title: string;
   type: EventType;
+  description?: string;
 };
 
 const DAYS = [
@@ -30,6 +31,12 @@ const SCHEDULE: Record<number, ScheduleItem[]> = {
       time: "09:00 – 12:00",
       title: "Asamblea Nodo Sur (híbrida)",
       type: "session",
+      description: "Lugar: Sala UC [por definir].",
+    },
+    {
+      time: "12:00 – 14:00",
+      title: "Almuerzo libre",
+      type: "lunch",
     },
     {
       time: "14:00 – 15:00",
@@ -38,35 +45,66 @@ const SCHEDULE: Record<number, ScheduleItem[]> = {
     },
     {
       time: "15:00 – 15:30",
-      title: "Bienvenida",
+      title: "Sesión 1. Bienvenida",
       type: "keynote",
     },
     {
       time: "15:30 – 18:00",
-      title: "Homenaje a Presidente RISC — Vincent de Gaulejac",
+      title: "Sesión 2. Homenaje a Presidente RISC — Vincent de Gaulejac",
       type: "keynote",
+      description:
+        "El sentido del homenaje es que sea animado, implicado, donde las artes nos movilicen y nos permitan reconocer el trabajo realizado todos estos años por Vincent, al mismo tiempo que las siguientes generaciones toman la posta del desarrollo de la Sociología Clínica.",
     },
     {
       time: "18:00 – 20:00",
-      title: "Cóctel de celebración",
+      title: "Conferencia de Vincent de Gaulejac (tema libre) · Cóctel de celebración",
       type: "social",
     },
   ],
   1: [
     {
       time: "09:00 – 10:30",
-      title: "Conferencia 1 · \"Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles\"",
+      title: 'Sesión 3. Conferencia 1. "Desintegración social en el mundo actual: acciones de resistencia y nuevos imaginarios posibles"',
       type: "keynote",
+      description:
+        "Ponentes: Vincent de Gaulejac, Ana María Araujo, Teresa Carreteiro y Patricia Guerrero.",
+    },
+    {
+      time: "10:30 – 11:00",
+      title: "Pausa · Coffee Break",
+      type: "break",
     },
     {
       time: "11:00 – 12:15",
-      title: "Mesas de trabajo paralelas",
+      title: "Sesión 4. Mesas de trabajo paralelas",
       type: "session",
     },
     {
+      time: "12:15 – 13:00",
+      title: "Sesión 5. Presentación de libro del grupo de Historias de vida",
+      type: "session",
+    },
+    {
+      time: "13:00 – 14:30",
+      title: "Almuerzo",
+      type: "lunch",
+    },
+    {
+      time: "14:30 – 16:00",
+      title: "Sesión 6. [Por definir] / Mesas de trabajo paralelas",
+      type: "session",
+    },
+    {
+      time: "16:00 – 16:30",
+      title: "Pausa · Coffee Break",
+      type: "break",
+    },
+    {
       time: "16:30 – 18:00",
-      title: "Conferencia 2 · \"Transmisión de la Sociología Clínica y la Psicosociología latinoamericana de cara a la desintegración social\"",
+      title: 'Sesión 7. Conferencia 2. "Transmisión de la Sociología clínica y la Psicosociología latinoamericana de cara a la desintegración social"',
       type: "keynote",
+      description:
+        "Ponentes: un representante por país (Argentina, Brasil, Chile, Colombia, España, México y Uruguay).",
     },
     {
       time: "20:00",
@@ -77,42 +115,89 @@ const SCHEDULE: Record<number, ScheduleItem[]> = {
   2: [
     {
       time: "09:00 – 10:30",
-      title: "Conferencia 3 · \"Reconfigurando el vínculo universitario y escolar\"",
+      title: "Sesión 8. Conferencia 3. Reconfigurando el vínculo universitario y escolar",
       type: "keynote",
+      description:
+        "Ponentes: Dariela Sharim, Fernando Yzaguirre, María Aparecida Penso, Johnny Orrejuela y Virginia Masse.",
+    },
+    {
+      time: "10:30 – 11:00",
+      title: "Pausa · Coffee Break",
+      type: "break",
     },
     {
       time: "11:00 – 12:15",
-      title: "Mesas de trabajo paralelas",
+      title: "Sesión 9. Mesa Bienestar en la escuela CELITED / Mesas paralelas",
       type: "session",
     },
     {
-      time: "16:30 – 18:00",
-      title: "Conferencia 4 · \"Nuevas repercusiones en el mundo del trabajo\"",
+      time: "12:15 – 13:00",
+      title: 'Sesión 10. Presentación del libro de Ana María Araujo "Les chemins de l\'exil. Les luttes d\'une femme d\'amérique latine"',
+      type: "session",
+    },
+    {
+      time: "13:00 – 14:30",
+      title: "Almuerzo",
+      type: "lunch",
+    },
+    {
+      time: "14:30 – 16:00",
+      title: 'Sesión 11. Conferencia 4. "Nuevas repercusiones en el mundo del trabajo"',
       type: "keynote",
+      description:
+        "Ponentes: Matheus Viana, Julio Neffa, Ana Massa, Antonio Stecher. Comenta: Vincent de Gaulejac.",
+    },
+    {
+      time: "16:00 – 16:30",
+      title: "Pausa · Coffee Break",
+      type: "break",
+    },
+    {
+      time: "16:30 – 18:00",
+      title: 'Sesión 12. Conferencia 5. Cierre "Desafíos en la construcción social"',
+      type: "keynote",
+      description:
+        "Ponentes: Magdalena Garcés, Pedro y Ana Correa, Betty Weisz.",
+    },
+    {
+      time: "18:00 – 20:00",
+      title: "Convivencia · Lugar: UC (patios)",
+      type: "social",
     },
   ],
 };
 
-// Color de acento por tipo de evento
+// ── Color de acento por tipo de evento ───────────────────────
 const TYPE_ACCENT: Record<EventType, string> = {
   keynote: "var(--color-accent)",
   session: "var(--color-primary)",
-  break:   "var(--color-dark-300)",
+  break:   "#9CA3AF",
+  lunch:   "#9CA3AF",
   social:  "#4CAF50",
 };
 
 // ── Componente principal ──────────────────────────────────────
 export default function ProgramaPage() {
   const { dark } = useTheme();
-  const [activeDay, setActiveDay] = useState(0);
+  const [activeDay, setActiveDay]       = useState(0);
+  const [expanded,  setExpanded]        = useState<Set<string>>(new Set());
 
-  const bg          = dark ? "var(--color-dark-900)" : "#F7F7F7";
-  const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
-  const borderColor = dark ? "var(--color-dark-700)" : "#DDDDDD";
-  const textPrimary = dark ? "var(--color-dark-100)" : "#424242";
-  const textSecondary = dark ? "var(--color-dark-400)" : "#6B6B6B";
-  const tabBg       = dark ? "var(--color-dark-800)" : "#FFFFFF";
-  const tabBorder   = dark ? "var(--color-dark-700)" : "#DDDDDD";
+  const toggleExpanded = (key: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const bg             = dark ? "var(--color-dark-900)" : "#F7F7F7";
+  const cardBg         = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const borderColor    = dark ? "var(--color-dark-700)" : "#DDDDDD";
+  const textPrimary    = dark ? "var(--color-dark-100)" : "#424242";
+  const textSecondary  = dark ? "var(--color-dark-400)" : "#6B6B6B";
+  const tabBg          = dark ? "var(--color-dark-800)" : "#FFFFFF";
+  const tabBorder      = dark ? "var(--color-dark-700)" : "#DDDDDD";
 
   return (
     <div style={{ backgroundColor: bg, minHeight: "100vh", transition: "background-color 0.3s" }}>
@@ -197,71 +282,124 @@ export default function ProgramaPage() {
         </div>
 
         {/* ── Tarjetas de eventos ────────────────────────────────── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {SCHEDULE[activeDay].map((item, index) => {
-            const accent = TYPE_ACCENT[item.type];
-            const isBreak = item.type === "break";
+            const key          = `${activeDay}-${index}`;
+            const isExpanded   = expanded.has(key);
+            const accent       = TYPE_ACCENT[item.type];
+            const isSubdued    = item.type === "break" || item.type === "lunch";
+            const isExpandable = !!item.description;
 
             return (
               <div
-                key={index}
+                key={key}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 24,
-                  padding: isBreak ? "16px 24px" : "24px 28px",
                   borderRadius: 14,
-                  backgroundColor: isBreak
+                  backgroundColor: isSubdued
                     ? dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)"
                     : cardBg,
-                  border: `1px solid ${isBreak ? "transparent" : borderColor}`,
+                  border: isSubdued
+                    ? `1px solid transparent`
+                    : `1px solid ${borderColor}`,
                   borderLeft: `4px solid ${accent}`,
-                  boxShadow: isBreak || dark ? "none" : "0 2px 10px rgba(0,0,0,0.05)",
-                  opacity: isBreak ? 0.75 : 1,
+                  boxShadow: isSubdued || dark ? "none" : "0 2px 10px rgba(0,0,0,0.05)",
+                  opacity: isSubdued ? 0.78 : 1,
+                  overflow: "hidden",
                   transition: "all 0.2s",
                 }}
               >
-                {/* ── Hora (grande y en negrita) ─── */}
+                {/* ── Fila principal (siempre visible) ── */}
                 <div
+                  onClick={isExpandable ? () => toggleExpanded(key) : undefined}
                   style={{
-                    minWidth: 130,
-                    flexShrink: 0,
-                    fontFamily: "var(--font-display)",
-                    fontSize: isBreak ? 18 : 22,
-                    fontWeight: 800,
-                    color: accent,
-                    lineHeight: 1.2,
-                    letterSpacing: "-0.5px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 20,
+                    padding: isSubdued ? "14px 22px" : "22px 26px",
+                    cursor: isExpandable ? "pointer" : "default",
                   }}
                 >
-                  {item.time}
-                </div>
-
-                {/* ── Separador vertical ─── */}
-                <div
-                  style={{
-                    width: 1,
-                    alignSelf: "stretch",
-                    backgroundColor: dark ? "var(--color-dark-700)" : "#E5E5E5",
-                    flexShrink: 0,
-                  }}
-                />
-
-                {/* ── Título del evento ─── */}
-                <div style={{ flex: 1 }}>
-                  <p
+                  {/* Hora */}
+                  <div
                     style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: isBreak ? 15 : 17,
-                      fontWeight: isBreak ? 400 : 600,
-                      color: isBreak ? textSecondary : textPrimary,
-                      margin: 0,
-                      lineHeight: 1.55,
+                      minWidth: 130,
+                      flexShrink: 0,
+                      fontFamily: "var(--font-display)",
+                      fontSize: isSubdued ? 16 : 20,
+                      fontWeight: 800,
+                      color: accent,
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.5px",
                     }}
                   >
-                    {item.title}
-                  </p>
+                    {item.time}
+                  </div>
+
+                  {/* Separador vertical */}
+                  <div
+                    style={{
+                      width: 1,
+                      alignSelf: "stretch",
+                      backgroundColor: dark ? "var(--color-dark-700)" : "#E5E5E5",
+                      flexShrink: 0,
+                    }}
+                  />
+
+                  {/* Título */}
+                  <div style={{ flex: 1 }}>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontSize: isSubdued ? 14 : 16,
+                        fontWeight: isSubdued ? 400 : 600,
+                        color: isSubdued ? textSecondary : textPrimary,
+                        margin: 0,
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      {item.title}
+                    </p>
+                  </div>
+
+                  {/* Chevron (solo si es expandible) */}
+                  {isExpandable && (
+                    <div
+                      style={{
+                        flexShrink: 0,
+                        color: textSecondary,
+                        transition: "transform 0.25s",
+                        transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                      }}
+                    >
+                      <ChevronDown size={18} />
+                    </div>
+                  )}
                 </div>
+
+                {/* ── Panel colapsable ── */}
+                {isExpandable && (
+                  <div
+                    style={{
+                      maxHeight: isExpanded ? 200 : 0,
+                      overflow: "hidden",
+                      transition: "max-height 0.3s ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "0 26px 20px 176px",
+                        fontSize: 14,
+                        color: textSecondary,
+                        lineHeight: 1.7,
+                        fontStyle: "italic",
+                        borderTop: `1px solid ${dark ? "rgba(255,255,255,0.06)" : "#F0F0F0"}`,
+                        paddingTop: 14,
+                      }}
+                    >
+                      {item.description}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
