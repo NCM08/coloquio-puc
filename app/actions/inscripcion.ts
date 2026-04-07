@@ -5,6 +5,10 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
+import ConfirmacionInscripcionEmail from "@/components/emails/ConfirmacionInscripcionEmail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Cliente con privilegios de administrador — solo para server actions.
 // La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
@@ -185,7 +189,22 @@ export async function procesarInscripcion(
       throw new Error(`Error al registrar pago: ${pagoError.message}`);
     }
 
-    // h) Retornar éxito
+    // h) Enviar correo de confirmación (no bloquea la inscripción si falla)
+    try {
+      await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: email,
+        subject: "Confirmación de solicitud de inscripción - Coloquio PUC",
+        react: ConfirmacionInscripcionEmail({
+          nombre,
+          tipoInscripcion: calidad_asistencia,
+        }),
+      });
+    } catch (emailErr) {
+      console.error("[procesarInscripcion] Error al enviar correo de confirmación:", emailErr);
+    }
+
+    // i) Retornar éxito
     return {
       success: true,
       message: "Inscripción registrada exitosamente.",
