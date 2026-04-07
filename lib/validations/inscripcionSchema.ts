@@ -5,14 +5,7 @@
 import { z } from "zod";
 
 // ── Constantes de validación de archivos ─────────────────────
-const MAX_PONENCIA_BYTES = 25 * 1024 * 1024; // 25 MB
-const MAX_PAGO_BYTES     = 10 * 1024 * 1024; // 10 MB
-
-const TIPOS_PONENCIA = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
+const MAX_PAGO_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const TIPOS_PAGO = [
   "application/pdf",
@@ -63,12 +56,12 @@ export const personalSchema = z.object({
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
 export const asistenciaSchema = z.object({
-  calidad_asistencia: z.enum(CALIDADES_ASISTENCIA, {
+  calidad_asistencia:      z.enum(CALIDADES_ASISTENCIA, {
     message: "Seleccione su perfil de participación",
   }),
-  titulo_ponencia:  z.string().optional(),
-  eje_tematico:     z.string().optional(),
-  archivo_ponencia: z.custom<FileList>().optional(),
+  titulo_ponencia:         z.string().optional(),
+  eje_tematico:            z.string().optional(),
+  confirmacion_aprobacion: z.boolean().optional(),
 });
 
 // ── Paso 3: Pago ──────────────────────────────────────────────
@@ -101,10 +94,10 @@ export const inscripcionSchema = z
     nacionalidad: personalSchema.shape.nacionalidad,
 
     // Paso 2
-    calidad_asistencia: asistenciaSchema.shape.calidad_asistencia,
-    titulo_ponencia:    z.string().optional(),
-    eje_tematico:       z.string().optional(),
-    archivo_ponencia:   z.custom<FileList>().optional(),
+    calidad_asistencia:      asistenciaSchema.shape.calidad_asistencia,
+    titulo_ponencia:         z.string().optional(),
+    eje_tematico:            z.string().optional(),
+    confirmacion_aprobacion: z.boolean().optional(),
 
     // Paso 3
     comprobante_pago: z.custom<FileList>().optional(),
@@ -128,28 +121,12 @@ export const inscripcionSchema = z
           message: "El eje temático es requerido (mínimo 3 caracteres)",
         });
       }
-      if (!data.archivo_ponencia || data.archivo_ponencia.length === 0) {
+      if (data.confirmacion_aprobacion !== true) {
         ctx.addIssue({
           code: "custom",
-          path: ["archivo_ponencia"],
-          message: "El documento de la ponencia es requerido",
+          path: ["confirmacion_aprobacion"],
+          message: "Debe confirmar que su propuesta fue aprobada por el Comité Científico",
         });
-      } else {
-        const file = data.archivo_ponencia[0];
-        if (!TIPOS_PONENCIA.includes(file.type)) {
-          ctx.addIssue({
-            code: "custom",
-            path: ["archivo_ponencia"],
-            message: "Solo se aceptan archivos PDF o Word (.doc, .docx)",
-          });
-        }
-        if (file.size > MAX_PONENCIA_BYTES) {
-          ctx.addIssue({
-            code: "custom",
-            path: ["archivo_ponencia"],
-            message: "El archivo no debe superar los 25 MB",
-          });
-        }
       }
     }
 
@@ -184,6 +161,6 @@ export type InscripcionFormData = z.infer<typeof inscripcionSchema>;
 // ── Campos por paso (para trigger parcial en RHF) ─────────────
 export const CAMPOS_POR_PASO = {
   1: ["nombre", "apellidos", "email", "nacionalidad"] as const,
-  2: ["calidad_asistencia", "titulo_ponencia", "eje_tematico", "archivo_ponencia"] as const,
+  2: ["calidad_asistencia", "titulo_ponencia", "eje_tematico", "confirmacion_aprobacion"] as const,
   3: ["comprobante_pago"] as const,
 } as const;

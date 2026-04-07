@@ -7,7 +7,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCircle } from "lucide-react";
+import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCircle, AlertTriangle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import allCountries from "world-countries";
 import {
@@ -372,7 +372,7 @@ export default function InscripcionForm() {
     } else if (currentStep === 1) {
       camposAValidar = ["calidad_asistencia"];
       if (esExpositor) {
-        camposAValidar.push("titulo_ponencia", "eje_tematico", "archivo_ponencia");
+        camposAValidar.push("titulo_ponencia", "eje_tematico", "confirmacion_aprobacion");
       }
     }
 
@@ -393,9 +393,7 @@ export default function InscripcionForm() {
     if (esExpositor) {
       if (data.titulo_ponencia) fd.append("titulo_ponencia", data.titulo_ponencia);
       if (data.eje_tematico)    fd.append("eje_tematico",    data.eje_tematico);
-      if (data.archivo_ponencia?.[0]) {
-        fd.append("archivo_ponencia", data.archivo_ponencia[0]);
-      }
+      fd.append("confirmacion_aprobacion", String(data.confirmacion_aprobacion ?? false));
     }
 
     if (data.comprobante_pago?.[0]) {
@@ -729,38 +727,73 @@ export default function InscripcionForm() {
                 </select>
               </Field>
 
-              <Field
-                label="Documento de la ponencia"
-                required
-                error={errors.archivo_ponencia?.message as string | undefined}
-                dark={dark}
-                hint="Formatos aceptados: PDF, DOC, DOCX. Tamaño máximo: 25 MB."
+              {/* Confirmación de aprobación por el Comité */}
+              <div
+                style={{
+                  padding: "16px 18px",
+                  borderRadius: 10,
+                  backgroundColor: dark ? "rgba(234,179,8,0.08)" : "rgba(234,179,8,0.07)",
+                  border: `1.5px solid ${errors.confirmacion_aprobacion ? "#E53E3E" : dark ? "rgba(234,179,8,0.35)" : "rgba(234,179,8,0.5)"}`,
+                }}
               >
                 <label
                   style={{
                     display: "flex",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     gap: 12,
-                    padding: "12px 16px",
-                    borderRadius: 9,
-                    border: `1.5px dashed ${errors.archivo_ponencia ? "#E53E3E" : dark ? "rgba(255,255,255,0.2)" : "#9CA3AF"}`,
-                    backgroundColor: dark ? "rgba(255,255,255,0.03)" : "#F9FAFB",
                     cursor: "pointer",
-                    transition: "all 0.2s",
                   }}
                 >
-                  <Upload size={18} color={dark ? "rgba(255,255,255,0.4)" : "#9CA3AF"} />
-                  <span style={{ fontSize: 14, color: textMuted }}>
-                    Seleccionar archivo de ponencia
-                  </span>
                   <input
-                    {...register("archivo_ponencia")}
-                    type="file"
-                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    style={{ display: "none" }}
+                    {...register("confirmacion_aprobacion")}
+                    type="checkbox"
+                    style={{
+                      marginTop: 3,
+                      width: 17,
+                      height: 17,
+                      flexShrink: 0,
+                      accentColor: "var(--color-accent)",
+                      cursor: "pointer",
+                    }}
                   />
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <AlertTriangle size={15} color="#CA8A04" style={{ flexShrink: 0 }} />
+                      <span
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: dark ? "#FDE68A" : "#92400E",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.4,
+                        }}
+                      >
+                        Declaración obligatoria
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: dark ? "var(--color-dark-200)" : "#374151",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      Declaro que mi propuesta ha sido evaluada y{" "}
+                      <strong style={{ color: dark ? "#FDE68A" : "#92400E" }}>APROBADA</strong>{" "}
+                      formalmente por el Comité Científico del Coloquio. (Las inscripciones de
+                      expositores no aprobados previamente serán anuladas)
+                    </span>
+                  </div>
                 </label>
-              </Field>
+                {errors.confirmacion_aprobacion && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 10 }}>
+                    <AlertCircle size={13} color="#E53E3E" />
+                    <span style={{ fontSize: 13, color: "#E53E3E" }}>
+                      {errors.confirmacion_aprobacion.message}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
