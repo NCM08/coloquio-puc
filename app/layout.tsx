@@ -25,9 +25,16 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "VIII Coloquio Internacional de Sociología Clínica 2026",
+  title: "Coloquio de Sociología PUC - Inscripciones y Propuestas",
   description:
-    "VIII Coloquio Internacional de Sociología Clínica — 10 al 12 de noviembre de 2026, Santiago de Chile.",
+    "Participa en el Coloquio de Sociología de la Pontificia Universidad Católica. Envía tu propuesta o inscríbete como asistente o expositor.",
+  openGraph: {
+    title: "Coloquio de Sociología PUC - Inscripciones y Propuestas",
+    description:
+      "Participa en el Coloquio de Sociología de la Pontificia Universidad Católica. Envía tu propuesta o inscríbete como asistente o expositor.",
+    type: "website",
+    images: ["/images/uc-color.png"],
+  },
 };
 
 export default function RootLayout({
