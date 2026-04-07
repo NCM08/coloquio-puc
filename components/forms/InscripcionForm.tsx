@@ -200,7 +200,6 @@ function inputStyle(dark: boolean, hasError: boolean): React.CSSProperties {
 const COUNTRY_LIST = allCountries
   .map((c) => ({
     flag:  c.flag,
-    cca2:  c.cca2.toLowerCase(),
     spa:   c.translations?.spa?.common ?? c.name.common,
     search: [
       c.translations?.spa?.common ?? "",
@@ -214,19 +213,6 @@ const COUNTRY_LIST = allCountries
   }))
   .sort((a, b) => a.spa.localeCompare(b.spa, "es"));
 
-// ── Helper: imagen de bandera desde flagcdn.com ───────────────
-function FlagImg({ cca2, size = 20 }: { cca2: string; size?: number }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`https://flagcdn.com/w${Math.round(size * 1.5)}/${cca2}.png`}
-      width={Math.round(size * 1.5)}
-      height={size}
-      alt=""
-      style={{ display: "inline-block", borderRadius: 2, flexShrink: 0, objectFit: "cover" }}
-    />
-  );
-}
 
 // ── Buscador de países (Combobox) ─────────────────────────────
 function CountryCombobox({
@@ -300,7 +286,7 @@ function CountryCombobox({
         >
           {selected ? (
             <>
-              <FlagImg cca2={selected.cca2} size={18} />
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{selected.flag}</span>
               <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {selected.spa}
               </span>
@@ -370,7 +356,7 @@ function CountryCombobox({
                   value === c.spa ? (dark ? "rgba(255,255,255,0.08)" : "#EFF6FF") : "transparent")
               }
             >
-              <FlagImg cca2={c.cca2} size={18} />
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{c.flag}</span>
               <span>{c.spa}</span>
             </li>
           ))}
