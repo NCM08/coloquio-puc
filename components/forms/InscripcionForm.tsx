@@ -16,6 +16,12 @@ import { Turnstile } from "@marsidev/react-turnstile";
 // ── Constantes ────────────────────────────────────────────────
 const PASOS = ["Datos Personales", "Calidad y Ponencia", "Comprobante de Pago"];
 
+const TARIFAS: Record<string, string> = {
+  asistente: "$30.000",
+  expositor: "$40.000",
+  estudiante: "$15.000",
+};
+
 const EJES_TEMATICOS = [
   "Subjetividad, identidad y lazo social",
   "Clínica social y prácticas comunitarias",
@@ -161,6 +167,7 @@ export default function InscripcionForm() {
   const [submitResult, setSubmitResult] = useState<{ success: boolean; error?: string; id?: string } | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileKey, setTurnstileKey] = useState(0);
+  const [archivoNombre, setArchivoNombre] = useState<string | null>(null);
 
   const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
   const textPrimary = dark ? "var(--color-dark-100)" : "#111827";
@@ -515,9 +522,39 @@ export default function InscripcionForm() {
             >
               Datos para la transferencia bancaria
             </p>
-            <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.65, margin: "0 0 20px 0" }}>
+            <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.65, margin: "0 0 16px 0" }}>
               Realiza la transferencia por el monto correspondiente a tu categoría y sube el comprobante aquí.
             </p>
+
+            {/* Monto a transferir */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "14px 18px",
+                borderRadius: 10,
+                backgroundColor: dark ? "rgba(0,173,252,0.12)" : "rgba(0,173,252,0.12)",
+                border: `1.5px solid ${dark ? "rgba(0,173,252,0.45)" : "rgba(0,173,252,0.5)"}`,
+                marginBottom: 16,
+              }}
+            >
+              <div>
+                <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: dark ? "#60C8F5" : "#0284C7", margin: "0 0 2px 0" }}>
+                  Monto a transferir
+                </p>
+                <p style={{ fontSize: 24, fontWeight: 800, color: dark ? "#FFFFFF" : "#0369A1", margin: 0, fontFamily: "var(--font-display)" }}>
+                  {TARIFAS[calidad] ?? "$30.000"}
+                </p>
+              </div>
+              <div style={{ marginLeft: "auto", textAlign: "right" }}>
+                <p style={{ fontSize: 12, color: dark ? "#60C8F5" : "#0284C7", margin: 0, maxWidth: 180, lineHeight: 1.5 }}>
+                  {calidad === "asistente" && "Asistente (sin ponencia)"}
+                  {calidad === "expositor" && "Expositor/a (con ponencia)"}
+                  {calidad === "estudiante" && "Estudiante (tarifa especial)"}
+                </p>
+              </div>
+            </div>
 
             <div
               style={{
@@ -586,38 +623,74 @@ export default function InscripcionForm() {
             dark={dark}
             hint="Formatos aceptados: JPG, PNG, WEBP, PDF. Tamaño máximo: 10 MB."
           >
-            <label
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                padding: "32px 24px",
-                borderRadius: 12,
-                border: `2px dashed ${errors.comprobante_pago ? "#E53E3E" : dark ? "rgba(255,255,255,0.2)" : "#D1D5DB"}`,
-                backgroundColor: dark ? "rgba(255,255,255,0.02)" : "#FAFAFA",
-                cursor: "pointer",
-                textAlign: "center",
-                transition: "all 0.2s",
-              }}
-            >
-              <Upload size={28} color={dark ? "rgba(255,255,255,0.35)" : "#9CA3AF"} />
-              <div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: textPrimary, margin: "0 0 4px 0" }}>
-                  Adjuntar comprobante de pago
-                </p>
-                <p style={{ fontSize: 13, color: textMuted, margin: 0 }}>
-                  Haga clic para seleccionar el archivo
-                </p>
-              </div>
-              <input
-                {...register("comprobante_pago")}
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
-                style={{ display: "none" }}
-              />
-            </label>
+            {(() => {
+              const { onChange: onComprobanteChange, ...comprobanteRest } = register("comprobante_pago");
+              return (
+                <label
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                    padding: "32px 24px",
+                    borderRadius: 12,
+                    border: `2px dashed ${
+                      errors.comprobante_pago
+                        ? "#E53E3E"
+                        : archivoNombre
+                        ? (dark ? "rgba(16,185,129,0.5)" : "#6EE7B7")
+                        : dark ? "rgba(255,255,255,0.2)" : "#D1D5DB"
+                    }`,
+                    backgroundColor: archivoNombre
+                      ? (dark ? "rgba(16,185,129,0.07)" : "rgba(16,185,129,0.05)")
+                      : dark ? "rgba(255,255,255,0.02)" : "#FAFAFA",
+                    cursor: "pointer",
+                    textAlign: "center",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {archivoNombre ? (
+                    <>
+                      <CheckCircle size={28} color="#10B981" />
+                      <div>
+                        <p style={{ fontSize: 15, fontWeight: 600, color: "#10B981", margin: "0 0 4px 0" }}>
+                          Archivo seleccionado
+                        </p>
+                        <p style={{ fontSize: 13, color: textMuted, margin: 0, wordBreak: "break-all" }}>
+                          {archivoNombre}
+                        </p>
+                      </div>
+                      <p style={{ fontSize: 12, color: textMuted, margin: 0 }}>
+                        Haga clic para cambiar el archivo
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={28} color={dark ? "rgba(255,255,255,0.35)" : "#9CA3AF"} />
+                      <div>
+                        <p style={{ fontSize: 15, fontWeight: 600, color: textPrimary, margin: "0 0 4px 0" }}>
+                          Adjuntar comprobante de pago
+                        </p>
+                        <p style={{ fontSize: 13, color: textMuted, margin: 0 }}>
+                          Haga clic para seleccionar el archivo
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  <input
+                    {...comprobanteRest}
+                    onChange={(e) => {
+                      onComprobanteChange(e);
+                      setArchivoNombre(e.target.files?.[0]?.name ?? null);
+                    }}
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
+                    style={{ display: "none" }}
+                  />
+                </label>
+              );
+            })()}
           </Field>
 
           {/* Nota de seguridad */}
