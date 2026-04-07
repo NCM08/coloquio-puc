@@ -299,16 +299,19 @@ export default function Footer() {
                 justifyContent: "center",
                 boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
             }}>
-                <Image
-                src={LOGO_UC.src}
-                alt={LOGO_UC.alt}
-                width={340}
-                height={160}
-                style={{ height: "clamp(96px, 13vw, 140px)", width: "auto", objectFit: "contain" }}
-                />
+                {/* Contenedor fijo de ancho — imagen se adapta con w-full h-auto */}
+                <div className="w-64 md:w-80">
+                    <Image
+                    src={LOGO_UC.src}
+                    alt={LOGO_UC.alt}
+                    width={340}
+                    height={160}
+                    className="w-full h-auto object-contain"
+                    />
+                </div>
             </div>
 
-            {/* Nivel 2 — Facultades (60–70% del peso visual de la UC) */}
+            {/* Nivel 2 — Facultades */}
             <div style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -328,23 +331,24 @@ export default function Footer() {
                     justifyContent: "center",
                     }}
                 >
-                    <Image
-                    src={src}
-                    alt={alt}
-                    width={180}
-                    height={88}
-                    style={{
-                        height: "clamp(56px, 8.5vw, 84px)",
-                        width: "auto",
-                        objectFit: "contain",
-                        filter: black ? "grayscale(100%) brightness(0)" : undefined,
-                    }}
-                    />
+                    {/* Mismo contenedor para facultades y colaboradores → peso 50/50 */}
+                    <div className="w-40 md:w-48">
+                        <Image
+                        src={src}
+                        alt={alt}
+                        width={180}
+                        height={88}
+                        className={[
+                            "w-full h-auto object-contain",
+                            black ? "grayscale brightness-0" : "",
+                        ].join(" ")}
+                        />
+                    </div>
                 </div>
                 ))}
             </div>
 
-            {/* Nivel 2 — Colaboradores (mismo tamaño que facultades) */}
+            {/* Nivel 2 — Colaboradores (contenedor idéntico al de facultades) */}
             <div style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -364,17 +368,15 @@ export default function Footer() {
                     justifyContent: "center",
                     }}
                 >
-                    <Image
-                    src={src}
-                    alt={alt}
-                    width={180}
-                    height={88}
-                    style={{
-                        height: "clamp(56px, 8.5vw, 84px)",
-                        width: "auto",
-                        objectFit: "contain",
-                    }}
-                    />
+                    <div className="w-40 md:w-48">
+                        <Image
+                        src={src}
+                        alt={alt}
+                        width={180}
+                        height={88}
+                        className="w-full h-auto object-contain"
+                        />
+                    </div>
                 </div>
                 ))}
             </div>

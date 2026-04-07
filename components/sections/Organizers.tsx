@@ -21,32 +21,33 @@ const COLLABORATORS = [
     { src: "/images/nodo-sur-logo.png",  alt: "Nodo Sur RISC" },
 ];
 
-
-/** Tarjeta grande para el logo principal de la UC — Nivel 1, protagonista */
+// ─── NIVEL 1: Logo UC — protagonista absoluto ─────────────────────────────────
 function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: boolean }) {
     return (
         <div
             className={[
-                "flex items-center justify-center rounded-2xl px-12 py-8",
-                "border-2 transition-colors duration-200 shadow-md",
+                "flex items-center justify-center rounded-2xl px-10 py-8",
+                "border-2 shadow-md transition-colors duration-200",
                 dark
                     ? "bg-white border-[var(--color-dark-300)]"
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
         >
-            <Image
-                src={src}
-                alt={alt}
-                width={340}
-                height={160}
-                className="object-contain"
-                style={{ height: "clamp(100px, 14vw, 148px)", width: "auto" }}
-            />
+            {/* Contenedor con ancho fijo — la imagen se adapta con w-full h-auto */}
+            <div className="w-56 md:w-72">
+                <Image
+                    src={src}
+                    alt={alt}
+                    width={340}
+                    height={160}
+                    className="w-full h-auto object-contain"
+                />
+            </div>
         </div>
     );
 }
 
-/** Tarjeta Nivel 2 — facultades y colaboradores (60–70% del peso visual de la UC) */
+// ─── NIVEL 2: Facultades y Colaboradores — mismo peso visual exacto ───────────
 function SmallLogoCard({
     src,
     alt,
@@ -68,20 +69,19 @@ function SmallLogoCard({
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
         >
-            <Image
-                src={src}
-                alt={alt}
-                width={180}
-                height={88}
-                className="object-contain"
-                style={{
-                    height: "clamp(60px, 9vw, 88px)",
-                    width: "auto",
-                    filter: blackFilter
-                        ? "grayscale(100%) brightness(0)"
-                        : undefined,
-                }}
-            />
+            {/* Mismo contenedor para facultades y colaboradores → peso visual 50/50 */}
+            <div className="w-40 md:w-48">
+                <Image
+                    src={src}
+                    alt={alt}
+                    width={180}
+                    height={88}
+                    className={[
+                        "w-full h-auto object-contain",
+                        blackFilter ? "grayscale brightness-0" : "",
+                    ].join(" ")}
+                />
+            </div>
         </div>
     );
 }
@@ -89,57 +89,46 @@ function SmallLogoCard({
 export default function Organizers() {
     const { dark } = useTheme();
 
-    const sectionBg   = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
-    const labelColor  = "var(--color-dark-400)";
+    const sectionBg    = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
+    const labelColor   = "var(--color-dark-400)";
     const headingColor = dark ? "var(--color-dark-100)" : "var(--color-primary)";
     const dividerColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
 
     return (
         <section
             className="py-12 md:py-20 px-4 md:px-8 lg:px-12"
-            style={{
-                backgroundColor: sectionBg,
-                transition: "background-color 0.3s",
-            }}
+            style={{ backgroundColor: sectionBg, transition: "background-color 0.3s" }}
         >
-            <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto", textAlign: "center" }}>
 
                 {/* ── ORGANIZAN ── */}
                 <FadeInSection>
-                    <p
-                        style={{
-                            fontSize: 12,
-                            fontWeight: 600,
-                            textTransform: "uppercase",
-                            letterSpacing: 2,
-                            color: labelColor,
-                            marginBottom: 4,
-                        }}
-                    >
+                    <p style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: 2,
+                        color: labelColor,
+                        marginBottom: 4,
+                    }}>
                         Organizan
                     </p>
-                    <h2
-                        style={{
-                            fontSize: 22,
-                            fontWeight: 700,
-                            fontFamily: "var(--font-display)",
-                            color: headingColor,
-                            marginBottom: 0,
-                        }}
-                    >
+                    <h2 style={{
+                        fontSize: 22,
+                        fontWeight: 700,
+                        fontFamily: "var(--font-display)",
+                        color: headingColor,
+                        marginBottom: 0,
+                    }}>
                         Instituciones organizadoras
                     </h2>
 
-                    {/* Logo principal UC — Nivel 1, centrado y dominante */}
+                    {/* Nivel 1 — UC, centrada y dominante */}
                     <div className="flex justify-center mt-8">
-                        <MainLogoCard
-                            src={ORGANIZER_MAIN.src}
-                            alt={ORGANIZER_MAIN.alt}
-                            dark={dark}
-                        />
+                        <MainLogoCard src={ORGANIZER_MAIN.src} alt={ORGANIZER_MAIN.alt} dark={dark} />
                     </div>
 
-                    {/* 3 logos de facultades — Nivel 2, 60-70% del peso visual de la UC */}
+                    {/* Nivel 2 — Facultades */}
                     <div className="flex flex-wrap justify-center items-center gap-6 mt-8 max-w-3xl mx-auto">
                         {ORGANIZER_FACULTIES.map(({ src, alt, blackFilter }) => (
                             <SmallLogoCard
@@ -154,50 +143,39 @@ export default function Organizers() {
                 </FadeInSection>
 
                 {/* ── DIVIDER ── */}
-                <div
-                    style={{
-                        margin: "56px auto",
-                        height: 1,
-                        maxWidth: 480,
-                        backgroundColor: dividerColor,
-                    }}
-                />
+                <div style={{
+                    margin: "56px auto",
+                    height: 1,
+                    maxWidth: 480,
+                    backgroundColor: dividerColor,
+                }} />
 
                 {/* ── COLABORAN ── */}
                 <FadeInSection delay={0.2}>
-                    <p
-                        style={{
-                            fontSize: 12,
-                            fontWeight: 600,
-                            textTransform: "uppercase",
-                            letterSpacing: 2,
-                            color: labelColor,
-                            marginBottom: 4,
-                        }}
-                    >
+                    <p style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: 2,
+                        color: labelColor,
+                        marginBottom: 4,
+                    }}>
                         Colaboran
                     </p>
-                    <h2
-                        style={{
-                            fontSize: 22,
-                            fontWeight: 700,
-                            fontFamily: "var(--font-display)",
-                            color: headingColor,
-                            marginBottom: 0,
-                        }}
-                    >
+                    <h2 style={{
+                        fontSize: 22,
+                        fontWeight: 700,
+                        fontFamily: "var(--font-display)",
+                        color: headingColor,
+                        marginBottom: 0,
+                    }}>
                         Redes Internacionales
                     </h2>
 
-                    {/* Logos colaboradores — Nivel 2, idéntico tamaño a las facultades */}
+                    {/* Nivel 2 — Colaboradores, idéntico tamaño a facultades */}
                     <div className="flex flex-wrap justify-center gap-6 mt-8 max-w-3xl mx-auto">
                         {COLLABORATORS.map(({ src, alt }) => (
-                            <SmallLogoCard
-                                key={src}
-                                src={src}
-                                alt={alt}
-                                dark={dark}
-                            />
+                            <SmallLogoCard key={src} src={src} alt={alt} dark={dark} />
                         ))}
                     </div>
                 </FadeInSection>
