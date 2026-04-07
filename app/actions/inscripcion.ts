@@ -109,19 +109,33 @@ export async function procesarInscripcion(
     // b) Subir comprobante_pago
     const rutaComprobante = await subirArchivo(comprobantePago, "comprobantes_pago");
 
-    // c) Insertar en tabla `perfiles`
+    // c) Upsert en tabla `perfiles` — si el email ya existe, actualiza los datos y recupera el id
     const { data: perfil, error: perfilError } = await supabase
       .from("perfiles")
-      .insert({ nombre, apellidos, email, nacionalidad })
+      .upsert({ nombre, apellidos, email, nacionalidad }, { onConflict: "email" })
       .select("id")
       .single();
 
     if (perfilError || !perfil) {
-      throw new Error(`Error al crear perfil: ${perfilError?.message}`);
+      throw new Error(`Error al procesar perfil: ${perfilError?.message}`);
     }
     const perfilId: string = perfil.id;
 
-    // d) Si es expositor, insertar en `ponencias`
+    // d) Bloquear inscripción duplicada — verificar si este perfil ya tiene una inscripción
+    const { data: inscripcionExistente } = await supabase
+      .from("inscripciones")
+      .select("id")
+      .eq("usuario_id", perfilId)
+      .maybeSingle();
+
+    if (inscripcionExistente) {
+      return {
+        success: false,
+        message: "El correo ingresado ya cuenta con una inscripción registrada en el sistema.",
+      };
+    }
+
+    // e) Si es expositor, insertar en `ponencias`
     let ponenciaId: string | null = null;
     if (esExpositor) {
       const { data: ponencia, error: ponenciaError } = await supabase
@@ -140,7 +154,7 @@ export async function procesarInscripcion(
       ponenciaId = ponencia.id;
     }
 
-    // e) Insertar en `inscripciones`
+    // f) Insertar en `inscripciones`
     const { data: inscripcion, error: inscripcionError } = await supabase
       .from("inscripciones")
       .insert({
@@ -158,7 +172,7 @@ export async function procesarInscripcion(
     }
     const inscripcionId: string = inscripcion.id;
 
-    // f) Insertar en `pagos`
+    // g) Insertar en `pagos`
     const { error: pagoError } = await supabase
       .from("pagos")
       .insert({
@@ -171,7 +185,7 @@ export async function procesarInscripcion(
       throw new Error(`Error al registrar pago: ${pagoError.message}`);
     }
 
-    // g) Retornar éxito
+    // h) Retornar éxito
     return {
       success: true,
       message: "Inscripción registrada exitosamente.",
