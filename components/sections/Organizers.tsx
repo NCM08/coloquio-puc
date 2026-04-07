@@ -8,12 +8,12 @@ import Image from "next/image";
 import FadeInSection from "@/components/ui/FadeInSection";
 import { useTheme } from "@/components/ThemeProvider";
 
-const ORGANIZER_MAIN = { src: "/images/logo-uc.png", alt: "Pontificia Universidad Católica de Chile" };
+const ORGANIZER_MAIN = { src: "/images/uc-color.png", alt: "Pontificia Universidad Católica de Chile" };
 
-const ORGANIZER_FACULTIES = [
+const ORGANIZER_FACULTIES: { src: string; alt: string; blackFilter?: boolean }[] = [
     { src: "/images/logo-educacion.png",      alt: "Facultad de Educación UC" },
     { src: "/images/logo-psicologia.png",     alt: "Escuela de Psicología UC" },
-    { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC" },
+    { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC", blackFilter: true },
 ];
 
 const COLLABORATORS = [
@@ -22,21 +22,13 @@ const COLLABORATORS = [
 ];
 
 
-function LogoCard({
-    src,
-    alt,
-    dark,
-}: {
-    src: string;
-    alt: string;
-    dark: boolean;
-}) {
+/** Tarjeta grande para el logo principal de la UC */
+function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: boolean }) {
     return (
         <div
             className={[
-                "flex items-center justify-center rounded-xl px-6 py-4",
+                "flex items-center justify-center rounded-xl px-8 py-5",
                 "border transition-colors duration-200",
-                "w-full sm:w-72 md:w-64",
                 dark
                     ? "bg-white border-[var(--color-dark-300)]"
                     : "bg-white border-[var(--color-dark-100)]",
@@ -45,27 +37,44 @@ function LogoCard({
             <Image
                 src={src}
                 alt={alt}
-                width={160}
-                height={80}
-                className="h-20 w-auto object-contain"
-                style={{ width: "auto", height: "auto" }}
+                width={220}
+                height={110}
+                className="h-24 w-auto object-contain"
             />
         </div>
     );
 }
 
-function LogoGrid({
-    logos,
+/** Tarjeta pequeña para facultades y colaboradores (mismo peso visual) */
+function SmallLogoCard({
+    src,
+    alt,
     dark,
+    blackFilter = false,
 }: {
-    logos: { src: string; alt: string }[];
+    src: string;
+    alt: string;
     dark: boolean;
+    blackFilter?: boolean;
 }) {
     return (
-        <div className="flex flex-wrap justify-center gap-6 mt-6">
-            {logos.map(({ src, alt }) => (
-                <LogoCard key={src} src={src} alt={alt} dark={dark} />
-            ))}
+        <div
+            className={[
+                "flex items-center justify-center rounded-xl px-4 py-3",
+                "border transition-colors duration-200",
+                dark
+                    ? "bg-white border-[var(--color-dark-300)]"
+                    : "bg-white border-[var(--color-dark-100)]",
+            ].join(" ")}
+        >
+            <Image
+                src={src}
+                alt={alt}
+                width={110}
+                height={52}
+                className="h-10 w-auto object-contain"
+                style={blackFilter ? { filter: "brightness(0) contrast(100%)" } : undefined}
+            />
         </div>
     );
 }
@@ -73,8 +82,8 @@ function LogoGrid({
 export default function Organizers() {
     const { dark } = useTheme();
 
-    const sectionBg = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
-    const labelColor = "var(--color-dark-400)";
+    const sectionBg   = dark ? "var(--color-dark-800)" : "var(--color-dark-50)";
+    const labelColor  = "var(--color-dark-400)";
     const headingColor = dark ? "var(--color-dark-100)" : "var(--color-primary)";
     const dividerColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
 
@@ -114,15 +123,25 @@ export default function Organizers() {
                         Instituciones organizadoras
                     </h2>
 
-                    {/* Fila 1: Logo principal UC centrado */}
+                    {/* Logo principal UC — centrado, tamaño dominante */}
                     <div className="flex justify-center mt-6">
-                        <LogoCard src={ORGANIZER_MAIN.src} alt={ORGANIZER_MAIN.alt} dark={dark} />
+                        <MainLogoCard
+                            src={ORGANIZER_MAIN.src}
+                            alt={ORGANIZER_MAIN.alt}
+                            dark={dark}
+                        />
                     </div>
 
-                    {/* Fila 2: 3 logos de facultades */}
-                    <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 mt-6 max-w-4xl mx-auto">
-                        {ORGANIZER_FACULTIES.map(({ src, alt }) => (
-                            <LogoCard key={src} src={src} alt={alt} dark={dark} />
+                    {/* 3 logos de facultades — subordinados al logo principal */}
+                    <div className="flex flex-wrap justify-center items-center gap-4 mt-5 max-w-2xl mx-auto">
+                        {ORGANIZER_FACULTIES.map(({ src, alt, blackFilter }) => (
+                            <SmallLogoCard
+                                key={src}
+                                src={src}
+                                alt={alt}
+                                dark={dark}
+                                blackFilter={blackFilter}
+                            />
                         ))}
                     </div>
                 </FadeInSection>
@@ -162,7 +181,18 @@ export default function Organizers() {
                     >
                         Redes Internacionales
                     </h2>
-                    <LogoGrid logos={COLLABORATORS} dark={dark} />
+
+                    {/* Logos colaboradores — mismo tamaño que las facultades */}
+                    <div className="flex flex-wrap justify-center gap-4 mt-6">
+                        {COLLABORATORS.map(({ src, alt }) => (
+                            <SmallLogoCard
+                                key={src}
+                                src={src}
+                                alt={alt}
+                                dark={dark}
+                            />
+                        ))}
+                    </div>
                 </FadeInSection>
 
             </div>
