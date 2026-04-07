@@ -4,11 +4,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import allCountries from "world-countries";
 import {
   inscripcionSchema,
   type InscripcionFormData,
@@ -193,6 +194,142 @@ function inputStyle(dark: boolean, hasError: boolean): React.CSSProperties {
     transition: "border-color 0.2s",
     boxSizing: "border-box",
   };
+}
+
+// ── Datos de países: bandera + nombre en español ──────────────
+const COUNTRY_LIST = allCountries
+  .map((c) => ({
+    flag:  c.flag,
+    spa:   c.translations?.spa?.common ?? c.name.common,
+    search: [
+      c.translations?.spa?.common ?? "",
+      c.translations?.por?.common ?? "",
+      c.translations?.fra?.common ?? "",
+      c.name.common,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase(),
+  }))
+  .sort((a, b) => a.spa.localeCompare(b.spa, "es"));
+
+// ── Buscador de países (Combobox) ─────────────────────────────
+function CountryCombobox({
+  value,
+  onChange,
+  dark,
+  hasError,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  dark: boolean;
+  hasError: boolean;
+}) {
+  const [query, setQuery]       = useState(value ?? "");
+  const [open, setOpen]         = useState(false);
+  const wrapperRef              = useRef<HTMLDivElement>(null);
+
+  // Sync display when form resets
+  useEffect(() => { setQuery(value ?? ""); }, [value]);
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        // If user typed something but didn't select, restore last valid value
+        if (!COUNTRY_LIST.some((c) => c.spa === query)) {
+          setQuery(value ?? "");
+        }
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [query, value]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return COUNTRY_LIST.slice(0, 50);
+    return COUNTRY_LIST.filter((c) => c.search.includes(q)).slice(0, 60);
+  }, [query]);
+
+  function select(country: typeof COUNTRY_LIST[number]) {
+    setQuery(country.spa);
+    onChange(country.spa);
+    setOpen(false);
+  }
+
+  return (
+    <div ref={wrapperRef} style={{ position: "relative", width: "100%" }}>
+      <input
+        type="text"
+        autoComplete="off"
+        value={query}
+        placeholder="Escribe para buscar: Chile, Colombia, Brazil…"
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setOpen(true);
+          // Clear RHF value until a valid country is selected
+          if (!COUNTRY_LIST.some((c) => c.spa === e.target.value)) {
+            onChange("");
+          }
+        }}
+        onFocus={() => setOpen(true)}
+        style={inputStyle(dark, hasError)}
+      />
+      {open && filtered.length > 0 && (
+        <ul
+          style={{
+            position:        "absolute",
+            top:             "calc(100% + 4px)",
+            left:            0,
+            right:           0,
+            maxHeight:       220,
+            overflowY:       "auto",
+            zIndex:          1000,
+            margin:          0,
+            padding:         "4px 0",
+            listStyle:       "none",
+            borderRadius:    9,
+            border:          `1.5px solid ${dark ? "rgba(255,255,255,0.15)" : "#D1D5DB"}`,
+            backgroundColor: dark ? "var(--color-dark-800)" : "#FFFFFF",
+            boxShadow:       "0 8px 24px rgba(0,0,0,0.12)",
+          }}
+        >
+          {filtered.map((c) => (
+            <li
+              key={c.spa}
+              onMouseDown={() => select(c)}
+              style={{
+                padding:    "9px 14px",
+                cursor:     "pointer",
+                fontSize:   14,
+                fontFamily: "var(--font-body)",
+                color:      dark ? "var(--color-dark-100)" : "#111827",
+                display:    "flex",
+                alignItems: "center",
+                gap:        10,
+                backgroundColor: value === c.spa
+                  ? (dark ? "rgba(255,255,255,0.08)" : "#EFF6FF")
+                  : "transparent",
+              }}
+              onMouseEnter={(e) =>
+                ((e.currentTarget as HTMLLIElement).style.backgroundColor =
+                  dark ? "rgba(255,255,255,0.06)" : "#F3F4F6")
+              }
+              onMouseLeave={(e) =>
+                ((e.currentTarget as HTMLLIElement).style.backgroundColor =
+                  value === c.spa ? (dark ? "rgba(255,255,255,0.08)" : "#EFF6FF") : "transparent")
+              }
+            >
+              <span style={{ fontSize: 20, lineHeight: 1 }}>{c.flag}</span>
+              <span>{c.spa}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
 
 // ════════════════════════════════════════════════════════════
@@ -395,10 +532,11 @@ export default function InscripcionForm() {
           </Field>
 
           <Field label="Nacionalidad" required error={errors.nacionalidad?.message} dark={dark}>
-            <input
-              {...register("nacionalidad")}
-              placeholder="Ej. Chilena, Colombiana, Española…"
-              style={inputStyle(dark, !!errors.nacionalidad)}
+            <CountryCombobox
+              value={watch("nacionalidad") ?? ""}
+              onChange={(v) => setValue("nacionalidad", v, { shouldValidate: true, shouldTouch: true })}
+              dark={dark}
+              hasError={!!errors.nacionalidad}
             />
           </Field>
         </div>

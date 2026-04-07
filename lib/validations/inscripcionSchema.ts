@@ -58,7 +58,7 @@ export const personalSchema = z.object({
     .trim()
     .min(4, "Ingrese su nacionalidad")
     .max(80, "La nacionalidad no puede superar los 80 caracteres")
-    .regex(/^[a-zA-ZÀ-ÿ\s]+$/, "Solo se permiten letras"),
+    .regex(/^[a-zA-ZÀ-ÿ\s'\-]+$/, "Solo se permiten letras"),
 });
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
