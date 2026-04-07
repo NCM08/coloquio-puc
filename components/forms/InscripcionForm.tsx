@@ -414,6 +414,9 @@ export default function InscripcionForm() {
 
   // ── Pantalla de éxito ─────────────────────────────────────
   if (submitResult?.success) {
+    const numeroReferencia = submitResult.id
+      ? `COL-${submitResult.id.substring(0, 8).toUpperCase()}`
+      : '';
     return (
       <div
         style={{
@@ -466,7 +469,7 @@ export default function InscripcionForm() {
               padding: "10px 16px",
             }}
           >
-            N.° de referencia: <strong style={{ color: textPrimary }}>{submitResult.id}</strong>
+            N.° de referencia: <strong style={{ color: textPrimary }}>{numeroReferencia}</strong>
           </p>
         )}
       </div>
