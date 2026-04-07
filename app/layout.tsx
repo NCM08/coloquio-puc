@@ -25,6 +25,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://coloquio-puc.vercel.app'),
   title: "Coloquio de Sociología PUC - Inscripciones y Propuestas",
   description:
     "Participa en el Coloquio de Sociología de la Pontificia Universidad Católica. Envía tu propuesta o inscríbete como asistente o expositor.",
