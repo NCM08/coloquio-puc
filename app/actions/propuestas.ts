@@ -1,6 +1,17 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
+import ConfirmacionPropuestaEmail from "@/components/emails/ConfirmacionPropuestaEmail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Cliente con privilegios de administrador — solo para server actions.
+// La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function enviarPropuesta(formData: FormData) {
   try {
@@ -21,18 +32,30 @@ export async function enviarPropuesta(formData: FormData) {
       return { error: "Fallo la validación de seguridad anti-bots." };
     }
 
-    const nombre      = formData.get("nombre")      as string;
-    const correo      = formData.get("correo")      as string;
-    const institucion = formData.get("institucion") as string;
-    const eje         = formData.get("eje")         as string;
+    const nombre      = (formData.get("nombre")      as string)?.trim();
+    const correo      = (formData.get("correo")      as string)?.trim().toLowerCase();
+    const institucion = (formData.get("institucion") as string)?.trim();
+    const eje         = (formData.get("eje")         as string)?.trim();
     const archivo     = formData.get("archivo")     as File;
 
     if (!nombre || !correo || !institucion || !eje || !archivo || archivo.size === 0) {
       return { error: "Todos los campos son obligatorios." };
     }
 
+    // ── Upsert en tabla `perfiles` — evita duplicados por email ──
+    const { data: perfil, error: perfilError } = await supabase
+      .from("perfiles")
+      .upsert({ nombre, email: correo }, { onConflict: "email" })
+      .select("id")
+      .single();
+
+    if (perfilError || !perfil) {
+      console.error("Error al procesar perfil:", perfilError);
+      return { error: "No se pudo procesar el perfil. Por favor, inténtelo nuevamente." };
+    }
+
     // Generar nombre de archivo único
-    const extension    = archivo.name.split(".").pop();
+    const extension     = archivo.name.split(".").pop();
     const nombreArchivo = `propuesta_${Date.now()}.${extension}`;
 
     // Subir archivo al bucket "documentos_ponencias"
@@ -67,6 +90,18 @@ export async function enviarPropuesta(formData: FormData) {
     if (dbError) {
       console.error("Error al insertar propuesta:", dbError);
       return { error: "No se pudo registrar la propuesta. Por favor, inténtelo nuevamente." };
+    }
+
+    // ── Enviar correo de confirmación (no bloquea si falla) ───
+    try {
+      await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: correo,
+        subject: "Hemos recibido tu propuesta - Coloquio PUC",
+        react: ConfirmacionPropuestaEmail({ nombre }),
+      });
+    } catch (emailErr) {
+      console.error("[enviarPropuesta] Error al enviar correo de confirmación:", emailErr);
     }
 
     return { success: true };
