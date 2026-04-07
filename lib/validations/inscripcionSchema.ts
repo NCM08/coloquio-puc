@@ -43,8 +43,12 @@ export const personalSchema = z.object({
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
 export const asistenciaSchema = z.object({
-  // CORRECCIÓN: Sintaxis pura sin objeto de errorMap
-  calidad_asistencia: z.enum(["asistente", "expositor", "estudiante"]),
+  calidad_asistencia: z.enum(["asistente", "expositor"], {
+    message: "Seleccione un rol de participación",
+  }),
+  categoria: z.enum(["pregrado", "profesional", "posgrado", "academico"], {
+    message: "Seleccione una categoría",
+  }),
   titulo_ponencia: z.string().optional(),
   eje_tematico:    z.string().optional(),
   archivo_ponencia: z.custom<FileList>().optional(),
@@ -81,6 +85,7 @@ export const inscripcionSchema = z
 
     // Paso 2
     calidad_asistencia: asistenciaSchema.shape.calidad_asistencia,
+    categoria:          asistenciaSchema.shape.categoria,
     titulo_ponencia:    z.string().optional(),
     eje_tematico:       z.string().optional(),
     archivo_ponencia:   z.custom<FileList>().optional(),
@@ -161,6 +166,6 @@ export type InscripcionFormData = z.infer<typeof inscripcionSchema>;
 // ── Campos por paso (para trigger parcial en RHF) ─────────────
 export const CAMPOS_POR_PASO = {
   1: ["nombre", "apellidos", "email", "nacionalidad"] as const,
-  2: ["calidad_asistencia", "titulo_ponencia", "eje_tematico", "archivo_ponencia"] as const,
+  2: ["calidad_asistencia", "categoria", "titulo_ponencia", "eje_tematico", "archivo_ponencia"] as const,
   3: ["comprobante_pago"] as const,
 } as const;

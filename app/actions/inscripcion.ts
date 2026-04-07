@@ -62,17 +62,22 @@ export async function procesarInscripcion(
     const email              = (formData.get("email")              as string)?.trim().toLowerCase();
     const nacionalidad       = (formData.get("nacionalidad")       as string)?.trim();
     const calidad_asistencia = (formData.get("calidad_asistencia") as string)?.trim();
+    const categoria          = (formData.get("categoria")          as string)?.trim();
     const titulo_ponencia    = (formData.get("titulo_ponencia")    as string | null)?.trim() || null;
     const eje_tematico       = (formData.get("eje_tematico")       as string | null)?.trim() || null;
 
-    if (!nombre || !apellidos || !email || !nacionalidad || !calidad_asistencia) {
+    if (!nombre || !apellidos || !email || !nacionalidad || !calidad_asistencia || !categoria) {
       return { success: false, message: "Faltan campos obligatorios en el formulario." };
     }
 
-    // Validar enum de calidad de asistencia
-    const calidades = ["asistente", "expositor", "estudiante"];
+    // Validar enums
+    const calidades = ["asistente", "expositor"];
     if (!calidades.includes(calidad_asistencia)) {
-      return { success: false, message: "Calidad de asistencia no válida." };
+      return { success: false, message: "Rol de participación no válido." };
+    }
+    const categorias = ["pregrado", "profesional", "posgrado", "academico"];
+    if (!categorias.includes(categoria)) {
+      return { success: false, message: "Categoría no válida." };
     }
 
     const archivoPonencia = formData.get("archivo_ponencia") as File | null;
@@ -138,6 +143,7 @@ export async function procesarInscripcion(
       .insert({
         usuario_id:         perfilId,
         calidad_asistencia,
+        categoria,
         ponencia_id:        ponenciaId,
         estado:             "pendiente",
       })

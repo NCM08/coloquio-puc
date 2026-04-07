@@ -16,10 +16,31 @@ import { Turnstile } from "@marsidev/react-turnstile";
 // ── Constantes ────────────────────────────────────────────────
 const PASOS = ["Datos Personales", "Calidad y Ponencia", "Comprobante de Pago"];
 
-const TARIFAS: Record<string, string> = {
-  asistente: "$30.000",
-  expositor: "$40.000",
-  estudiante: "$15.000",
+// ── Tarifas oficiales (CLP) ───────────────────────────────────
+const TARIFAS_CLP: Record<string, Record<string, number>> = {
+  pregrado:    { asistente: 13000, expositor: 16000 },
+  profesional: { asistente: 26000, expositor: 34000 },
+  posgrado:    { asistente: 38000, expositor: 54000 },
+  academico:   { asistente: 55000, expositor: 80000 },
+};
+
+const USD_POR_CLP = 950;
+
+function calcularTarifa(categoria: string, rol: string): { clp: number; usd: number } | null {
+  const clp = TARIFAS_CLP[categoria]?.[rol];
+  if (!clp) return null;
+  return { clp, usd: Math.round(clp / USD_POR_CLP) };
+}
+
+function formatCLP(n: number): string {
+  return `$${n.toLocaleString("es-CL")}`;
+}
+
+const LABELS_CATEGORIA: Record<string, string> = {
+  pregrado:    "Estudiante de pregrado",
+  profesional: "Profesional de cs. sociales, humanidades o artes",
+  posgrado:    "Estudiante de posgrado",
+  academico:   "Académico/a e investigador/a",
 };
 
 const EJES_TEMATICOS = [
@@ -188,7 +209,8 @@ export default function InscripcionForm() {
     },
   });
 
-  const calidad = watch("calidad_asistencia");
+  const calidad    = watch("calidad_asistencia");
+  const categoria  = watch("categoria");
   const esExpositor = calidad === "expositor";
 
   // ── Validación parcial al hacer "Siguiente" ────────────────
@@ -198,7 +220,7 @@ export default function InscripcionForm() {
     if (currentStep === 0) {
       camposAValidar = ["nombre", "apellidos", "email", "nacionalidad"];
     } else if (currentStep === 1) {
-      camposAValidar = ["calidad_asistencia"];
+      camposAValidar = ["calidad_asistencia", "categoria"];
       if (esExpositor) {
         camposAValidar.push("titulo_ponencia", "eje_tematico", "archivo_ponencia");
       }
@@ -218,6 +240,7 @@ export default function InscripcionForm() {
     fd.append("email",              data.email);
     fd.append("nacionalidad",       data.nacionalidad);
     fd.append("calidad_asistencia", data.calidad_asistencia);
+    fd.append("categoria",          data.categoria);
 
     if (esExpositor) {
       if (data.titulo_ponencia) fd.append("titulo_ponencia", data.titulo_ponencia);
@@ -378,7 +401,7 @@ export default function InscripcionForm() {
       {currentStep === 1 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <Field
-            label="Calidad de asistencia"
+            label="Rol de participación"
             required
             error={errors.calidad_asistencia?.message}
             dark={dark}
@@ -393,7 +416,28 @@ export default function InscripcionForm() {
             >
               <option value="asistente">Asistente (sin presentación de ponencia)</option>
               <option value="expositor">Expositor/a (con presentación de ponencia)</option>
-              <option value="estudiante">Estudiante (tarifa especial)</option>
+            </select>
+          </Field>
+
+          <Field
+            label="Categoría"
+            required
+            error={errors.categoria?.message}
+            dark={dark}
+          >
+            <select
+              {...register("categoria")}
+              style={{
+                ...inputStyle(dark, !!errors.categoria),
+                cursor: "pointer",
+                appearance: "none",
+              }}
+            >
+              <option value="">Seleccione su categoría…</option>
+              <option value="pregrado">Estudiante de pregrado</option>
+              <option value="profesional">Profesional de ciencias sociales, humanidades o artes</option>
+              <option value="posgrado">Estudiante de posgrado</option>
+              <option value="academico">Académico/a e investigador/a</option>
             </select>
           </Field>
 
@@ -527,34 +571,50 @@ export default function InscripcionForm() {
             </p>
 
             {/* Monto a transferir */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "14px 18px",
-                borderRadius: 10,
-                backgroundColor: dark ? "rgba(0,173,252,0.12)" : "rgba(0,173,252,0.12)",
-                border: `1.5px solid ${dark ? "rgba(0,173,252,0.45)" : "rgba(0,173,252,0.5)"}`,
-                marginBottom: 16,
-              }}
-            >
-              <div>
-                <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: dark ? "#60C8F5" : "#0284C7", margin: "0 0 2px 0" }}>
-                  Monto a transferir
-                </p>
-                <p style={{ fontSize: 24, fontWeight: 800, color: dark ? "#FFFFFF" : "#0369A1", margin: 0, fontFamily: "var(--font-display)" }}>
-                  {TARIFAS[calidad] ?? "$30.000"}
-                </p>
-              </div>
-              <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                <p style={{ fontSize: 12, color: dark ? "#60C8F5" : "#0284C7", margin: 0, maxWidth: 180, lineHeight: 1.5 }}>
-                  {calidad === "asistente" && "Asistente (sin ponencia)"}
-                  {calidad === "expositor" && "Expositor/a (con ponencia)"}
-                  {calidad === "estudiante" && "Estudiante (tarifa especial)"}
-                </p>
-              </div>
-            </div>
+            {(() => {
+              const tarifa = calcularTarifa(categoria, calidad);
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "14px 18px",
+                    borderRadius: 10,
+                    backgroundColor: dark ? "rgba(0,173,252,0.12)" : "rgba(0,173,252,0.12)",
+                    border: `1.5px solid ${dark ? "rgba(0,173,252,0.45)" : "rgba(0,173,252,0.5)"}`,
+                    marginBottom: 16,
+                  }}
+                >
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: dark ? "#60C8F5" : "#0284C7", margin: "0 0 4px 0" }}>
+                      Monto a transferir
+                    </p>
+                    {tarifa ? (
+                      <>
+                        <p style={{ fontSize: 26, fontWeight: 800, color: dark ? "#FFFFFF" : "#0369A1", margin: 0, fontFamily: "var(--font-display)", lineHeight: 1.1 }}>
+                          {formatCLP(tarifa.clp)} CLP
+                        </p>
+                        <p style={{ fontSize: 13, color: dark ? "#60C8F5" : "#0284C7", margin: "4px 0 0 0" }}>
+                          ~ ${tarifa.usd} USD <span style={{ opacity: 0.7 }}>(referencial)</span>
+                        </p>
+                      </>
+                    ) : (
+                      <p style={{ fontSize: 15, color: textMuted, margin: 0, fontStyle: "italic" }}>
+                        Seleccione su categoría en el paso anterior
+                      </p>
+                    )}
+                  </div>
+                  <div style={{ marginLeft: "auto", textAlign: "right" }}>
+                    <p style={{ fontSize: 12, color: dark ? "#60C8F5" : "#0284C7", margin: 0, maxWidth: 200, lineHeight: 1.5 }}>
+                      {categoria && LABELS_CATEGORIA[categoria]}
+                      {categoria && <br />}
+                      {calidad === "asistente" ? "Asistente" : "Expositor/a"}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div
               style={{
