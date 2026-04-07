@@ -225,12 +225,17 @@ function CountryCombobox({
   dark: boolean;
   hasError: boolean;
 }) {
-  const [query, setQuery]       = useState(value ?? "");
+  function displayFor(spa: string) {
+    const country = COUNTRY_LIST.find((c) => c.spa === spa);
+    return country ? `${country.flag} ${country.spa}` : spa;
+  }
+
+  const [query, setQuery]       = useState(() => displayFor(value ?? ""));
   const [open, setOpen]         = useState(false);
   const wrapperRef              = useRef<HTMLDivElement>(null);
 
   // Sync display when form resets
-  useEffect(() => { setQuery(value ?? ""); }, [value]);
+  useEffect(() => { setQuery(displayFor(value ?? "")); }, [value]);
 
   // Close on outside click
   useEffect(() => {
@@ -238,8 +243,8 @@ function CountryCombobox({
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
         // If user typed something but didn't select, restore last valid value
-        if (!COUNTRY_LIST.some((c) => c.spa === query)) {
-          setQuery(value ?? "");
+        if (!COUNTRY_LIST.some((c) => c.spa === value)) {
+          setQuery(displayFor(value ?? ""));
         }
       }
     }
@@ -248,13 +253,18 @@ function CountryCombobox({
   }, [query, value]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    // Strip a leading flag emoji + space so typing in a selected value still filters correctly
+    const raw = query.trim();
+    const strippedQuery = COUNTRY_LIST.some((c) => raw.startsWith(c.flag))
+      ? raw.replace(/^\S+\s*/, "")
+      : raw;
+    const q = strippedQuery.toLowerCase();
     if (!q) return COUNTRY_LIST.slice(0, 50);
     return COUNTRY_LIST.filter((c) => c.search.includes(q)).slice(0, 60);
   }, [query]);
 
   function select(country: typeof COUNTRY_LIST[number]) {
-    setQuery(country.spa);
+    setQuery(`${country.flag} ${country.spa}`);
     onChange(country.spa);
     setOpen(false);
   }
@@ -270,7 +280,10 @@ function CountryCombobox({
           setQuery(e.target.value);
           setOpen(true);
           // Clear RHF value until a valid country is selected
-          if (!COUNTRY_LIST.some((c) => c.spa === e.target.value)) {
+          const matchedByDisplay = COUNTRY_LIST.find(
+            (c) => `${c.flag} ${c.spa}` === e.target.value || c.spa === e.target.value
+          );
+          if (!matchedByDisplay) {
             onChange("");
           }
         }}
