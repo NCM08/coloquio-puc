@@ -13,7 +13,20 @@
 
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
+
+// ── Logos institucionales ─────────────────────────────────────────────────────
+const LOGO_UC  = { src: "/images/uc-color.png",           alt: "Pontificia Universidad Católica de Chile" };
+const FACULTIES = [
+    { src: "/images/logo-educacion.png",      alt: "Facultad de Educación UC" },
+    { src: "/images/logo-psicologia.png",     alt: "Escuela de Psicología UC" },
+    { src: "/images/logo-trabajo-social.png", alt: "Escuela de Trabajo Social UC", black: true },
+];
+const COLLABORATORS = [
+    { src: "/images/risc-logo.png",     alt: "RISC – Réseau International de Sociologie Clinique" },
+    { src: "/images/nodo-sur-logo.png", alt: "Nodo Sur RISC" },
+];
 
 const QUICK_LINKS = [
     { label: "Convocatoria", href: "/convocatoria" },
@@ -249,6 +262,121 @@ export default function Footer() {
                     Enviar
                 </button>
                 </div>
+            </div>
+            </div>
+
+            {/* ── Logos institucionales ─────────────────────────────────────── */}
+            <div
+            style={{
+                borderTop: "1px solid rgba(255,255,255,0.08)",
+                paddingTop: 48,
+                marginBottom: 48,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 32,
+            }}
+            >
+            {/* Label */}
+            <p style={{
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: 2,
+                opacity: 0.4,
+                fontFamily: "var(--font-body)",
+            }}>
+                Organizan y Colaboran
+            </p>
+
+            {/* Nivel 1 — Logo UC protagonista */}
+            <div style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: 16,
+                padding: "28px 48px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
+            }}>
+                <Image
+                src={LOGO_UC.src}
+                alt={LOGO_UC.alt}
+                width={340}
+                height={160}
+                style={{ height: "clamp(96px, 13vw, 140px)", width: "auto", objectFit: "contain" }}
+                />
+            </div>
+
+            {/* Nivel 2 — Facultades (60–70% del peso visual de la UC) */}
+            <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 20,
+                maxWidth: 860,
+            }}>
+                {FACULTIES.map(({ src, alt, black }) => (
+                <div
+                    key={src}
+                    style={{
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 12,
+                    padding: "18px 28px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    }}
+                >
+                    <Image
+                    src={src}
+                    alt={alt}
+                    width={180}
+                    height={88}
+                    style={{
+                        height: "clamp(56px, 8.5vw, 84px)",
+                        width: "auto",
+                        objectFit: "contain",
+                        filter: black ? "grayscale(100%) brightness(0)" : undefined,
+                    }}
+                    />
+                </div>
+                ))}
+            </div>
+
+            {/* Nivel 2 — Colaboradores (mismo tamaño que facultades) */}
+            <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 20,
+                maxWidth: 680,
+            }}>
+                {COLLABORATORS.map(({ src, alt }) => (
+                <div
+                    key={src}
+                    style={{
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 12,
+                    padding: "18px 28px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    }}
+                >
+                    <Image
+                    src={src}
+                    alt={alt}
+                    width={180}
+                    height={88}
+                    style={{
+                        height: "clamp(56px, 8.5vw, 84px)",
+                        width: "auto",
+                        objectFit: "contain",
+                    }}
+                    />
+                </div>
+                ))}
             </div>
             </div>
 

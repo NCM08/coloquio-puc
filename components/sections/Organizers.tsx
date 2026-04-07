@@ -22,13 +22,13 @@ const COLLABORATORS = [
 ];
 
 
-/** Tarjeta grande para el logo principal de la UC */
+/** Tarjeta grande para el logo principal de la UC — Nivel 1, protagonista */
 function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: boolean }) {
     return (
         <div
             className={[
-                "flex items-center justify-center rounded-xl px-8 py-5",
-                "border transition-colors duration-200",
+                "flex items-center justify-center rounded-2xl px-12 py-8",
+                "border-2 transition-colors duration-200 shadow-md",
                 dark
                     ? "bg-white border-[var(--color-dark-300)]"
                     : "bg-white border-[var(--color-dark-100)]",
@@ -37,15 +37,16 @@ function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: bool
             <Image
                 src={src}
                 alt={alt}
-                width={220}
-                height={110}
-                className="h-24 w-auto object-contain"
+                width={340}
+                height={160}
+                className="object-contain"
+                style={{ height: "clamp(100px, 14vw, 148px)", width: "auto" }}
             />
         </div>
     );
 }
 
-/** Tarjeta pequeña para facultades y colaboradores (mismo peso visual) */
+/** Tarjeta Nivel 2 — facultades y colaboradores (60–70% del peso visual de la UC) */
 function SmallLogoCard({
     src,
     alt,
@@ -60,7 +61,7 @@ function SmallLogoCard({
     return (
         <div
             className={[
-                "flex items-center justify-center rounded-xl px-4 py-3",
+                "flex items-center justify-center rounded-xl px-6 py-5",
                 "border transition-colors duration-200",
                 dark
                     ? "bg-white border-[var(--color-dark-300)]"
@@ -70,10 +71,16 @@ function SmallLogoCard({
             <Image
                 src={src}
                 alt={alt}
-                width={110}
-                height={52}
-                className="h-10 w-auto object-contain"
-                style={blackFilter ? { filter: "brightness(0) contrast(100%)" } : undefined}
+                width={180}
+                height={88}
+                className="object-contain"
+                style={{
+                    height: "clamp(60px, 9vw, 88px)",
+                    width: "auto",
+                    filter: blackFilter
+                        ? "grayscale(100%) brightness(0)"
+                        : undefined,
+                }}
             />
         </div>
     );
@@ -123,8 +130,8 @@ export default function Organizers() {
                         Instituciones organizadoras
                     </h2>
 
-                    {/* Logo principal UC — centrado, tamaño dominante */}
-                    <div className="flex justify-center mt-6">
+                    {/* Logo principal UC — Nivel 1, centrado y dominante */}
+                    <div className="flex justify-center mt-8">
                         <MainLogoCard
                             src={ORGANIZER_MAIN.src}
                             alt={ORGANIZER_MAIN.alt}
@@ -132,8 +139,8 @@ export default function Organizers() {
                         />
                     </div>
 
-                    {/* 3 logos de facultades — subordinados al logo principal */}
-                    <div className="flex flex-wrap justify-center items-center gap-4 mt-5 max-w-2xl mx-auto">
+                    {/* 3 logos de facultades — Nivel 2, 60-70% del peso visual de la UC */}
+                    <div className="flex flex-wrap justify-center items-center gap-6 mt-8 max-w-3xl mx-auto">
                         {ORGANIZER_FACULTIES.map(({ src, alt, blackFilter }) => (
                             <SmallLogoCard
                                 key={src}
@@ -182,8 +189,8 @@ export default function Organizers() {
                         Redes Internacionales
                     </h2>
 
-                    {/* Logos colaboradores — mismo tamaño que las facultades */}
-                    <div className="flex flex-wrap justify-center gap-4 mt-6">
+                    {/* Logos colaboradores — Nivel 2, idéntico tamaño a las facultades */}
+                    <div className="flex flex-wrap justify-center gap-6 mt-8 max-w-3xl mx-auto">
                         {COLLABORATORS.map(({ src, alt }) => (
                             <SmallLogoCard
                                 key={src}
