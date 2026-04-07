@@ -16,7 +16,7 @@ export interface ActionResult {
 // ── Helper: sube un archivo a Supabase Storage ────────────────
 async function subirArchivo(
   file: File,
-  bucket: "documentos_ponencias" | "comprobantes_pago"
+  bucket: "comprobantes_pago"
 ): Promise<string> {
   const extension = file.name.split(".").pop() ?? "bin";
   const filePath  = `${Date.now()}_${Math.random().toString(36).slice(2)}.${extension}`;
@@ -57,13 +57,14 @@ export async function procesarInscripcion(
     }
 
     // a) Extraer y validar campos de texto
-    const nombre             = (formData.get("nombre")             as string)?.trim();
-    const apellidos          = (formData.get("apellidos")          as string)?.trim();
-    const email              = (formData.get("email")              as string)?.trim().toLowerCase();
-    const nacionalidad       = (formData.get("nacionalidad")       as string)?.trim();
-    const calidad_asistencia = (formData.get("calidad_asistencia") as string)?.trim();
-    const titulo_ponencia    = (formData.get("titulo_ponencia")    as string | null)?.trim() || null;
-    const eje_tematico       = (formData.get("eje_tematico")       as string | null)?.trim() || null;
+    const nombre                  = (formData.get("nombre")                  as string)?.trim();
+    const apellidos               = (formData.get("apellidos")               as string)?.trim();
+    const email                   = (formData.get("email")                   as string)?.trim().toLowerCase();
+    const nacionalidad            = (formData.get("nacionalidad")            as string)?.trim();
+    const calidad_asistencia      = (formData.get("calidad_asistencia")      as string)?.trim();
+    const titulo_ponencia         = (formData.get("titulo_ponencia")         as string | null)?.trim() || null;
+    const eje_tematico            = (formData.get("eje_tematico")            as string | null)?.trim() || null;
+    const confirmacion_aprobacion = formData.get("confirmacion_aprobacion") === "true";
 
     if (!nombre || !apellidos || !email || !nacionalidad || !calidad_asistencia) {
       return { success: false, message: "Faltan campos obligatorios en el formulario." };
@@ -86,7 +87,6 @@ export async function procesarInscripcion(
 
     const esExpositor = calidad_asistencia.includes("Expositor");
 
-    const archivoPonencia = formData.get("archivo_ponencia") as File | null;
     const comprobantePago = formData.get("comprobante_pago") as File | null;
 
     if (!comprobantePago || comprobantePago.size === 0) {
@@ -97,21 +97,12 @@ export async function procesarInscripcion(
       if (!titulo_ponencia || !eje_tematico) {
         return { success: false, message: "Faltan datos de la ponencia para el expositor." };
       }
-      if (!archivoPonencia || archivoPonencia.size === 0) {
-        return { success: false, message: "El documento de ponencia es requerido para expositores." };
-      }
     }
 
-    // b) Subir archivo_ponencia (si es expositor)
-    let rutaPonencia: string | null = null;
-    if (esExpositor && archivoPonencia) {
-      rutaPonencia = await subirArchivo(archivoPonencia, "documentos_ponencias");
-    }
-
-    // c) Subir comprobante_pago
+    // b) Subir comprobante_pago
     const rutaComprobante = await subirArchivo(comprobantePago, "comprobantes_pago");
 
-    // d) Insertar en tabla `perfiles`
+    // c) Insertar en tabla `perfiles`
     const { data: perfil, error: perfilError } = await supabase
       .from("perfiles")
       .insert({ nombre, apellidos, email, nacionalidad })
@@ -123,16 +114,15 @@ export async function procesarInscripcion(
     }
     const perfilId: string = perfil.id;
 
-    // e) Si es expositor, insertar en `ponencias`
+    // d) Si es expositor, insertar en `ponencias`
     let ponenciaId: string | null = null;
-    if (esExpositor && rutaPonencia) {
+    if (esExpositor) {
       const { data: ponencia, error: ponenciaError } = await supabase
         .from("ponencias")
         .insert({
           autor_id:    perfilId,
           titulo:      titulo_ponencia,
           eje_tematico,
-          archivo_url: rutaPonencia,
         })
         .select("id")
         .single();
@@ -143,14 +133,15 @@ export async function procesarInscripcion(
       ponenciaId = ponencia.id;
     }
 
-    // f) Insertar en `inscripciones`
+    // e) Insertar en `inscripciones`
     const { data: inscripcion, error: inscripcionError } = await supabase
       .from("inscripciones")
       .insert({
-        usuario_id:         perfilId,
+        usuario_id:              perfilId,
         calidad_asistencia,
-        ponencia_id:        ponenciaId,
-        estado:             "pendiente",
+        ponencia_id:             ponenciaId,
+        confirmacion_aprobacion: esExpositor ? confirmacion_aprobacion : null,
+        estado:                  "pendiente",
       })
       .select("id")
       .single();
@@ -160,7 +151,7 @@ export async function procesarInscripcion(
     }
     const inscripcionId: string = inscripcion.id;
 
-    // g) Insertar en `pagos`
+    // f) Insertar en `pagos`
     const { error: pagoError } = await supabase
       .from("pagos")
       .insert({
@@ -173,7 +164,7 @@ export async function procesarInscripcion(
       throw new Error(`Error al registrar pago: ${pagoError.message}`);
     }
 
-    // h) Retornar éxito
+    // g) Retornar éxito
     return {
       success: true,
       message: "Inscripción registrada exitosamente.",
