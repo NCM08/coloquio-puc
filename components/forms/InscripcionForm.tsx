@@ -160,6 +160,7 @@ export default function InscripcionForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitResult, setSubmitResult] = useState<{ success: boolean; error?: string; id?: string } | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
 
   const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
   const textPrimary = dark ? "var(--color-dark-100)" : "#111827";
@@ -665,10 +666,11 @@ export default function InscripcionForm() {
       {currentStep === PASOS.length - 1 && (
         <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
           <Turnstile
+            key={turnstileKey}
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
             onSuccess={(token) => setTurnstileToken(token)}
-            onExpire={() => setTurnstileToken(null)}
-            onError={() => setTurnstileToken(null)}
+            onExpire={() => { setTurnstileToken(null); setTurnstileKey((k) => k + 1); }}
+            onError={() => { setTurnstileToken(null); setTurnstileKey((k) => k + 1); }}
           />
         </div>
       )}

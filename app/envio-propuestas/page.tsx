@@ -74,6 +74,7 @@ export default function EnvioPropuestasPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
 
   // Colores contextuales
   const bg           = dark ? "var(--color-dark-900)" : "#F7F7F7";
@@ -728,10 +729,11 @@ export default function EnvioPropuestasPage() {
               {/* ── Turnstile anti-bot ── */}
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
                 <Turnstile
+                  key={turnstileKey}
                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                   onSuccess={(token) => setTurnstileToken(token)}
-                  onExpire={() => setTurnstileToken(null)}
-                  onError={() => setTurnstileToken(null)}
+                  onExpire={() => { setTurnstileToken(null); setTurnstileKey((k) => k + 1); }}
+                  onError={() => { setTurnstileToken(null); setTurnstileKey((k) => k + 1); }}
                 />
               </div>
 
