@@ -200,6 +200,7 @@ function inputStyle(dark: boolean, hasError: boolean): React.CSSProperties {
 const COUNTRY_LIST = allCountries
   .map((c) => ({
     flag:  c.flag,
+    cca2:  c.cca2.toLowerCase(),
     spa:   c.translations?.spa?.common ?? c.name.common,
     search: [
       c.translations?.spa?.common ?? "",
@@ -213,6 +214,20 @@ const COUNTRY_LIST = allCountries
   }))
   .sort((a, b) => a.spa.localeCompare(b.spa, "es"));
 
+// ── Helper: imagen de bandera desde flagcdn.com ───────────────
+function FlagImg({ cca2, size = 20 }: { cca2: string; size?: number }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w${Math.round(size * 1.5)}/${cca2}.png`}
+      width={Math.round(size * 1.5)}
+      height={size}
+      alt=""
+      style={{ display: "inline-block", borderRadius: 2, flexShrink: 0, objectFit: "cover" }}
+    />
+  );
+}
+
 // ── Buscador de países (Combobox) ─────────────────────────────
 function CountryCombobox({
   value,
@@ -225,71 +240,91 @@ function CountryCombobox({
   dark: boolean;
   hasError: boolean;
 }) {
-  function displayFor(spa: string) {
-    const country = COUNTRY_LIST.find((c) => c.spa === spa);
-    return country ? `${country.flag} ${country.spa}` : spa;
-  }
+  const selected = COUNTRY_LIST.find((c) => c.spa === value) ?? null;
 
-  const [query, setQuery]       = useState(() => displayFor(value ?? ""));
-  const [open, setOpen]         = useState(false);
-  const wrapperRef              = useRef<HTMLDivElement>(null);
-
-  // Sync display when form resets
-  useEffect(() => { setQuery(displayFor(value ?? "")); }, [value]);
+  const [query, setQuery]   = useState("");
+  const [open, setOpen]     = useState(false);
+  const wrapperRef          = useRef<HTMLDivElement>(null);
+  const inputRef            = useRef<HTMLInputElement>(null);
 
   // Close on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
-        // If user typed something but didn't select, restore last valid value
-        if (!COUNTRY_LIST.some((c) => c.spa === value)) {
-          setQuery(displayFor(value ?? ""));
-        }
+        setQuery("");
       }
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [query, value]);
+  }, []);
 
   const filtered = useMemo(() => {
-    // Strip a leading flag emoji + space so typing in a selected value still filters correctly
-    const raw = query.trim();
-    const strippedQuery = COUNTRY_LIST.some((c) => raw.startsWith(c.flag))
-      ? raw.replace(/^\S+\s*/, "")
-      : raw;
-    const q = strippedQuery.toLowerCase();
+    const q = query.trim().toLowerCase();
     if (!q) return COUNTRY_LIST.slice(0, 50);
     return COUNTRY_LIST.filter((c) => c.search.includes(q)).slice(0, 60);
   }, [query]);
 
   function select(country: typeof COUNTRY_LIST[number]) {
-    setQuery(`${country.flag} ${country.spa}`);
     onChange(country.spa);
+    setQuery("");
     setOpen(false);
   }
 
+  function openDropdown() {
+    setOpen(true);
+    setQuery("");
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
+  const base = inputStyle(dark, hasError);
+
   return (
     <div ref={wrapperRef} style={{ position: "relative", width: "100%" }}>
-      <input
-        type="text"
-        autoComplete="off"
-        value={query}
-        placeholder="Escribe para buscar: Chile, Colombia, Brazil…"
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setOpen(true);
-          // Clear RHF value until a valid country is selected
-          const matchedByDisplay = COUNTRY_LIST.find(
-            (c) => `${c.flag} ${c.spa}` === e.target.value || c.spa === e.target.value
-          );
-          if (!matchedByDisplay) {
-            onChange("");
-          }
-        }}
-        onFocus={() => setOpen(true)}
-        style={inputStyle(dark, hasError)}
-      />
+      {/* ── Trigger: muestra bandera + nombre cuando hay selección ── */}
+      {!open ? (
+        <div
+          role="combobox"
+          aria-expanded={false}
+          tabIndex={0}
+          onClick={openDropdown}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && openDropdown()}
+          style={{
+            ...base,
+            display:    "flex",
+            alignItems: "center",
+            gap:        10,
+            cursor:     "pointer",
+            userSelect: "none",
+          }}
+        >
+          {selected ? (
+            <>
+              <FlagImg cca2={selected.cca2} size={18} />
+              <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {selected.spa}
+              </span>
+            </>
+          ) : (
+            <span style={{ color: dark ? "rgba(255,255,255,0.35)" : "#9CA3AF" }}>
+              Escribe para buscar: Chile, Colombia, Brazil…
+            </span>
+          )}
+        </div>
+      ) : (
+        /* ── Input de búsqueda (visible sólo al abrir) ── */
+        <input
+          ref={inputRef}
+          type="text"
+          autoComplete="off"
+          value={query}
+          placeholder="Escribe para buscar…"
+          onChange={(e) => setQuery(e.target.value)}
+          style={base}
+        />
+      )}
+
+      {/* ── Dropdown ── */}
       {open && filtered.length > 0 && (
         <ul
           style={{
@@ -335,7 +370,7 @@ function CountryCombobox({
                   value === c.spa ? (dark ? "rgba(255,255,255,0.08)" : "#EFF6FF") : "transparent")
               }
             >
-              <span style={{ fontSize: 20, lineHeight: 1 }}>{c.flag}</span>
+              <FlagImg cca2={c.cca2} size={18} />
               <span>{c.spa}</span>
             </li>
           ))}
