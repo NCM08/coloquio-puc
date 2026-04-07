@@ -199,7 +199,7 @@ function inputStyle(dark: boolean, hasError: boolean): React.CSSProperties {
 // ── Datos de países: bandera + nombre en español ──────────────
 const COUNTRY_LIST = allCountries
   .map((c) => ({
-    flag:  c.flag,
+    cca2:  c.cca2.toLowerCase(),
     spa:   c.translations?.spa?.common ?? c.name.common,
     search: [
       c.translations?.spa?.common ?? "",
@@ -286,7 +286,7 @@ function CountryCombobox({
         >
           {selected ? (
             <>
-              <span style={{ fontSize: 18, flexShrink: 0 }}>{selected.flag}</span>
+              <img src={`https://flagcdn.com/w20/${selected.cca2}.png`} srcSet={`https://flagcdn.com/w40/${selected.cca2}.png 2x`} width="20" className="mr-2 flex-shrink-0" alt="" />
               <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {selected.spa}
               </span>
@@ -356,7 +356,7 @@ function CountryCombobox({
                   value === c.spa ? (dark ? "rgba(255,255,255,0.08)" : "#EFF6FF") : "transparent")
               }
             >
-              <span style={{ fontSize: 18, flexShrink: 0 }}>{c.flag}</span>
+              <img src={`https://flagcdn.com/w20/${c.cca2}.png`} srcSet={`https://flagcdn.com/w40/${c.cca2}.png 2x`} width="20" className="mr-2 flex-shrink-0" alt="" />
               <span>{c.spa}</span>
             </li>
           ))}
