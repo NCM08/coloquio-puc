@@ -4,7 +4,14 @@
 
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+// Cliente con privilegios de administrador — solo para server actions.
+// La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // ── Tipo de retorno ───────────────────────────────────────────
 export interface ActionResult {
