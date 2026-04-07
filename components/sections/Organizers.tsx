@@ -33,21 +33,19 @@ function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: bool
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
         >
-            {/* Contenedor con ancho fijo — la imagen se adapta con w-full h-auto */}
-            <div className="w-56 md:w-72">
-                <Image
-                    src={src}
-                    alt={alt}
-                    width={340}
-                    height={160}
-                    className="w-full h-auto object-contain"
-                />
-            </div>
+            {/* h-32 md:h-40 + w-auto → Next.js no emite warning de aspect ratio */}
+            <Image
+                src={src}
+                alt={alt}
+                width={340}
+                height={160}
+                className="h-32 md:h-40 w-auto object-contain"
+            />
         </div>
     );
 }
 
-// ─── NIVEL 2: Facultades y Colaboradores — mismo peso visual exacto ───────────
+// ─── NIVEL 2: Facultades y Colaboradores — exactamente la mitad de alto que UC ─
 function SmallLogoCard({
     src,
     alt,
@@ -69,19 +67,17 @@ function SmallLogoCard({
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
         >
-            {/* Mismo contenedor para facultades y colaboradores → peso visual 50/50 */}
-            <div className="w-40 md:w-48">
-                <Image
-                    src={src}
-                    alt={alt}
-                    width={180}
-                    height={88}
-                    className={[
-                        "w-full h-auto object-contain",
-                        blackFilter ? "grayscale brightness-0" : "",
-                    ].join(" ")}
-                />
-            </div>
+            {/* h-16 md:h-20 = mitad exacta de UC; mismo valor para facultades y colaboradores */}
+            <Image
+                src={src}
+                alt={alt}
+                width={180}
+                height={88}
+                className={[
+                    "h-16 md:h-20 w-auto object-contain",
+                    blackFilter ? "grayscale brightness-0" : "",
+                ].join(" ").trim()}
+            />
         </div>
     );
 }

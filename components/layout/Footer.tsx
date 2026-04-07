@@ -289,7 +289,7 @@ export default function Footer() {
                 Organizan y Colaboran
             </p>
 
-            {/* Nivel 1 — Logo UC protagonista */}
+            {/* Nivel 1 — Logo UC protagonista: h-32 md:h-40 */}
             <div style={{
                 backgroundColor: "#FFFFFF",
                 borderRadius: 16,
@@ -299,24 +299,21 @@ export default function Footer() {
                 justifyContent: "center",
                 boxShadow: "0 4px 24px rgba(0,0,0,0.25)",
             }}>
-                {/* Contenedor fijo de ancho — imagen se adapta con w-full h-auto */}
-                <div className="w-64 md:w-80">
-                    <Image
-                    src={LOGO_UC.src}
-                    alt={LOGO_UC.alt}
-                    width={340}
-                    height={160}
-                    className="w-full h-auto object-contain"
-                    />
-                </div>
+                <Image
+                src={LOGO_UC.src}
+                alt={LOGO_UC.alt}
+                width={340}
+                height={160}
+                className="h-32 md:h-40 w-auto object-contain"
+                />
             </div>
 
-            {/* Nivel 2 — Facultades */}
+            {/* Nivel 2 — Facultades: h-16 md:h-20 (mitad exacta de la UC) */}
             <div style={{
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                gap: 20,
+                gap: 32,
                 maxWidth: 860,
             }}>
                 {FACULTIES.map(({ src, alt, black }) => (
@@ -331,29 +328,26 @@ export default function Footer() {
                     justifyContent: "center",
                     }}
                 >
-                    {/* Mismo contenedor para facultades y colaboradores → peso 50/50 */}
-                    <div className="w-40 md:w-48">
-                        <Image
-                        src={src}
-                        alt={alt}
-                        width={180}
-                        height={88}
-                        className={[
-                            "w-full h-auto object-contain",
-                            black ? "grayscale brightness-0" : "",
-                        ].join(" ")}
-                        />
-                    </div>
+                    <Image
+                    src={src}
+                    alt={alt}
+                    width={180}
+                    height={88}
+                    className={[
+                        "h-16 md:h-20 w-auto object-contain",
+                        black ? "grayscale brightness-0" : "",
+                    ].join(" ").trim()}
+                    />
                 </div>
                 ))}
             </div>
 
-            {/* Nivel 2 — Colaboradores (contenedor idéntico al de facultades) */}
+            {/* Nivel 2 — Colaboradores: altura idéntica a facultades */}
             <div style={{
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                gap: 20,
+                gap: 32,
                 maxWidth: 680,
             }}>
                 {COLLABORATORS.map(({ src, alt }) => (
@@ -368,15 +362,13 @@ export default function Footer() {
                     justifyContent: "center",
                     }}
                 >
-                    <div className="w-40 md:w-48">
-                        <Image
-                        src={src}
-                        alt={alt}
-                        width={180}
-                        height={88}
-                        className="w-full h-auto object-contain"
-                        />
-                    </div>
+                    <Image
+                    src={src}
+                    alt={alt}
+                    width={180}
+                    height={88}
+                    className="h-16 md:h-20 w-auto object-contain"
+                    />
                 </div>
                 ))}
             </div>
