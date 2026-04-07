@@ -40,19 +40,25 @@ export type CalidadAsistencia = (typeof CALIDADES_ASISTENCIA)[number];
 export const personalSchema = z.object({
   nombre: z
     .string()
-    .min(2, "El nombre debe tener al menos 2 caracteres")
-    .max(80, "El nombre no puede superar los 80 caracteres"),
+    .trim()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(80, "El nombre no puede superar los 80 caracteres")
+    .regex(/^[a-zA-ZÀ-ÿ\s']+$/, "Solo se permiten letras, espacios y apóstrofes"),
   apellidos: z
     .string()
-    .min(2, "Los apellidos deben tener al menos 2 caracteres")
-    .max(120, "Los apellidos no pueden superar los 120 caracteres"),
+    .trim()
+    .min(3, "Los apellidos deben tener al menos 3 caracteres")
+    .max(120, "Los apellidos no pueden superar los 120 caracteres")
+    .regex(/^[a-zA-ZÀ-ÿ\s']+$/, "Solo se permiten letras, espacios y apóstrofes"),
   email: z
     .string()
     .email("Ingrese un correo electrónico válido (ej. nombre@dominio.com)"),
   nacionalidad: z
     .string()
-    .min(2, "Ingrese su nacionalidad")
-    .max(80, "La nacionalidad no puede superar los 80 caracteres"),
+    .trim()
+    .min(4, "Ingrese su nacionalidad")
+    .max(80, "La nacionalidad no puede superar los 80 caracteres")
+    .regex(/^[a-zA-ZÀ-ÿ\s]+$/, "Solo se permiten letras"),
 });
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
