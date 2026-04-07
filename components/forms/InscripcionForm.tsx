@@ -9,25 +9,34 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, ChevronLeft, ChevronRight, Loader2, Lock, Upload, AlertCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-import { inscripcionSchema, type InscripcionFormData } from "@/lib/validations/inscripcionSchema";
+import {
+  inscripcionSchema,
+  type InscripcionFormData,
+  CALIDADES_ASISTENCIA,
+  type CalidadAsistencia,
+} from "@/lib/validations/inscripcionSchema";
 import { procesarInscripcion } from "@/app/actions/inscripcion";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 // ── Constantes ────────────────────────────────────────────────
-const PASOS = ["Datos Personales", "Calidad y Ponencia", "Comprobante de Pago"];
+const PASOS = ["Datos Personales", "Perfil de Participación", "Comprobante de Pago"];
 
-// ── Tarifas oficiales (CLP) ───────────────────────────────────
-const TARIFAS_CLP: Record<string, Record<string, number>> = {
-  pregrado:    { asistente: 13000, expositor: 16000 },
-  profesional: { asistente: 26000, expositor: 34000 },
-  posgrado:    { asistente: 38000, expositor: 54000 },
-  academico:   { asistente: 55000, expositor: 80000 },
+// ── Tarifas oficiales (CLP) según tabla oficial ───────────────
+const TARIFAS_CLP: Record<CalidadAsistencia, number> = {
+  "Estudiante de pregrado - Asistente":                                       13000,
+  "Estudiante de pregrado - Expositor":                                       16000,
+  "Profesional de ciencias sociales/humanidades/artes - Asistente":           26000,
+  "Profesional de ciencias sociales/humanidades/artes - Expositor":           34000,
+  "Estudiante de posgrado - Asistente":                                       38000,
+  "Estudiante de posgrado - Expositor":                                       54000,
+  "Académico/a e investigador/a - Asistente":                                 55000,
+  "Académico/a e investigador/a - Expositor":                                 80000,
 };
 
 const USD_POR_CLP = 950;
 
-function calcularTarifa(categoria: string, rol: string): { clp: number; usd: number } | null {
-  const clp = TARIFAS_CLP[categoria]?.[rol];
+function calcularTarifa(calidad: string): { clp: number; usd: number } | null {
+  const clp = TARIFAS_CLP[calidad as CalidadAsistencia];
   if (!clp) return null;
   return { clp, usd: Math.round(clp / USD_POR_CLP) };
 }
@@ -36,12 +45,22 @@ function formatCLP(n: number): string {
   return `$${n.toLocaleString("es-CL")}`;
 }
 
-const LABELS_CATEGORIA: Record<string, string> = {
-  pregrado:    "Estudiante de pregrado",
-  profesional: "Profesional de cs. sociales, humanidades o artes",
-  posgrado:    "Estudiante de posgrado",
-  academico:   "Académico/a e investigador/a",
+// ── Opciones agrupadas para la UI (tabla oficial) ─────────────
+type OpcionCalidad = {
+  label: string;
+  value: CalidadAsistencia;
+  clp: number;
+  usd: number;
+  esExpositor: boolean;
 };
+
+const OPCIONES: OpcionCalidad[] = CALIDADES_ASISTENCIA.map((v) => ({
+  label:       v,
+  value:       v,
+  clp:         TARIFAS_CLP[v],
+  usd:         Math.round(TARIFAS_CLP[v] / USD_POR_CLP),
+  esExpositor: v.includes("Expositor"),
+}));
 
 const EJES_TEMATICOS = [
   "Subjetividad, identidad y lazo social",
@@ -68,7 +87,6 @@ function StepIndicator({ current, total, dark }: { current: number; total: numbe
 
         return (
           <div key={i} style={{ display: "flex", alignItems: "center" }}>
-            {/* Conector izquierdo */}
             {i > 0 && (
               <div
                 style={{
@@ -79,8 +97,6 @@ function StepIndicator({ current, total, dark }: { current: number; total: numbe
                 }}
               />
             )}
-
-            {/* Círculo */}
             <div
               style={{
                 width: 36,
@@ -200,18 +216,15 @@ export default function InscripcionForm() {
     handleSubmit,
     watch,
     trigger,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<InscripcionFormData>({
     resolver: zodResolver(inscripcionSchema),
     mode: "onTouched",
-    defaultValues: {
-      calidad_asistencia: "asistente",
-    },
   });
 
-  const calidad    = watch("calidad_asistencia");
-  const categoria  = watch("categoria");
-  const esExpositor = calidad === "expositor";
+  const calidad     = watch("calidad_asistencia");
+  const esExpositor = calidad?.includes("Expositor") ?? false;
 
   // ── Validación parcial al hacer "Siguiente" ────────────────
   const handleNext = async () => {
@@ -220,7 +233,7 @@ export default function InscripcionForm() {
     if (currentStep === 0) {
       camposAValidar = ["nombre", "apellidos", "email", "nacionalidad"];
     } else if (currentStep === 1) {
-      camposAValidar = ["calidad_asistencia", "categoria"];
+      camposAValidar = ["calidad_asistencia"];
       if (esExpositor) {
         camposAValidar.push("titulo_ponencia", "eje_tematico", "archivo_ponencia");
       }
@@ -234,13 +247,11 @@ export default function InscripcionForm() {
   const onSubmit = async (data: InscripcionFormData) => {
     const fd = new FormData();
 
-    // Campos de texto
     fd.append("nombre",             data.nombre);
     fd.append("apellidos",          data.apellidos);
     fd.append("email",              data.email);
     fd.append("nacionalidad",       data.nacionalidad);
     fd.append("calidad_asistencia", data.calidad_asistencia);
-    fd.append("categoria",          data.categoria);
 
     if (esExpositor) {
       if (data.titulo_ponencia) fd.append("titulo_ponencia", data.titulo_ponencia);
@@ -390,55 +401,132 @@ export default function InscripcionForm() {
               style={inputStyle(dark, !!errors.nacionalidad)}
             />
           </Field>
-
-          {/* <InstitutionFields /> */}
         </div>
       )}
 
       {/* ────────────────────────────────────────────────────
-          PASO 1 — CALIDAD Y PONENCIA
+          PASO 1 — PERFIL DE PARTICIPACIÓN
       ──────────────────────────────────────────────────── */}
       {currentStep === 1 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <Field
-            label="Rol de participación"
+            label="Seleccione su perfil de participación"
             required
             error={errors.calidad_asistencia?.message}
             dark={dark}
+            hint="El monto a pagar depende de su perfil. Tarifas en CLP con referencia en USD (~$950 CLP/USD)."
           >
-            <select
-              {...register("calidad_asistencia")}
-              style={{
-                ...inputStyle(dark, !!errors.calidad_asistencia),
-                cursor: "pointer",
-                appearance: "none",
-              }}
-            >
-              <option value="asistente">Asistente (sin presentación de ponencia)</option>
-              <option value="expositor">Expositor/a (con presentación de ponencia)</option>
-            </select>
-          </Field>
+            {/* Registro oculto para RHF */}
+            <input type="hidden" {...register("calidad_asistencia")} />
 
-          <Field
-            label="Categoría"
-            required
-            error={errors.categoria?.message}
-            dark={dark}
-          >
-            <select
-              {...register("categoria")}
-              style={{
-                ...inputStyle(dark, !!errors.categoria),
-                cursor: "pointer",
-                appearance: "none",
-              }}
-            >
-              <option value="">Seleccione su categoría…</option>
-              <option value="pregrado">Estudiante de pregrado</option>
-              <option value="profesional">Profesional de ciencias sociales, humanidades o artes</option>
-              <option value="posgrado">Estudiante de posgrado</option>
-              <option value="academico">Académico/a e investigador/a</option>
-            </select>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {OPCIONES.map((op) => {
+                const selected = calidad === op.value;
+                return (
+                  <button
+                    key={op.value}
+                    type="button"
+                    onClick={() => setValue("calidad_asistencia", op.value, { shouldValidate: true })}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "14px 18px",
+                      borderRadius: 10,
+                      border: `2px solid ${
+                        selected
+                          ? "var(--color-accent)"
+                          : errors.calidad_asistencia
+                          ? "#E53E3E"
+                          : dark
+                          ? "rgba(255,255,255,0.10)"
+                          : "#D1D5DB"
+                      }`,
+                      backgroundColor: selected
+                        ? dark
+                          ? "rgba(13,71,161,0.18)"
+                          : "rgba(13,71,161,0.06)"
+                        : dark
+                        ? "rgba(255,255,255,0.03)"
+                        : "#FAFAFA",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      transition: "all 0.15s",
+                      gap: 12,
+                    }}
+                  >
+                    {/* Radio visual */}
+                    <div
+                      style={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        border: `2px solid ${selected ? "var(--color-accent)" : dark ? "rgba(255,255,255,0.3)" : "#9CA3AF"}`,
+                        backgroundColor: selected ? "var(--color-accent)" : "transparent",
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {selected && (
+                        <div
+                          style={{
+                            width: 7,
+                            height: 7,
+                            borderRadius: "50%",
+                            backgroundColor: "#fff",
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    {/* Etiqueta */}
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: 14,
+                        fontWeight: selected ? 600 : 400,
+                        color: selected
+                          ? dark ? "var(--color-dark-100)" : "#111827"
+                          : dark ? "var(--color-dark-300)" : "#374151",
+                        fontFamily: "var(--font-body)",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {op.label}
+                    </span>
+
+                    {/* Precio */}
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <span
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: selected
+                            ? "var(--color-accent)"
+                            : dark ? "var(--color-dark-200)" : "#374151",
+                          fontFamily: "var(--font-display)",
+                          display: "block",
+                        }}
+                      >
+                        {formatCLP(op.clp)}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: textMuted,
+                          display: "block",
+                        }}
+                      >
+                        ~ ${op.usd} USD
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </Field>
 
           {/* ── Sección expositor (condicional) ──────────── */}
@@ -545,7 +633,7 @@ export default function InscripcionForm() {
       ──────────────────────────────────────────────────── */}
       {currentStep === 2 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {/* Datos bancarios seguros */}
+          {/* Datos bancarios */}
           <div
             style={{
               padding: "24px 28px",
@@ -567,12 +655,12 @@ export default function InscripcionForm() {
               Datos para la transferencia bancaria
             </p>
             <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.65, margin: "0 0 16px 0" }}>
-              Realiza la transferencia por el monto correspondiente a tu categoría y sube el comprobante aquí.
+              Realiza la transferencia por el monto correspondiente a tu perfil y sube el comprobante aquí.
             </p>
 
             {/* Monto a transferir */}
             {(() => {
-              const tarifa = calcularTarifa(categoria, calidad);
+              const tarifa = calcularTarifa(calidad ?? "");
               return (
                 <div
                   style={{
@@ -586,7 +674,7 @@ export default function InscripcionForm() {
                     marginBottom: 16,
                   }}
                 >
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: dark ? "#60C8F5" : "#0284C7", margin: "0 0 4px 0" }}>
                       Monto a transferir
                     </p>
@@ -596,22 +684,22 @@ export default function InscripcionForm() {
                           {formatCLP(tarifa.clp)} CLP
                         </p>
                         <p style={{ fontSize: 13, color: dark ? "#60C8F5" : "#0284C7", margin: "4px 0 0 0" }}>
-                          ~ ${tarifa.usd} USD <span style={{ opacity: 0.7 }}>(referencial)</span>
+                          ~ ${tarifa.usd} USD <span style={{ opacity: 0.7 }}>(referencial, ~$950 CLP/USD)</span>
                         </p>
                       </>
                     ) : (
                       <p style={{ fontSize: 15, color: textMuted, margin: 0, fontStyle: "italic" }}>
-                        Seleccione su categoría en el paso anterior
+                        Seleccione su perfil en el paso anterior
                       </p>
                     )}
                   </div>
-                  <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                    <p style={{ fontSize: 12, color: dark ? "#60C8F5" : "#0284C7", margin: 0, maxWidth: 200, lineHeight: 1.5 }}>
-                      {categoria && LABELS_CATEGORIA[categoria]}
-                      {categoria && <br />}
-                      {calidad === "asistente" ? "Asistente" : "Expositor/a"}
-                    </p>
-                  </div>
+                  {calidad && (
+                    <div style={{ textAlign: "right", maxWidth: 220 }}>
+                      <p style={{ fontSize: 12, color: dark ? "#60C8F5" : "#0284C7", margin: 0, lineHeight: 1.5 }}>
+                        {calidad}
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             })()}
@@ -624,11 +712,11 @@ export default function InscripcionForm() {
               }}
             >
               {[
-                { label: "Titular", value: "Romina Estivalia Díaz Meza" },
-                { label: "RUT", value: "17.188.251-6" },
-                { label: "Banco", value: "Global66" },
+                { label: "Titular",       value: "Romina Estivalia Díaz Meza" },
+                { label: "RUT",           value: "17.188.251-6" },
+                { label: "Banco",         value: "Global66" },
                 { label: "Tipo de cuenta", value: "Cuenta Vista" },
-                { label: "N° de cuenta", value: "10327090" },
+                { label: "N° de cuenta",  value: "10327090" },
               ].map(({ label, value }) => (
                 <div
                   key={label}
@@ -659,14 +747,7 @@ export default function InscripcionForm() {
               border: `1px solid ${borderColor}`,
             }}
           >
-            <p
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: textPrimary,
-                margin: "0 0 10px 0",
-              }}
-            >
+            <p style={{ fontSize: 14, fontWeight: 700, color: textPrimary, margin: "0 0 10px 0" }}>
               Instrucciones de pago
             </p>
             <p style={{ fontSize: 14, color: textMuted, lineHeight: 1.7, margin: 0 }}>
@@ -818,7 +899,6 @@ export default function InscripcionForm() {
           gap: 12,
         }}
       >
-        {/* Atrás */}
         {currentStep > 0 && (
           <button
             type="button"
@@ -846,7 +926,6 @@ export default function InscripcionForm() {
           </button>
         )}
 
-        {/* Siguiente / Finalizar */}
         {currentStep < PASOS.length - 1 ? (
           <button
             type="button"
@@ -913,7 +992,6 @@ export default function InscripcionForm() {
           textAlign: "center",
           fontSize: 13,
           color: textMuted,
-          marginTop: 20,
           margin: "20px 0 0 0",
         }}
       >

@@ -22,6 +22,20 @@ const TIPOS_PAGO = [
   "image/webp",
 ];
 
+// ── Valores exactos de calidad_asistencia (tabla oficial) ─────
+export const CALIDADES_ASISTENCIA = [
+  "Estudiante de pregrado - Asistente",
+  "Estudiante de pregrado - Expositor",
+  "Profesional de ciencias sociales/humanidades/artes - Asistente",
+  "Profesional de ciencias sociales/humanidades/artes - Expositor",
+  "Estudiante de posgrado - Asistente",
+  "Estudiante de posgrado - Expositor",
+  "Académico/a e investigador/a - Asistente",
+  "Académico/a e investigador/a - Expositor",
+] as const;
+
+export type CalidadAsistencia = (typeof CALIDADES_ASISTENCIA)[number];
+
 // ── Paso 1: Datos personales ──────────────────────────────────
 export const personalSchema = z.object({
   nombre: z
@@ -43,14 +57,11 @@ export const personalSchema = z.object({
 
 // ── Paso 2: Asistencia ────────────────────────────────────────
 export const asistenciaSchema = z.object({
-  calidad_asistencia: z.enum(["asistente", "expositor"], {
-    message: "Seleccione un rol de participación",
+  calidad_asistencia: z.enum(CALIDADES_ASISTENCIA, {
+    message: "Seleccione su perfil de participación",
   }),
-  categoria: z.enum(["pregrado", "profesional", "posgrado", "academico"], {
-    message: "Seleccione una categoría",
-  }),
-  titulo_ponencia: z.string().optional(),
-  eje_tematico:    z.string().optional(),
+  titulo_ponencia:  z.string().optional(),
+  eje_tematico:     z.string().optional(),
   archivo_ponencia: z.custom<FileList>().optional(),
 });
 
@@ -85,7 +96,6 @@ export const inscripcionSchema = z
 
     // Paso 2
     calidad_asistencia: asistenciaSchema.shape.calidad_asistencia,
-    categoria:          asistenciaSchema.shape.categoria,
     titulo_ponencia:    z.string().optional(),
     eje_tematico:       z.string().optional(),
     archivo_ponencia:   z.custom<FileList>().optional(),
@@ -94,8 +104,10 @@ export const inscripcionSchema = z
     comprobante_pago: z.custom<FileList>().optional(),
   })
   .superRefine((data, ctx) => {
+    const esExpositor = data.calidad_asistencia?.includes("Expositor");
+
     // Validaciones adicionales para expositores
-    if (data.calidad_asistencia === "expositor") {
+    if (esExpositor) {
       if (!data.titulo_ponencia || data.titulo_ponencia.trim().length < 5) {
         ctx.addIssue({
           code: "custom",
@@ -166,6 +178,6 @@ export type InscripcionFormData = z.infer<typeof inscripcionSchema>;
 // ── Campos por paso (para trigger parcial en RHF) ─────────────
 export const CAMPOS_POR_PASO = {
   1: ["nombre", "apellidos", "email", "nacionalidad"] as const,
-  2: ["calidad_asistencia", "categoria", "titulo_ponencia", "eje_tematico", "archivo_ponencia"] as const,
+  2: ["calidad_asistencia", "titulo_ponencia", "eje_tematico", "archivo_ponencia"] as const,
   3: ["comprobante_pago"] as const,
 } as const;

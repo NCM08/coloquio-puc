@@ -47,6 +47,18 @@ function fileListValidator(
   });
 }
 
+// ── Valores exactos de calidad_asistencia (tabla oficial) ─────
+export const CALIDADES_ASISTENCIA = [
+  "Estudiante de pregrado - Asistente",
+  "Estudiante de pregrado - Expositor",
+  "Profesional de ciencias sociales/humanidades/artes - Asistente",
+  "Profesional de ciencias sociales/humanidades/artes - Expositor",
+  "Estudiante de posgrado - Asistente",
+  "Estudiante de posgrado - Expositor",
+  "Académico/a e investigador/a - Asistente",
+  "Académico/a e investigador/a - Expositor",
+] as const;
+
 // ── Esquema de Paso 0: Datos Personales ───────────────────────
 export const perfilSchema = z.object({
   nombre: z
@@ -68,10 +80,11 @@ export const perfilSchema = z.object({
 
 // ── Esquema de Paso 1: Calidad y Ponencia ─────────────────────
 export const asistenciaSchema = z.object({
-  // CORRECCIÓN: Sintaxis segura para el enum en Zod
-  calidad_asistencia: z.enum(["asistente", "expositor", "estudiante"]),
-  titulo_ponencia: z.string().optional(),
-  eje_tematico: z.string().optional(),
+  calidad_asistencia: z.enum(CALIDADES_ASISTENCIA, {
+    message: "Seleccione su perfil de participación",
+  }),
+  titulo_ponencia:  z.string().optional(),
+  eje_tematico:     z.string().optional(),
   archivo_ponencia: z.custom<FileList>().optional(),
 });
 
@@ -104,8 +117,10 @@ export const inscripcionSchema = z
     comprobante_pago: z.custom<FileList>().optional(),
   })
   .superRefine((data, ctx) => {
+    const esExpositor = data.calidad_asistencia?.includes("Expositor");
+
     // Validaciones adicionales para expositores
-    if (data.calidad_asistencia === "expositor") {
+    if (esExpositor) {
       if (!data.titulo_ponencia || data.titulo_ponencia.trim().length < 5) {
         ctx.addIssue({
           code: "custom",

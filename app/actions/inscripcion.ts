@@ -62,23 +62,29 @@ export async function procesarInscripcion(
     const email              = (formData.get("email")              as string)?.trim().toLowerCase();
     const nacionalidad       = (formData.get("nacionalidad")       as string)?.trim();
     const calidad_asistencia = (formData.get("calidad_asistencia") as string)?.trim();
-    const categoria          = (formData.get("categoria")          as string)?.trim();
     const titulo_ponencia    = (formData.get("titulo_ponencia")    as string | null)?.trim() || null;
     const eje_tematico       = (formData.get("eje_tematico")       as string | null)?.trim() || null;
 
-    if (!nombre || !apellidos || !email || !nacionalidad || !calidad_asistencia || !categoria) {
+    if (!nombre || !apellidos || !email || !nacionalidad || !calidad_asistencia) {
       return { success: false, message: "Faltan campos obligatorios en el formulario." };
     }
 
-    // Validar enums
-    const calidades = ["asistente", "expositor"];
+    // Validar valor de calidad_asistencia contra la tabla oficial
+    const calidades = [
+      "Estudiante de pregrado - Asistente",
+      "Estudiante de pregrado - Expositor",
+      "Profesional de ciencias sociales/humanidades/artes - Asistente",
+      "Profesional de ciencias sociales/humanidades/artes - Expositor",
+      "Estudiante de posgrado - Asistente",
+      "Estudiante de posgrado - Expositor",
+      "Académico/a e investigador/a - Asistente",
+      "Académico/a e investigador/a - Expositor",
+    ];
     if (!calidades.includes(calidad_asistencia)) {
-      return { success: false, message: "Rol de participación no válido." };
+      return { success: false, message: "Perfil de participación no válido." };
     }
-    const categorias = ["pregrado", "profesional", "posgrado", "academico"];
-    if (!categorias.includes(categoria)) {
-      return { success: false, message: "Categoría no válida." };
-    }
+
+    const esExpositor = calidad_asistencia.includes("Expositor");
 
     const archivoPonencia = formData.get("archivo_ponencia") as File | null;
     const comprobantePago = formData.get("comprobante_pago") as File | null;
@@ -87,7 +93,7 @@ export async function procesarInscripcion(
       return { success: false, message: "El comprobante de pago es requerido." };
     }
 
-    if (calidad_asistencia === "expositor") {
+    if (esExpositor) {
       if (!titulo_ponencia || !eje_tematico) {
         return { success: false, message: "Faltan datos de la ponencia para el expositor." };
       }
@@ -98,7 +104,7 @@ export async function procesarInscripcion(
 
     // b) Subir archivo_ponencia (si es expositor)
     let rutaPonencia: string | null = null;
-    if (calidad_asistencia === "expositor" && archivoPonencia) {
+    if (esExpositor && archivoPonencia) {
       rutaPonencia = await subirArchivo(archivoPonencia, "documentos_ponencias");
     }
 
@@ -119,7 +125,7 @@ export async function procesarInscripcion(
 
     // e) Si es expositor, insertar en `ponencias`
     let ponenciaId: string | null = null;
-    if (calidad_asistencia === "expositor" && rutaPonencia) {
+    if (esExpositor && rutaPonencia) {
       const { data: ponencia, error: ponenciaError } = await supabase
         .from("ponencias")
         .insert({
@@ -143,7 +149,6 @@ export async function procesarInscripcion(
       .insert({
         usuario_id:         perfilId,
         calidad_asistencia,
-        categoria,
         ponencia_id:        ponenciaId,
         estado:             "pendiente",
       })
