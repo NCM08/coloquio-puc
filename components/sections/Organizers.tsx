@@ -33,14 +33,18 @@ function MainLogoCard({ src, alt, dark }: { src: string; alt: string; dark: bool
                     : "bg-white border-[var(--color-dark-100)]",
             ].join(" ")}
         >
-            {/* h-32 md:h-40 + w-auto → Next.js no emite warning de aspect ratio */}
-            <Image
-                src={src}
-                alt={alt}
-                width={340}
-                height={160}
-                className="h-32 md:h-40 w-auto object-contain"
-            />
+            {/* width={0} height={0} sizes="100vw" → patrón oficial Next.js sin warning de aspect-ratio */}
+            <div className="h-32 md:h-40">
+                <Image
+                    src={src}
+                    alt={alt}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{ width: "auto", height: "100%" }}
+                    className="object-contain"
+                />
+            </div>
         </div>
     );
 }
