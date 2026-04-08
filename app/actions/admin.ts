@@ -38,6 +38,7 @@ export interface PonenciaData {
   id: string;
   titulo: string | null;
   eje_tematico: string | null;
+  archivo_url: string | null;
 }
 
 export interface PerfilConRelaciones {

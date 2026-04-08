@@ -21,7 +21,7 @@ function escaparCSV(valor: string | null | undefined): string {
 
 export default function BotonExportarCSV({ perfiles }: Props) {
   function descargarCSV() {
-    const cabecera = ["Nombre", "Email", "Rol", "Estado Pago", "Tiene Ponencia", "Fecha Registro"];
+    const cabecera = ["Nombre", "Apellidos", "Email", "Nacionalidad", "Rol", "Estado Pago", "Tiene Ponencia", "Título Ponencia", "Fecha Registro"];
 
     const filas = perfiles.map((p) => {
       const inscripcion = p.inscripciones?.[0] ?? null;
@@ -33,13 +33,17 @@ export default function BotonExportarCSV({ perfiles }: Props) {
             year: "numeric",
           })
         : "";
+      const tituloPonencia = p.ponencias?.[0]?.titulo ?? "N/A";
 
       return [
-        escaparCSV(`${p.nombre} ${p.apellidos ?? ""}`.trim()),
+        escaparCSV(p.nombre),
+        escaparCSV(p.apellidos),
         escaparCSV(p.email),
+        escaparCSV(p.nacionalidad),
         escaparCSV(inscripcion?.calidad_asistencia),
         escaparCSV(getEstadoPago(p)),
         (p.ponencias?.length ?? 0) > 0 ? "Sí" : "No",
+        escaparCSV(tituloPonencia),
         escaparCSV(fecha),
       ].join(",");
     });

@@ -4,7 +4,7 @@
 
 import { obtenerDatosDashboard, type PerfilConRelaciones } from "@/app/actions/admin";
 import { logoutAdmin } from "@/app/actions/auth";
-import { Users, CheckCircle, Clock, XCircle, FileText, Globe, LogOut } from "lucide-react";
+import { Users, CheckCircle, Clock, XCircle, FileText, Globe, LogOut, Eye, UserCheck } from "lucide-react";
 import SelectorEstadoPago from "@/components/admin/SelectorEstadoPago";
 import BotonExportarCSV from "@/components/admin/BotonExportarCSV";
 
@@ -67,6 +67,22 @@ function BadgePonencia({ tienePonencia }: { tienePonencia: boolean }) {
   );
 }
 
+// ── Helpers de fecha ─────────────────────────────────────────
+
+function tiempoRelativo(fechaStr: string): string {
+  const ahora = Date.now();
+  const fecha = new Date(fechaStr).getTime();
+  const diffMs = ahora - fecha;
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return "Hace un momento";
+  if (diffMin < 60) return `Hace ${diffMin} min`;
+  const diffH = Math.floor(diffMin / 60);
+  if (diffH < 24) return `Hace ${diffH} h`;
+  const diffD = Math.floor(diffH / 24);
+  if (diffD < 7) return `Hace ${diffD} día${diffD !== 1 ? "s" : ""}`;
+  return new Date(fechaStr).toLocaleDateString("es-CL", { day: "2-digit", month: "short", year: "numeric" });
+}
+
 // ── Tarjetas de estadísticas ──────────────────────────────────
 
 function StatCard({
@@ -93,6 +109,31 @@ function StatCard({
   );
 }
 
+function UltimoInscritoCard({ perfil }: { perfil: PerfilConRelaciones | null }) {
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-500">
+        <UserCheck size={22} className="text-white" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5">Último Inscrito</p>
+        {perfil ? (
+          <>
+            <p className="font-bold text-slate-900 dark:text-white leading-snug truncate">
+              {perfil.nombre} {perfil.apellidos ?? ""}
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              {tiempoRelativo((perfil as unknown as Record<string, string>)["creado_en"] ?? perfil.created_at)}
+            </p>
+          </>
+        ) : (
+          <p className="text-sm text-slate-400 dark:text-slate-500 italic">Sin registros</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Página principal ──────────────────────────────────────────
 
 export default async function AdminPage() {
@@ -110,6 +151,8 @@ export default async function AdminPage() {
   const pagosAprobados = perfiles.filter((p) => getEstadoPago(p) === "aprobado").length;
   const pagosPendientes = perfiles.filter((p) => getEstadoPago(p) === "por_verificar").length;
   const conPonencia = perfiles.filter((p) => p.ponencias?.length > 0).length;
+  // perfiles ya viene ordenado por creado_en DESC desde el servidor
+  const ultimoInscrito = perfiles[0] ?? null;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -147,6 +190,9 @@ export default async function AdminPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
 
         {/* ── Estadísticas ─────────────────────────────────────── */}
+        <div className="mb-4">
+          <UltimoInscritoCard perfil={ultimoInscrito} />
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard label="Inscritos" value={totalInscritos} icon={Users} color="bg-blue-500" />
           <StatCard label="Pagos aprobados" value={pagosAprobados} icon={CheckCircle} color="bg-emerald-500" />
@@ -221,6 +267,8 @@ export default async function AdminPage() {
                       : "—";
 
                     const pagoId = inscripcion?.pagos?.[0]?.id ?? null;
+                    const comprobanteUrl = inscripcion?.pagos?.[0]?.comprobante_url ?? null;
+                    const ponenciaUrl = perfil.ponencias?.[0]?.archivo_url ?? null;
 
                     return (
                       <tr
@@ -262,16 +310,42 @@ export default async function AdminPage() {
 
                         {/* Estado del pago */}
                         <td className="px-4 py-4 text-center">
-                          {pagoId ? (
-                            <SelectorEstadoPago pagoId={pagoId} estadoActual={estadoPago as import("@/app/actions/admin").EstadoPago} />
-                          ) : (
-                            <BadgePago estado={estadoPago} />
-                          )}
+                          <div className="flex flex-col items-center gap-1.5">
+                            {pagoId ? (
+                              <SelectorEstadoPago pagoId={pagoId} estadoActual={estadoPago as import("@/app/actions/admin").EstadoPago} />
+                            ) : (
+                              <BadgePago estado={estadoPago} />
+                            )}
+                            {comprobanteUrl && (
+                              <a
+                                href={comprobanteUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                <Eye size={11} />
+                                Ver pago
+                              </a>
+                            )}
+                          </div>
                         </td>
 
                         {/* Ponencia */}
                         <td className="px-4 py-4 text-center">
-                          <BadgePonencia tienePonencia={tienePonencia} />
+                          <div className="flex flex-col items-center gap-1.5">
+                            <BadgePonencia tienePonencia={tienePonencia} />
+                            {ponenciaUrl && (
+                              <a
+                                href={ponenciaUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                <Eye size={11} />
+                                Ver ponencia
+                              </a>
+                            )}
+                          </div>
                         </td>
 
                         {/* Fecha de registro */}
