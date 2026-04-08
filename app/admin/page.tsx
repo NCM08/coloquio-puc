@@ -196,11 +196,14 @@ export default async function AdminPage() {
                     const inscripcion = perfil.inscripciones?.[0] ?? null;
                     const estadoPago = getEstadoPago(perfil);
                     const tienePonencia = (perfil.ponencias?.length ?? 0) > 0;
-                    const fechaRegistro = new Date(perfil.created_at).toLocaleDateString("es-CL", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    });
+                    const _fechaRaw = perfil.creado_en;
+                    const fechaRegistro = _fechaRaw
+                      ? new Date(_fechaRaw).toLocaleDateString("es-CL", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "—";
 
                     return (
                       <tr
