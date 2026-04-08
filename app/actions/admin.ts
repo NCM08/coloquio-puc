@@ -6,10 +6,8 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
-import { Resend } from "resend";
+import { enviarCorreo } from "@/lib/mailer";
 import PagoAprobadoEmail from "@/components/emails/PagoAprobadoEmail";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Cliente con privilegios de administrador — solo para server actions.
 // La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
@@ -103,11 +101,10 @@ export async function cambiarEstadoPago(
         const nombre: string = perfil?.nombre ?? "Participante";
 
         if (email) {
-          await resend.emails.send({
-            from: "Coloquio PUC <onboarding@resend.dev>",
+          await enviarCorreo({
             to: email,
             subject: "Tu pago ha sido aprobado - Coloquio PUC",
-            react: PagoAprobadoEmail({ nombre }),
+            reactComponent: PagoAprobadoEmail({ nombre }),
           });
         }
       }

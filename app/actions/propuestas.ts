@@ -1,10 +1,8 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
-import { Resend } from "resend";
+import { enviarCorreo } from "@/lib/mailer";
 import ConfirmacionPropuestaEmail from "@/components/emails/ConfirmacionPropuestaEmail";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Cliente con privilegios de administrador — solo para server actions.
 // La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
@@ -94,11 +92,10 @@ export async function enviarPropuesta(formData: FormData) {
 
     // ── Enviar correo de confirmación (no bloquea si falla) ───
     try {
-      await resend.emails.send({
-        from: "Coloquio PUC <onboarding@resend.dev>",
+      await enviarCorreo({
         to: correo,
         subject: "Hemos recibido tu propuesta - Coloquio PUC",
-        react: ConfirmacionPropuestaEmail({ nombre }),
+        reactComponent: ConfirmacionPropuestaEmail({ nombre }),
       });
     } catch (emailErr) {
       console.error("[enviarPropuesta] Error al enviar correo de confirmación:", emailErr);
