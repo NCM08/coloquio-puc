@@ -54,7 +54,7 @@ export async function obtenerDatosDashboard(): Promise<PerfilConRelaciones[]> {
   const { data, error } = await supabase
     .from("perfiles")
     .select("*, inscripciones(*, pagos(*)), ponencias(*)")
-    .order("created_at", { ascending: false });
+    .order("creado_en", { ascending: false });
 
   if (error) {
     console.error("[obtenerDatosDashboard]", error);
