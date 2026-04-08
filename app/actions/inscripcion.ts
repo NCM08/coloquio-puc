@@ -192,7 +192,7 @@ export async function procesarInscripcion(
     // h) Enviar correo de confirmación (no bloquea la inscripción si falla)
     try {
       await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
+        from: "Coloquio PUC <onboarding@resend.dev>",
         to: email,
         subject: "Confirmación de solicitud de inscripción - Coloquio PUC",
         react: ConfirmacionInscripcionEmail({

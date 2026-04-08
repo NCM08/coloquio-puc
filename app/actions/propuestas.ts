@@ -95,7 +95,7 @@ export async function enviarPropuesta(formData: FormData) {
     // ── Enviar correo de confirmación (no bloquea si falla) ───
     try {
       await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
+        from: "Coloquio PUC <onboarding@resend.dev>",
         to: correo,
         subject: "Hemos recibido tu propuesta - Coloquio PUC",
         react: ConfirmacionPropuestaEmail({ nombre }),

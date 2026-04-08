@@ -104,7 +104,7 @@ export async function cambiarEstadoPago(
 
         if (email) {
           await resend.emails.send({
-            from: "Acme <onboarding@resend.dev>",
+            from: "Coloquio PUC <onboarding@resend.dev>",
             to: email,
             subject: "Tu pago ha sido aprobado - Coloquio PUC",
             react: PagoAprobadoEmail({ nombre }),
