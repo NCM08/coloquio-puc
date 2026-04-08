@@ -11,10 +11,10 @@ const OPCIONES: { value: EstadoPago; label: string }[] = [
 ];
 
 const COLOR_CLASS: Record<EstadoPago, string> = {
-  pendiente: "bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600",
-  por_verificar: "bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700",
-  aprobado: "bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700",
-  rechazado: "bg-red-50 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700",
+  pendiente: "bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-500",
+  por_verificar: "bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-800 dark:text-amber-100 dark:border-amber-600",
+  aprobado: "bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-800 dark:text-emerald-100 dark:border-emerald-600",
+  rechazado: "bg-red-50 text-red-800 border-red-300 dark:bg-red-800 dark:text-red-100 dark:border-red-600",
 };
 
 interface Props {
@@ -44,7 +44,7 @@ export default function SelectorEstadoPago({ pagoId, estadoActual }: Props) {
         ${isPending ? "opacity-50 cursor-not-allowed" : "hover:opacity-80"}`}
     >
       {OPCIONES.map((op) => (
-        <option key={op.value} value={op.value}>
+        <option key={op.value} value={op.value} className="bg-gray-900 text-white">
           {op.label}
         </option>
       ))}

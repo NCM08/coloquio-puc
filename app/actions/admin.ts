@@ -6,6 +6,10 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
+import PagoAprobadoEmail from "@/components/emails/PagoAprobadoEmail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Cliente con privilegios de administrador — solo para server actions.
 // La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
@@ -79,8 +83,37 @@ export async function cambiarEstadoPago(
     .eq("id", pagoId);
 
   if (error) {
-    console.error("[cambiarEstadoPago]", error);
+    console.error("[cambiarEstadoPago] Error al actualizar estado en DB:", error);
     throw new Error(`Error al actualizar estado de pago: ${error.message}`);
+  }
+
+  if (nuevoEstado === "aprobado") {
+    try {
+      const { data: pagoData, error: pagoError } = await supabase
+        .from("pagos")
+        .select("inscripciones(perfiles(email, nombre))")
+        .eq("id", pagoId)
+        .single();
+
+      if (pagoError) {
+        console.error("[cambiarEstadoPago] Error al obtener perfil para correo:", pagoError);
+      } else {
+        const perfil = (pagoData as any)?.inscripciones?.perfiles;
+        const email: string | undefined = perfil?.email;
+        const nombre: string = perfil?.nombre ?? "Participante";
+
+        if (email) {
+          await resend.emails.send({
+            from: "Acme <onboarding@resend.dev>",
+            to: email,
+            subject: "Tu pago ha sido aprobado - Coloquio PUC",
+            react: PagoAprobadoEmail({ nombre }),
+          });
+        }
+      }
+    } catch (emailErr) {
+      console.error("[cambiarEstadoPago] Error al enviar correo de aprobación:", emailErr);
+    }
   }
 
   revalidatePath("/admin");
