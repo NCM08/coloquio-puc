@@ -266,9 +266,16 @@ export default async function AdminPage() {
                         })
                       : "—";
 
+                    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
                     const pagoId = inscripcion?.pagos?.[0]?.id ?? null;
-                    const comprobanteUrl = inscripcion?.pagos?.[0]?.comprobante_url ?? null;
-                    const ponenciaUrl = perfil.ponencias?.[0]?.archivo_url ?? null;
+                    const comprobanteRaw = inscripcion?.pagos?.[0]?.comprobante_url ?? null;
+                    const comprobanteUrl = comprobanteRaw
+                      ? `${supabaseUrl}/storage/v1/object/public/comprobantes_pago/${comprobanteRaw}`
+                      : null;
+                    const ponenciaRaw = perfil.ponencias?.[0]?.archivo_url ?? null;
+                    const ponenciaUrl = ponenciaRaw
+                      ? `${supabaseUrl}/storage/v1/object/public/documentos_ponencias/${ponenciaRaw}`
+                      : null;
 
                     return (
                       <tr
