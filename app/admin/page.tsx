@@ -5,6 +5,8 @@
 import { obtenerDatosDashboard, type PerfilConRelaciones } from "@/app/actions/admin";
 import { logoutAdmin } from "@/app/actions/auth";
 import { Users, CheckCircle, Clock, XCircle, FileText, Globe, LogOut } from "lucide-react";
+import SelectorEstadoPago from "@/components/admin/SelectorEstadoPago";
+import BotonExportarCSV from "@/components/admin/BotonExportarCSV";
 
 // ── Helpers de UI ─────────────────────────────────────────────
 
@@ -128,6 +130,7 @@ export default async function AdminPage() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               {perfiles.length} perfiles registrados
             </div>
+            <BotonExportarCSV perfiles={perfiles} />
             <form action={logoutAdmin}>
               <button
                 type="submit"
@@ -217,6 +220,8 @@ export default async function AdminPage() {
                         })
                       : "—";
 
+                    const pagoId = inscripcion?.pagos?.[0]?.id ?? null;
+
                     return (
                       <tr
                         key={perfil.id}
@@ -257,7 +262,11 @@ export default async function AdminPage() {
 
                         {/* Estado del pago */}
                         <td className="px-4 py-4 text-center">
-                          <BadgePago estado={estadoPago} />
+                          {pagoId ? (
+                            <SelectorEstadoPago pagoId={pagoId} estadoActual={estadoPago as import("@/app/actions/admin").EstadoPago} />
+                          ) : (
+                            <BadgePago estado={estadoPago} />
+                          )}
                         </td>
 
                         {/* Ponencia */}

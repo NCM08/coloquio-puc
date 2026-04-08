@@ -5,6 +5,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
 // Cliente con privilegios de administrador — solo para server actions.
 // La service_role key NUNCA se expone al frontend (no tiene prefijo NEXT_PUBLIC_).
@@ -62,4 +63,25 @@ export async function obtenerDatosDashboard(): Promise<PerfilConRelaciones[]> {
   }
 
   return (data ?? []) as PerfilConRelaciones[];
+}
+
+// ── Cambiar estado de pago ────────────────────────────────────
+
+export type EstadoPago = "pendiente" | "por_verificar" | "aprobado" | "rechazado";
+
+export async function cambiarEstadoPago(
+  pagoId: string,
+  nuevoEstado: EstadoPago
+): Promise<void> {
+  const { error } = await supabase
+    .from("pagos")
+    .update({ estado: nuevoEstado })
+    .eq("id", pagoId);
+
+  if (error) {
+    console.error("[cambiarEstadoPago]", error);
+    throw new Error(`Error al actualizar estado de pago: ${error.message}`);
+  }
+
+  revalidatePath("/admin");
 }
