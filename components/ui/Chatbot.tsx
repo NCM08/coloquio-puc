@@ -1,11 +1,8 @@
 // ============================================================
 // components/ui/Chatbot.tsx — ASISTENTE IA DEL COLOQUIO
 // ============================================================
-//
-// Chatbot flotante que responde preguntas sobre el coloquio.
-// Usa un sistema de respuestas basado en keywords para funcionar
-// sin API externa (ideal para el prototipo).
-// En producción se conectaría a la API de Claude.
+// Chatbot flotante impulsado por Claude (Anthropic).
+// Conectado a /api/chat con system prompt estricto del Coloquio.
 // ============================================================
 
 "use client";
@@ -19,88 +16,10 @@ type Message = {
     content: string;
 };
 
-// Base de conocimiento del coloquio — actualizada Operación Rastrillo 2026
-const KNOWLEDGE_BASE = {
-    fechas: `Las fechas clave del VIII Coloquio Internacional de Sociología Clínica 2026 son:\n\n📅 27 de marzo 2026 — Apertura de convocatorias (¡YA ABIERTA!)\n📝 8 de mayo 2026 — Cierre de recepción de ponencias\n🗓️ 20 de mayo 2026 — Plazo máximo de envío de propuestas\n✅ 8 de junio 2026 — Notificación de aceptación\n📋 8 de agosto 2026 — Publicación de la agenda final\n🎤 10, 11 y 12 de noviembre de 2026 — Coloquio\n\nEl evento se realiza en el Campus San Joaquín, Pontificia Universidad Católica de Chile (PUC), Macul, Santiago, Chile.`,
-    pagos: `Los pagos se realizan mediante transferencia bancaria a través de Global66.\n\n🔒 Por motivos de seguridad, el RUT y el Número de Cuenta exactos solo se proporcionan en el Paso 3 del Formulario de Inscripción, una vez que hayas ingresado y validado tus datos personales.\n\nPolíticas importantes:\n• No existen descuentos grupales.\n• No se realizan devoluciones de dinero por cancelación.\n• No se emiten boletas oficiales. Solo se entrega un comprobante de pago válido para rendiciones institucionales.\n\nPara iniciar tu inscripción y recibir los datos bancarios, accede al Formulario de Inscripción en la sección correspondiente del sitio.\n\nPara consultas sobre pagos, escriba a: congresosociologiaclinica.2026@gmail.com`,
-    propuestas: `La fase de inscripción y recepción de propuestas YA ESTÁ ABIERTA desde el 27 de marzo de 2026.\n\nEl plazo límite para envío de propuestas es el 20 de mayo de 2026.\n\nLos 4 formatos válidos para participar son:\n1. Ponencias (15 a 20 minutos)\n2. Mesas temáticas (60 a 90 minutos, 3-4 presentaciones)\n3. Posters académicos\n4. Intervenciones artísticas y muestras audiovisuales\n\nTodas las propuestas se envían de forma anónima para revisión ciega por pares. Se aceptan propuestas en español y portugués. Para más detalles, escriba a congresosociologiaclinica.2026@gmail.com`,
-    ejes: `Los 8 ejes temáticos oficiales del coloquio son:\n\n1. Mutaciones civilizatorias, transformaciones del mundo del trabajo\n2. Descomposición de la escuela, la universidad y de los sistemas educativos\n3. Claves y acciones desde el feminismo\n4. Colonialidad, pueblos indígenas y afrodescendientes\n5. Nuevas tecnologías digitales: dilemas, ventajas y encrucijadas\n6. Militancias y territorios\n7. Desplazamientos, migración e interculturalidad\n8. Juventudes: entre la pulsión de vida y de muerte\n\nPara información detallada consulte a congresosociologiaclinica.2026@gmail.com`,
-    ubicacion: "El coloquio se realiza los días 10, 11 y 12 de noviembre de 2026 en el Campus San Joaquín, Pontificia Universidad Católica de Chile (PUC), Av. Vicuña Mackenna 4860, Macul, Santiago, Chile. La estación de metro más cercana es San Joaquín (Línea 5).",
-    certificados: "Se entrega certificado de participación y de expositor según corresponda. Los trabajos aceptados se publican en las actas oficiales del coloquio con ISBN.",
-    online: "Para consultas sobre modalidad presencial u online, escriba a congresosociologiaclinica.2026@gmail.com",
-    contacto: "Para cualquier consulta, escriba al comité oficial: congresosociologiaclinica.2026@gmail.com\n\nHorario de atención: lunes a viernes de 9:00 a 18:00 hrs.",
-    publicaciones: "Los trabajos aceptados se publican en las actas oficiales con ISBN. Para más información escriba a congresosociologiaclinica.2026@gmail.com",
-    conferencistas: "Los conferencistas confirmados incluyen a Vincent de Gaulejac (Francia, Presidente RISC), Ana María Araujo (Uruguay), Teresa Carreteiro (Brasil), Ana Correa (Argentina), Dariela Sharim (PUC Chile) y María Aparecida Penso (Brasil), entre otros.",
-};
-
-function findAnswer(question: string): string {
-    const q = question.toLowerCase();
-
-    // Saludos
-    if (q.match(/hola|buenos|buenas|hey|saludos/))
-        return "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (10, 11 y 12 de noviembre de 2026, Campus San Joaquín, PUC, Santiago, Chile). La fase de inscripción y recepción de propuestas YA está abierta. ¿En qué puedo ayudarle?";
-
-    // Fechas
-    if (q.match(/fecha|cuando|cuándo|calendario|plazo|deadline|apertura|convocatoria|agenda/))
-        return KNOWLEDGE_BASE.fechas;
-
-    // Pagos y política de pagos
-    if (q.match(/pago|pagar|global66|global 66|banco|transferencia|cuenta|rut|tarifa|precio|costo|cuanto|cuánto|valor|descuento|grupo|boleta|factura|comprobante|devoluci|reembolso|cancel|anular/))
-        return KNOWLEDGE_BASE.pagos;
-
-    // Propuestas y ponencias
-    if (q.match(/propuesta|enviar|envío|ponencia|poster|póster|mesa temática|mesa redonda|intervención|artística|modalidad|resumen|abstract|inscri|formato|participar/))
-        return KNOWLEDGE_BASE.propuestas;
-
-    // Ejes temáticos
-    if (q.match(/eje|temático|tematico|tema|área|area|investigación|investigacion/))
-        return KNOWLEDGE_BASE.ejes;
-
-    // Ubicación
-    if (q.match(/dónde|donde|ubicación|ubicacion|dirección|direccion|campus|llegar|metro|transporte|sede/))
-        return KNOWLEDGE_BASE.ubicacion;
-
-    // Certificados
-    if (q.match(/certificado|diploma|constancia|acreditación/))
-        return KNOWLEDGE_BASE.certificados;
-
-    // Online / modalidad
-    if (q.match(/online|virtual|remoto|streaming|transmisión|transmision|híbrido|hibrido|presencial/))
-        return KNOWLEDGE_BASE.online;
-
-    // Contacto
-    if (q.match(/contacto|correo|email|comunicar|escribir|consulta/))
-        return KNOWLEDGE_BASE.contacto;
-
-    // Publicaciones
-    if (q.match(/publicaci|actas|revista|isbn|indexad/))
-        return KNOWLEDGE_BASE.publicaciones;
-
-    // Conferencistas
-    if (q.match(/conferencista|expositor|speaker|keynote|magistral|invitado|panelista/))
-        return KNOWLEDGE_BASE.conferencistas;
-
-    // Idiomas
-    if (q.match(/idioma|lengua|inglés|ingles|portugués|portugues|español/))
-        return "Se aceptan propuestas en español y portugués. Las presentaciones durante el coloquio pueden realizarse en cualquiera de estos idiomas.";
-
-    // Gracias
-    if (q.match(/gracias|thank|agradec/))
-        return "¡Con mucho gusto! Si tiene alguna otra consulta, no dude en escribirnos. También puede contactar al comité directamente en congresosociologiaclinica.2026@gmail.com 😊";
-
-    // Default — nunca inventar información
-    return "No cuento con información específica sobre eso en este momento. Le recomiendo escribir directamente al comité organizador para obtener una respuesta precisa:\n\n📧 congresosociologiaclinica.2026@gmail.com\n\nTambién puedo ayudarle con: fechas clave, pagos y políticas, envío de propuestas, ejes temáticos o datos de contacto.";
-}
-
-function getTypingDelay() {
-    return 600 + Math.random() * 800;
-}
-
-// Sugerencias rápidas — Sprint 5
 const QUICK_SUGGESTIONS = [
-    "📅 Ver fechas importantes",
-    "💳 ¿Cómo funciona el pago?",
-    "✉️ Correo de contacto",
+    "📅 Fechas importantes",
+    "📋 Envío de propuestas",
+    "📍 Ubicación y contacto",
 ];
 
 export default function Chatbot() {
@@ -108,41 +27,94 @@ export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
-        role: "assistant",
-        content: "¡Bienvenido/a! 👋 Soy el Asistente Virtual Oficial del VIII Coloquio Internacional de Sociología Clínica (10, 11 y 12 de noviembre de 2026 · Campus San Joaquín, PUC, Santiago, Chile). 🟢 La fase de inscripción y recepción de propuestas YA está abierta. Puedo orientarle sobre fechas, pagos, propuestas y contacto. ¿En qué puedo ayudarle?",
+            role: "assistant",
+            content: "¡Hola! Soy el asistente virtual del Coloquio. ¿En qué te puedo ayudar hoy?",
         },
     ]);
     const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    }, [messages, isLoading]);
 
-    const sendMessage = (text: string) => {
-        if (!text.trim()) return;
+    const sendMessage = async (text: string) => {
+        if (!text.trim() || isLoading) return;
 
         const userMsg: Message = { role: "user", content: text.trim() };
-        setMessages(prev => [...prev, userMsg]);
+        const updatedMessages = [...messages, userMsg];
+        setMessages(updatedMessages);
         setInput("");
-        setIsTyping(true);
+        setIsLoading(true);
 
-        // Simular delay de "pensando"
-        const delay = getTypingDelay();
-        setTimeout(() => {
-        const answer = findAnswer(text);
-        setMessages(prev => [...prev, { role: "assistant", content: answer }]);
-        setIsTyping(false);
-        }, delay);
+        try {
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messages: updatedMessages }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || data.error) {
+                throw new Error(data.error || "Error en la respuesta");
+            }
+
+            setMessages(prev => [...prev, { role: "assistant", content: data.content }]);
+        } catch {
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: "assistant",
+                    content:
+                        "Lo siento, no pude procesar tu consulta en este momento. Por favor intenta de nuevo o escríbenos directamente a coloquio.sociologia.puc@gmail.com",
+                },
+            ]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage(input);
+            e.preventDefault();
+            sendMessage(input);
         }
     };
+
+    // ── Brand tokens ──────────────────────────────────────────
+    // Primary: Celeste UC #00adfc | Accent: Verde lima #5fba24
+    const headerBg = dark
+        ? "linear-gradient(135deg, #003350 0%, #005a8a 100%)"
+        : "linear-gradient(135deg, #00adfc 0%, #008fd4 100%)";
+
+    const panelBg = dark ? "#121212" : "#FFFFFF";
+    const panelBorder = dark ? "rgba(0,173,252,0.15)" : "rgba(0,173,252,0.2)";
+    const panelShadow = dark
+        ? "0 16px 56px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,173,252,0.12)"
+        : "0 16px 56px rgba(0,173,252,0.18), 0 0 0 1px rgba(0,173,252,0.12)";
+
+    const msgAreaBg = dark ? "#1a1a1a" : "#f7fbff";
+    const botBubbleBg = dark ? "#212121" : "#e8f6ff";
+    const botBubbleColor = dark ? "#e0e0e0" : "#1a3a4a";
+    const userBubbleBg = "#00adfc";
+    const userBubbleColor = "#ffffff";
+
+    const botIconBg = dark ? "rgba(0,173,252,0.15)" : "rgba(0,173,252,0.12)";
+    const botIconColor = "#00adfc";
+    const userIconBg = "#00adfc";
+
+    const inputBg = dark ? "#212121" : "#f0f9ff";
+    const inputBorder = dark ? "rgba(0,173,252,0.2)" : "rgba(0,173,252,0.25)";
+    const inputColor = dark ? "#e0e0e0" : "#1a3a4a";
+    const footerBorder = dark ? "rgba(0,173,252,0.1)" : "rgba(0,173,252,0.12)";
+
+    const chipBorder = dark ? "rgba(0,173,252,0.2)" : "rgba(0,173,252,0.25)";
+    const chipColor = dark ? "#9E9E9E" : "#616161";
+
+    const fabBg = "linear-gradient(135deg, #00adfc 0%, #008fd4 100%)";
+    const fabShadow = "0 4px 20px rgba(0,173,252,0.45)";
 
     return (
         <>
@@ -151,13 +123,23 @@ export default function Chatbot() {
             <button
             onClick={() => setIsOpen(true)}
             className="chatbot-fab"
+            aria-label="Abrir asistente virtual"
             style={{
                 position: "fixed", bottom: 24, right: 24, zIndex: 50,
                 width: 60, height: 60, borderRadius: "50%", border: "none",
-                background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
-                color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 20px rgba(212,168,67,0.4)",
-                transition: "all 0.3s",
+                background: fabBg,
+                color: "#fff", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: fabShadow,
+                transition: "transform 0.2s, box-shadow 0.2s",
+            }}
+            onMouseOver={e => {
+                e.currentTarget.style.transform = "scale(1.08)";
+                e.currentTarget.style.boxShadow = "0 6px 28px rgba(0,173,252,0.6)";
+            }}
+            onMouseOut={e => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = fabShadow;
             }}
             >
             <MessageCircle size={26} />
@@ -170,113 +152,125 @@ export default function Chatbot() {
             className="chatbot-panel"
             style={{
                 position: "fixed", bottom: 24, right: 24, zIndex: 50,
-                width: 380, maxHeight: "70vh",
+                width: 380, maxHeight: "72vh",
                 borderRadius: 20, overflow: "hidden",
-                border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                backgroundColor: dark ? "var(--color-dark-900)" : "#FFFFFF",
-                boxShadow: dark ? "0 12px 48px rgba(0,0,0,0.5)" : "0 12px 48px rgba(0,0,0,0.15)",
+                border: `1px solid ${panelBorder}`,
+                backgroundColor: panelBg,
+                boxShadow: panelShadow,
                 display: "flex", flexDirection: "column",
             }}
             >
-            {/* Header */}
+            {/* ── Header ── */}
             <div style={{
-                padding: "16px 20px", display: "flex", alignItems: "center", gap: 12,
-                background: dark
-                ? "linear-gradient(135deg, var(--color-dark-800), var(--color-dark-700))"
-                : "linear-gradient(135deg, var(--color-primary), var(--color-primary-600))",
+                padding: "14px 16px",
+                display: "flex", alignItems: "center", gap: 10,
+                background: headerBg,
                 color: "#fff",
+                flexShrink: 0,
             }}>
                 <div style={{
                 width: 36, height: 36, borderRadius: 10,
                 backgroundColor: "rgba(255,255,255,0.15)",
                 display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
                 }}>
-                <Sparkles size={18} />
+                <Sparkles size={17} />
                 </div>
-                <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 15, fontWeight: 700 }}>Asistente del Coloquio</p>
-                <p style={{ fontSize: 11, opacity: 0.7 }}>Powered by IA · Responde al instante</p>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 14, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
+                    Asistente del Coloquio
+                </p>
+                <p style={{ fontSize: 11, opacity: 0.75, margin: 0, lineHeight: 1.3 }}>
+                    Impulsado por IA · VIII Coloquio PUC 2026
+                </p>
                 </div>
                 <button
                 onClick={() => setIsOpen(false)}
                 title="Cerrar asistente"
                 aria-label="Cerrar asistente"
                 style={{
-                    width: 40, height: 40, borderRadius: 10, border: "2px solid rgba(255,255,255,0.3)",
-                    backgroundColor: "rgba(255,255,255,0.15)", color: "#fff",
-                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "background-color 0.2s",
-                    flexShrink: 0,
+                    width: 34, height: 34, borderRadius: 8,
+                    border: "1.5px solid rgba(255,255,255,0.3)",
+                    backgroundColor: "rgba(255,255,255,0.12)",
+                    color: "#fff", cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0, transition: "background-color 0.2s",
                 }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.3)"; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)"; }}
+                onMouseOver={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.28)"; }}
+                onMouseOut={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)"; }}
                 >
-                <X size={20} strokeWidth={2.5} />
+                <X size={18} strokeWidth={2.5} />
                 </button>
             </div>
 
-            {/* Messages */}
+            {/* ── Mensajes ── */}
             <div style={{
-                flex: 1, overflowY: "auto", padding: 16,
-                display: "flex", flexDirection: "column", gap: 12,
-                maxHeight: "45vh",
+                flex: 1, overflowY: "auto", padding: "14px 14px 8px",
+                display: "flex", flexDirection: "column", gap: 10,
+                backgroundColor: msgAreaBg,
             }}>
                 {messages.map((msg, index) => (
                 <div key={index} style={{
                     display: "flex", gap: 8,
                     justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                    alignItems: "flex-end",
                 }}>
                     {msg.role === "assistant" && (
                     <div style={{
-                        width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                        backgroundColor: dark ? "rgba(212,168,67,0.15)" : "var(--color-primary-50)",
+                        width: 26, height: 26, borderRadius: 8, flexShrink: 0,
+                        backgroundColor: botIconBg,
                         display: "flex", alignItems: "center", justifyContent: "center",
+                        marginBottom: 2,
                     }}>
-                        <Bot size={14} style={{ color: dark ? "var(--color-accent)" : "var(--color-primary)" }} />
+                        <Bot size={13} style={{ color: botIconColor }} />
                     </div>
                     )}
                     <div style={{
-                    maxWidth: "80%", padding: "10px 14px", borderRadius: 14,
-                    fontSize: 14, lineHeight: 1.6, wordBreak: "break-word",
-                    backgroundColor: msg.role === "user"
-                        ? "var(--color-accent)"
-                        : dark ? "var(--color-dark-800)" : "var(--color-dark-50)",
-                    color: msg.role === "user"
-                        ? "#fff"
-                        : dark ? "var(--color-dark-200)" : "var(--color-dark-600)",
+                    maxWidth: "78%", padding: "9px 13px", borderRadius: 14,
+                    fontSize: 13.5, lineHeight: 1.6, wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                    backgroundColor: msg.role === "user" ? userBubbleBg : botBubbleBg,
+                    color: msg.role === "user" ? userBubbleColor : botBubbleColor,
                     borderBottomRightRadius: msg.role === "user" ? 4 : 14,
                     borderBottomLeftRadius: msg.role === "assistant" ? 4 : 14,
+                    boxShadow: msg.role === "user"
+                        ? "0 2px 8px rgba(0,173,252,0.25)"
+                        : "0 1px 4px rgba(0,0,0,0.06)",
                     }}>
                     {msg.content}
                     </div>
                     {msg.role === "user" && (
                     <div style={{
-                        width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                        backgroundColor: "var(--color-accent)",
+                        width: 26, height: 26, borderRadius: 8, flexShrink: 0,
+                        backgroundColor: userIconBg,
                         display: "flex", alignItems: "center", justifyContent: "center",
+                        marginBottom: 2,
                     }}>
-                        <User size={14} style={{ color: "#fff" }} />
+                        <User size={13} style={{ color: "#fff" }} />
                     </div>
                     )}
                 </div>
                 ))}
 
-                {/* Typing indicator */}
-                {isTyping && (
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                {/* Indicador de carga */}
+                {isLoading && (
+                <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
                     <div style={{
-                    width: 28, height: 28, borderRadius: 8,
-                    backgroundColor: dark ? "rgba(212,168,67,0.15)" : "var(--color-primary-50)",
+                    width: 26, height: 26, borderRadius: 8,
+                    backgroundColor: botIconBg,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
-                    <Bot size={14} style={{ color: dark ? "var(--color-accent)" : "var(--color-primary)" }} />
+                    <Bot size={13} style={{ color: botIconColor }} />
                     </div>
                     <div style={{
-                    padding: "10px 14px", borderRadius: 14, borderBottomLeftRadius: 4,
-                    backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-dark-50)",
-                    fontSize: 14, color: dark ? "var(--color-dark-400)" : "var(--color-dark-400)",
+                    padding: "9px 14px", borderRadius: 14, borderBottomLeftRadius: 4,
+                    backgroundColor: botBubbleBg,
+                    fontSize: 13.5, color: botBubbleColor, display: "flex", gap: 4, alignItems: "center",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                     }}>
-                    Escribiendo...
+                    <span style={{ animation: "dot-bounce 1.2s infinite 0s" }}>●</span>
+                    <span style={{ animation: "dot-bounce 1.2s infinite 0.2s" }}>●</span>
+                    <span style={{ animation: "dot-bounce 1.2s infinite 0.4s" }}>●</span>
                     </div>
                 </div>
                 )}
@@ -284,67 +278,84 @@ export default function Chatbot() {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick suggestions (solo si hay pocos mensajes) */}
-            {messages.length <= 2 && (
+            {/* ── Sugerencias rápidas ── */}
+            {messages.length <= 2 && !isLoading && (
                 <div style={{
-                padding: "0 16px 8px", display: "flex", gap: 6, flexWrap: "wrap",
+                padding: "6px 14px 4px",
+                display: "flex", gap: 6, flexWrap: "wrap",
+                backgroundColor: msgAreaBg,
+                borderTop: `1px solid ${footerBorder}`,
                 }}>
-                {QUICK_SUGGESTIONS.map((suggestion) => (
+                {QUICK_SUGGESTIONS.map((s) => (
                     <button
-                    key={suggestion}
-                    onClick={() => sendMessage(suggestion)}
+                    key={s}
+                    onClick={() => sendMessage(s)}
                     style={{
-                        padding: "6px 12px", borderRadius: 20, fontSize: 12, fontWeight: 500,
+                        padding: "5px 11px", borderRadius: 20, fontSize: 11.5, fontWeight: 500,
                         fontFamily: "var(--font-body)", cursor: "pointer",
-                        border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
+                        border: `1px solid ${chipBorder}`,
                         backgroundColor: "transparent",
-                        color: dark ? "var(--color-dark-300)" : "var(--color-dark-500)",
-                        transition: "all 0.2s",
+                        color: chipColor,
+                        transition: "all 0.18s",
                     }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.borderColor = dark ? "var(--color-accent)" : "var(--color-primary)";
-                        e.currentTarget.style.color = dark ? "var(--color-accent)" : "var(--color-primary)";
+                    onMouseOver={e => {
+                        e.currentTarget.style.borderColor = "#00adfc";
+                        e.currentTarget.style.color = "#00adfc";
+                        e.currentTarget.style.backgroundColor = "rgba(0,173,252,0.07)";
                     }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.borderColor = dark ? "var(--color-dark-700)" : "var(--color-dark-100)";
-                        e.currentTarget.style.color = dark ? "var(--color-dark-300)" : "var(--color-dark-500)";
+                    onMouseOut={e => {
+                        e.currentTarget.style.borderColor = chipBorder;
+                        e.currentTarget.style.color = chipColor;
+                        e.currentTarget.style.backgroundColor = "transparent";
                     }}
                     >
-                    {suggestion}
+                    {s}
                     </button>
                 ))}
                 </div>
             )}
 
-            {/* Input */}
+            {/* ── Input ── */}
             <div style={{
-                padding: 12, borderTop: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
+                padding: "10px 12px",
+                borderTop: `1px solid ${footerBorder}`,
                 display: "flex", gap: 8, alignItems: "center",
+                backgroundColor: panelBg,
+                flexShrink: 0,
             }}>
                 <input
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Escribe tu pregunta..."
+                disabled={isLoading}
                 style={{
-                    flex: 1, height: 42, padding: "0 14px", borderRadius: 10,
-                    border: `1px solid ${dark ? "var(--color-dark-700)" : "var(--color-dark-100)"}`,
-                    backgroundColor: dark ? "var(--color-dark-800)" : "var(--color-dark-50)",
-                    color: dark ? "var(--color-dark-100)" : "var(--color-dark-700)",
-                    fontSize: 14, fontFamily: "var(--font-body)", outline: "none",
+                    flex: 1, height: 40, padding: "0 13px", borderRadius: 10,
+                    border: `1.5px solid ${inputBorder}`,
+                    backgroundColor: inputBg,
+                    color: inputColor,
+                    fontSize: 13.5, fontFamily: "var(--font-body)", outline: "none",
+                    transition: "border-color 0.2s",
                 }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#00adfc"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = inputBorder; }}
                 />
                 <button
                 onClick={() => sendMessage(input)}
-                disabled={!input.trim() || isTyping}
+                disabled={!input.trim() || isLoading}
                 style={{
-                    width: 42, height: 42, borderRadius: 10, border: "none",
-                    backgroundColor: input.trim() ? "var(--color-accent)" : (dark ? "var(--color-dark-700)" : "var(--color-dark-100)"),
-                    color: input.trim() ? "#fff" : (dark ? "var(--color-dark-500)" : "var(--color-dark-400)"),
-                    cursor: input.trim() ? "pointer" : "default",
+                    width: 40, height: 40, borderRadius: 10, border: "none",
+                    backgroundColor: input.trim() && !isLoading
+                    ? "#00adfc"
+                    : dark ? "#303030" : "#E0E0E0",
+                    color: input.trim() && !isLoading
+                    ? "#fff"
+                    : dark ? "#616161" : "#9E9E9E",
+                    cursor: input.trim() && !isLoading ? "pointer" : "default",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "all 0.2s",
+                    transition: "all 0.2s", flexShrink: 0,
+                    boxShadow: input.trim() && !isLoading ? "0 2px 8px rgba(0,173,252,0.35)" : "none",
                 }}
                 >
                 <Send size={16} />
@@ -353,19 +364,22 @@ export default function Chatbot() {
             </div>
         )}
 
-        {/* Responsive */}
         <style>{`
+            @keyframes dot-bounce {
+                0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+                40% { opacity: 1; transform: scale(1); }
+            }
             @media (max-width: 480px) {
-            .chatbot-panel {
-                width: calc(100vw - 32px) !important;
-                bottom: 80px !important;
-                right: 16px !important;
-                max-height: 80vh !important;
-            }
-            .chatbot-fab {
-                bottom: 80px !important;
-                right: 16px !important;
-            }
+                .chatbot-panel {
+                    width: calc(100vw - 32px) !important;
+                    bottom: 80px !important;
+                    right: 16px !important;
+                    max-height: 82vh !important;
+                }
+                .chatbot-fab {
+                    bottom: 80px !important;
+                    right: 16px !important;
+                }
             }
         `}</style>
         </>
