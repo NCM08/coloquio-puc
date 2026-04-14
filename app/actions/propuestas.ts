@@ -27,6 +27,7 @@ export async function enviarPropuesta(formData: FormData) {
     });
     const tsData = await tsResponse.json();
     if (!tsData.success) {
+      console.error("🔴 Cloudflare Turnstile validation failed:", JSON.stringify(tsData));
       return { error: "Fallo la validación de seguridad anti-bots." };
     }
 
@@ -37,6 +38,7 @@ export async function enviarPropuesta(formData: FormData) {
     const archivo     = formData.get("archivo")     as File;
 
     if (!nombre || !correo || !institucion || !eje || !archivo || archivo.size === 0) {
+      console.error("🔴 Field validation failed:", { nombre: !!nombre, correo: !!correo, institucion: !!institucion, eje: !!eje, archivo: !!archivo, archivoSize: archivo?.size ?? 0 });
       return { error: "Todos los campos son obligatorios." };
     }
 
@@ -53,7 +55,7 @@ export async function enviarPropuesta(formData: FormData) {
       });
 
     if (uploadError) {
-      console.error("Error al subir archivo:", uploadError);
+      console.error("🔴 Supabase Storage upload failed:", uploadError);
       return { error: "No se pudo subir el archivo. Por favor, inténtelo nuevamente." };
     }
 
@@ -77,7 +79,7 @@ export async function enviarPropuesta(formData: FormData) {
     });
 
     if (dbError) {
-      console.error("Error en transacción DB:", dbError);
+      console.error("🔴 Supabase DB transaction failed:", dbError);
       return { error: "No se pudo registrar la propuesta. Por favor, inténtelo nuevamente." };
     }
 
@@ -94,7 +96,7 @@ export async function enviarPropuesta(formData: FormData) {
 
     return { success: true };
   } catch (err) {
-    console.error("Error inesperado en enviarPropuesta:", err);
+    console.error("🔴 CRITICAL SUBMISSION ERROR:", err);
     return { error: "Ocurrió un error inesperado. Por favor, inténtelo nuevamente." };
   }
 }
