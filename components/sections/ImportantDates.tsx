@@ -8,7 +8,8 @@ import { useTheme } from "@/components/ThemeProvider";
 import { CalendarCheck, Send, CheckCircle, UserPlus, Mic } from "lucide-react";
 import FadeInSection from "@/components/ui/FadeInSection";
 
-const DATES = [
+// ── Editar aquí para actualizar fechas y descripciones ────────
+const timelineData = [
     { icon: CalendarCheck, date: "27 de Marzo 2026", title: "Apertura de convocatoria", description: "Inicio oficial del período de recepción de ponencias, simposios, pósters y mesas redondas para el VIII Coloquio." },
     { icon: Send, date: "8 de Mayo 2026", title: "Cierre de recepción de ponencias", description: "Fecha límite para el ingreso de resúmenes y propuestas al sistema de evaluación por pares." },
     { icon: CheckCircle, date: "8 de Junio 2026", title: "Notificación de aceptación", description: "Comunicación oficial de resultados del proceso de revisión ciega: aceptación o rechazo de cada propuesta." },
@@ -32,30 +33,50 @@ export default function ImportantDates() {
             </FadeInSection>
 
             <div style={{ position: "relative" }}>
-            <div style={{ position: "absolute", left: 23, top: 0, bottom: 0, width: 2, backgroundColor: dark ? "var(--color-dark-700)" : "var(--color-dark-100)" }} />
+            {/* Timeline vertical line — tinted with brand primary */}
+            <div style={{
+                position: "absolute", left: 23, top: 0, bottom: 0, width: 2,
+                backgroundColor: dark ? "var(--color-primary-800)" : "var(--color-primary-200)",
+            }} />
 
             <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-                {DATES.map((item, index) => {
+                {timelineData.map((item, index) => {
                 const Icon = item.icon;
-                const isLast = index === DATES.length - 1;
+                const isLast = index === timelineData.length - 1;
                 return (
                     <FadeInSection key={index} delay={index * 0.12} direction="left">
                     <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+                        {/* Icon node */}
                         <div style={{
                         width: 48, height: 48, borderRadius: 14,
-                        backgroundColor: isLast ? "var(--color-accent)" : (dark ? "var(--color-dark-700)" : "var(--color-primary-50)"),
+                        backgroundColor: isLast
+                            ? "var(--color-accent)"
+                            : (dark ? "var(--color-primary-900)" : "var(--color-primary-50)"),
                         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, zIndex: 1,
-                        border: isLast ? "none" : `2px solid ${dark ? "var(--color-dark-600)" : "var(--color-primary-100)"}`,
+                        border: isLast ? "none" : `2px solid ${dark ? "var(--color-primary-800)" : "var(--color-primary-200)"}`,
                         }}>
-                        <Icon size={20} style={{ color: isLast ? "#fff" : (dark ? "var(--color-dark-300)" : "var(--color-primary)") }} />
+                        <Icon size={20} style={{ color: isLast ? "#fff" : (dark ? "var(--color-primary-300)" : "var(--color-primary-600)") }} />
                         </div>
+
                         <div style={{ flex: 1, padding: "4px 0 32px" }}>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: isLast ? "var(--color-accent)" : "var(--color-dark-400)", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                        {/* Date label — pill style on light, plain on dark */}
+                        <span style={{
+                            display: "inline-block",
+                            fontSize: 12, fontWeight: 700,
+                            textTransform: "uppercase", letterSpacing: 0.8,
+                            color: isLast ? "var(--color-accent)" : (dark ? "var(--color-primary-300)" : "var(--color-primary-700)"),
+                            backgroundColor: isLast ? "transparent" : (dark ? "transparent" : "var(--color-primary-50)"),
+                            border: isLast ? "none" : (dark ? "none" : "1px solid var(--color-primary-100)"),
+                            borderRadius: 6, padding: dark || isLast ? "0" : "2px 8px",
+                            marginBottom: 6,
+                        }}>
                             {item.date}
-                        </p>
+                        </span>
                         <h3 style={{
                             fontFamily: "var(--font-display)", fontSize: isLast ? 22 : 20, fontWeight: 700, marginBottom: 6, lineHeight: 1.3,
-                            color: isLast ? (dark ? "var(--color-accent)" : "var(--color-primary)") : (dark ? "var(--color-dark-100)" : "var(--color-dark-700)"),
+                            color: isLast
+                                ? (dark ? "var(--color-accent)" : "var(--color-primary)")
+                                : (dark ? "var(--color-dark-100)" : "var(--color-primary-900)"),
                         }}>
                             {item.title}
                         </h3>
