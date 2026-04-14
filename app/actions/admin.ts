@@ -47,7 +47,7 @@ export interface PerfilConRelaciones {
   apellidos: string | null;
   email: string;
   nacionalidad: string | null;
-  created_at: string;
+  creado_en: string | null;
   inscripciones: InscripcionData[];
   ponencias: PonenciaData[];
 }
