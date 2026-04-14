@@ -13,7 +13,7 @@
 
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin, Instagram } from "lucide-react";
 
 const QUICK_LINKS = [
     { label: "Convocatoria", href: "/convocatoria" },
@@ -124,11 +124,7 @@ export default function Footer() {
                     <Mail size={14} />
                     <span>congresosociologiaclinica.2026@gmail.com</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.6 }}>
-                    <Phone size={14} />
-                    <span>+56 2 2354 0000</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.6 }}>
+<div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, opacity: 0.6 }}>
                     <MapPin size={14} />
                     <span>Campus San Joaquín, Santiago</span>
                 </div>
@@ -189,7 +185,7 @@ export default function Footer() {
                 ))}
             </div>
 
-            {/* Columna 4: Redes sociales / Newsletter */}
+            {/* Columna 4: Redes sociales */}
             <div>
                 <h4 style={{
                 fontSize: 14,
@@ -201,54 +197,28 @@ export default function Footer() {
                 fontFamily: "var(--font-body)",
                 color: "#FFFFFF",
                 }}>
-                Mantente informado
+                Síguenos
                 </h4>
-                <p style={{
-                fontSize: 14,
-                lineHeight: 1.6,
-                opacity: 0.5,
-                marginBottom: 16,
-                }}>
-                Suscríbete para recibir novedades sobre el coloquio.
-                </p>
-
-                {/* Email input + botón */}
-                <div style={{ display: "flex", gap: 8 }}>
-                <input
-                    type="email"
-                    placeholder="correo@ejemplo.com"
-                    style={{
-                    flex: 1,
-                    minWidth: 0,
-                    height: 40,
-                    padding: "0 12px",
-                    borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    color: "#fff",
+                <a
+                href="https://www.instagram.com/coloquiosociologia_puc"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                     fontSize: 14,
-                    fontFamily: "var(--font-body)",
-                    outline: "none",
-                    }}
-                />
-                <button
-                    style={{
-                    height: 40,
-                    padding: "0 16px",
-                    borderRadius: 8,
-                    border: "none",
-                    backgroundColor: "var(--color-accent)",
-                    color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    fontFamily: "var(--font-body)",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    }}
+                    opacity: 0.6,
+                    color: "#FFFFFF",
+                    textDecoration: "none",
+                    transition: "opacity 0.2s",
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.opacity = "1"; }}
+                onMouseOut={(e) => { e.currentTarget.style.opacity = "0.6"; }}
                 >
-                    Enviar
-                </button>
-                </div>
+                <Instagram size={16} />
+                <span>@coloquiosociologia_puc</span>
+                </a>
             </div>
             </div>
 
