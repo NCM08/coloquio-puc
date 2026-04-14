@@ -25,7 +25,7 @@ export default function BotonExportarCSV({ perfiles }: Props) {
 
     const filas = perfiles.map((p) => {
       const inscripcion = p.inscripciones?.[0] ?? null;
-      const fechaRaw = (p as unknown as Record<string, string>)["creado_en"] ?? p.created_at;
+      const fechaRaw = p.creado_en;
       const fecha = fechaRaw
         ? new Date(fechaRaw).toLocaleDateString("es-CL", {
             day: "2-digit",
