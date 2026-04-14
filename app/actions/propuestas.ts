@@ -64,8 +64,12 @@ export async function enviarPropuesta(formData: FormData) {
     const archivo_url = urlData.publicUrl;
 
     // ── Atomic DB transaction: upsert perfil + insert propuesta ──
+    // Note: The proposals form collects a single "Nombre completo" field (no
+    // separate apellidos). We pass an empty string to satisfy the NOT NULL
+    // constraint on perfiles.apellidos — the RPC handles this as a default.
     const { error: dbError } = await supabase.rpc("insert_perfil_con_propuesta", {
       p_nombre:      nombre,
+      p_apellidos:   "",
       p_correo:      correo,
       p_institucion: institucion,
       p_eje:         eje,
