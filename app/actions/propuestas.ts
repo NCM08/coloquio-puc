@@ -40,23 +40,11 @@ export async function enviarPropuesta(formData: FormData) {
       return { error: "Todos los campos son obligatorios." };
     }
 
-    // ── Upsert en tabla `perfiles` — evita duplicados por email ──
-    const { data: perfil, error: perfilError } = await supabase
-      .from("perfiles")
-      .upsert({ nombre, email: correo }, { onConflict: "email" })
-      .select("id")
-      .single();
-
-    if (perfilError || !perfil) {
-      console.error("Error al procesar perfil:", perfilError);
-      return { error: "No se pudo procesar el perfil. Por favor, inténtelo nuevamente." };
-    }
-
-    // Generar nombre de archivo único
+    // ── Subir archivo al bucket "documentos_ponencias" ───────────
+    // (Must happen before the DB transaction — Storage is not transactional)
     const extension     = archivo.name.split(".").pop();
     const nombreArchivo = `propuesta_${Date.now()}.${extension}`;
 
-    // Subir archivo al bucket "documentos_ponencias"
     const { error: uploadError } = await supabase.storage
       .from("documentos_ponencias")
       .upload(nombreArchivo, archivo, {
@@ -69,24 +57,23 @@ export async function enviarPropuesta(formData: FormData) {
       return { error: "No se pudo subir el archivo. Por favor, inténtelo nuevamente." };
     }
 
-    // Obtener URL pública del archivo subido
     const { data: urlData } = supabase.storage
       .from("documentos_ponencias")
       .getPublicUrl(nombreArchivo);
 
     const archivo_url = urlData.publicUrl;
 
-    // Insertar registro en la tabla "propuestas"
-    const { error: dbError } = await supabase.from("propuestas").insert({
-      nombre,
-      correo,
-      institucion,
-      eje,
-      archivo_url,
+    // ── Atomic DB transaction: upsert perfil + insert propuesta ──
+    const { error: dbError } = await supabase.rpc("insert_perfil_con_propuesta", {
+      p_nombre:      nombre,
+      p_correo:      correo,
+      p_institucion: institucion,
+      p_eje:         eje,
+      p_archivo_url: archivo_url,
     });
 
     if (dbError) {
-      console.error("Error al insertar propuesta:", dbError);
+      console.error("Error en transacción DB:", dbError);
       return { error: "No se pudo registrar la propuesta. Por favor, inténtelo nuevamente." };
     }
 
