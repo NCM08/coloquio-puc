@@ -200,7 +200,7 @@ export default function Footer() {
                 Síguenos
                 </h4>
                 <a
-                href="https://www.instagram.com/coloquiosociologia_puc"
+                href="https://www.instagram.com/coloquiosociologiaclinica.2026/"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -217,7 +217,7 @@ export default function Footer() {
                 onMouseOut={(e) => { e.currentTarget.style.opacity = "0.6"; }}
                 >
                 <Instagram size={16} />
-                <span>@coloquiosociologia_puc</span>
+                <span>@coloquiosociologiaclinica.2026</span>
                 </a>
             </div>
             </div>
