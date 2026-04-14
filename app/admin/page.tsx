@@ -123,7 +123,7 @@ function UltimoInscritoCard({ perfil }: { perfil: PerfilConRelaciones | null }) 
               {perfil.nombre} {perfil.apellidos ?? ""}
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">
-              {tiempoRelativo((perfil as unknown as Record<string, string>)["creado_en"] ?? perfil.created_at)}
+              {tiempoRelativo(perfil.creado_en)}
             </p>
           </>
         ) : (
