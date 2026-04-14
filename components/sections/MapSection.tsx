@@ -12,7 +12,7 @@ const INFO_ITEMS = [
     { icon: MapPin, title: "Dirección", text: "Av. Vicuña Mackenna 4860, Macul, Santiago, Chile" },
     { icon: Train, title: "Metro", text: "Estación San Joaquín (Línea 5), a 5 minutos caminando" },
     { icon: Car, title: "Estacionamiento", text: "Estacionamiento disponible en campus (acceso por Av. Vicuña Mackenna)" },
-    { icon: Clock, title: "Horario del evento", text: "9:00 — 18:00 hrs, 15 al 17 de Octubre 2026" },
+    { icon: Clock, title: "Horario del evento", text: "9:00 — 18:00 hrs, 10 al 12 de Noviembre 2026" },
 ];
 
 export default function MapSection() {
