@@ -1,25 +1,47 @@
 // ============================================================
-// components/ui/Chatbot.tsx — ASISTENTE IA DEL COLOQUIO
+// components/ui/Chatbot.tsx — ASISTENTE FAQ DEL COLOQUIO
 // ============================================================
-// Chatbot flotante impulsado por Claude (Anthropic).
-// Conectado a /api/chat con system prompt estricto del Coloquio.
+// Chatbot flotante basado en preguntas frecuentes predefinidas.
+// Sin llamadas a APIs externas — 100% client-side.
 // ============================================================
 
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
-import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
+import { MessageCircle, X, Bot, User, HelpCircle } from "lucide-react";
 
 type Message = {
     role: "user" | "assistant";
     content: string;
 };
 
-const QUICK_SUGGESTIONS = [
-    "📅 Fechas importantes",
-    "📋 Envío de propuestas",
-    "📍 Ubicación y contacto",
+const FAQ: { question: string; answer: string }[] = [
+    {
+        question: "📅 ¿Cuándo y dónde es el evento?",
+        answer:
+            "El VIII Coloquio Internacional de Sociología Clínica y Psicosociología se realizará de forma presencial del 10 al 12 de noviembre de 2026 en el Campus San Joaquín de la Pontificia Universidad Católica de Chile (PUC), Santiago, Chile. Las actividades se desarrollarán en las facultades de Educación, Psicología y Trabajo Social.",
+    },
+    {
+        question: "📋 ¿Cómo envío una propuesta?",
+        answer:
+            "Se aceptan ponencias (resumen máx. 500 palabras), mesas temáticas, posters académicos (máx. 300 palabras) e intervenciones artísticas/audiovisuales. Los archivos deben enviarse exclusivamente en formato Word (.doc o .docx) y ser estrictamente anónimos (sin metadatos de autoría). Los idiomas aceptados son Español y Portugués.",
+    },
+    {
+        question: "🗓️ ¿Cuáles son los plazos importantes?",
+        answer:
+            "• Envío de propuestas: hasta el 8 de mayo de 2026.\n• Respuestas de aceptación: 8 de junio de 2026.\n• Agenda final: 8 de agosto de 2026.\n• Evento presencial: 10 al 12 de noviembre de 2026.",
+    },
+    {
+        question: "📚 ¿Cuáles son los ejes temáticos?",
+        answer:
+            "El coloquio se titula \"Desintegración social en el mundo actual: acciones de resistencias y nuevos imaginarios posibles\". Convoca trabajos sobre sociología clínica, psicosociología, vínculos sociales, subjetividad, prácticas de resistencia y transformación social desde perspectivas críticas e interdisciplinarias.",
+    },
+    {
+        question: "📬 ¿Cómo puedo contactarlos?",
+        answer:
+            "Puedes comunicarte con el equipo organizador a través de:\n• Correo: coloquio.sociologia.puc@gmail.com\n• Instagram: @coloquiosociologia_puc\n\nPara alojamiento, se recomiendan las zonas de Providencia y Ñuñoa, con conexión directa a la Línea 5 del Metro.",
+    },
 ];
 
 export default function Chatbot() {
@@ -28,63 +50,25 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "¡Hola! Soy el asistente virtual del Coloquio. ¿En qué te puedo ayudar hoy?",
+            content:
+                "¡Hola! Soy el asistente virtual del Coloquio. Selecciona una pregunta frecuente para obtener información instantánea.",
         },
     ]);
-    const [input, setInput] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages, isLoading]);
+    }, [messages]);
 
-    const sendMessage = async (text: string) => {
-        if (!text.trim() || isLoading) return;
-
-        const userMsg: Message = { role: "user", content: text.trim() };
-        const updatedMessages = [...messages, userMsg];
-        setMessages(updatedMessages);
-        setInput("");
-        setIsLoading(true);
-
-        try {
-            const res = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ messages: updatedMessages }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok || data.error) {
-                throw new Error(data.error || "Error en la respuesta");
-            }
-
-            setMessages(prev => [...prev, { role: "assistant", content: data.content }]);
-        } catch {
-            setMessages(prev => [
-                ...prev,
-                {
-                    role: "assistant",
-                    content:
-                        "Lo siento, no pude procesar tu consulta en este momento. Por favor intenta de nuevo o escríbenos directamente a coloquio.sociologia.puc@gmail.com",
-                },
-            ]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage(input);
-        }
+    const handleQuestion = (faq: { question: string; answer: string }) => {
+        setMessages(prev => [
+            ...prev,
+            { role: "user", content: faq.question },
+            { role: "assistant", content: faq.answer },
+        ]);
     };
 
     // ── Brand tokens ──────────────────────────────────────────
-    // Primary: Celeste UC #00adfc | Accent: Verde lima #5fba24
     const headerBg = dark
         ? "linear-gradient(135deg, #003350 0%, #005a8a 100%)"
         : "linear-gradient(135deg, #00adfc 0%, #008fd4 100%)";
@@ -105,13 +89,11 @@ export default function Chatbot() {
     const botIconColor = "#00adfc";
     const userIconBg = "#00adfc";
 
-    const inputBg = dark ? "#212121" : "#f0f9ff";
-    const inputBorder = dark ? "rgba(0,173,252,0.2)" : "rgba(0,173,252,0.25)";
-    const inputColor = dark ? "#e0e0e0" : "#1a3a4a";
     const footerBorder = dark ? "rgba(0,173,252,0.1)" : "rgba(0,173,252,0.12)";
 
-    const chipBorder = dark ? "rgba(0,173,252,0.2)" : "rgba(0,173,252,0.25)";
-    const chipColor = dark ? "#9E9E9E" : "#616161";
+    const chipBg = dark ? "#1e1e1e" : "#f0f9ff";
+    const chipBorder = dark ? "rgba(0,173,252,0.25)" : "rgba(0,173,252,0.3)";
+    const chipColor = dark ? "#b0d8f5" : "#005a8a";
 
     const fabBg = "linear-gradient(135deg, #00adfc 0%, #008fd4 100%)";
     const fabShadow = "0 4px 20px rgba(0,173,252,0.45)";
@@ -174,14 +156,14 @@ export default function Chatbot() {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0,
                 }}>
-                <Sparkles size={17} />
+                <HelpCircle size={17} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 14, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
                     Asistente del Coloquio
                 </p>
                 <p style={{ fontSize: 11, opacity: 0.75, margin: 0, lineHeight: 1.3 }}>
-                    Impulsado por IA · VIII Coloquio PUC 2026
+                    Preguntas frecuentes · VIII Coloquio PUC 2026
                 </p>
                 </div>
                 <button
@@ -251,124 +233,57 @@ export default function Chatbot() {
                     )}
                 </div>
                 ))}
-
-                {/* Indicador de carga */}
-                {isLoading && (
-                <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
-                    <div style={{
-                    width: 26, height: 26, borderRadius: 8,
-                    backgroundColor: botIconBg,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                    <Bot size={13} style={{ color: botIconColor }} />
-                    </div>
-                    <div style={{
-                    padding: "9px 14px", borderRadius: 14, borderBottomLeftRadius: 4,
-                    backgroundColor: botBubbleBg,
-                    fontSize: 13.5, color: botBubbleColor, display: "flex", gap: 4, alignItems: "center",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                    }}>
-                    <span style={{ animation: "dot-bounce 1.2s infinite 0s" }}>●</span>
-                    <span style={{ animation: "dot-bounce 1.2s infinite 0.2s" }}>●</span>
-                    <span style={{ animation: "dot-bounce 1.2s infinite 0.4s" }}>●</span>
-                    </div>
-                </div>
-                )}
-
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* ── Sugerencias rápidas ── */}
-            {messages.length <= 2 && !isLoading && (
-                <div style={{
-                padding: "6px 14px 4px",
-                display: "flex", gap: 6, flexWrap: "wrap",
-                backgroundColor: msgAreaBg,
-                borderTop: `1px solid ${footerBorder}`,
-                }}>
-                {QUICK_SUGGESTIONS.map((s) => (
-                    <button
-                    key={s}
-                    onClick={() => sendMessage(s)}
-                    style={{
-                        padding: "5px 11px", borderRadius: 20, fontSize: 11.5, fontWeight: 500,
-                        fontFamily: "var(--font-body)", cursor: "pointer",
-                        border: `1px solid ${chipBorder}`,
-                        backgroundColor: "transparent",
-                        color: chipColor,
-                        transition: "all 0.18s",
-                    }}
-                    onMouseOver={e => {
-                        e.currentTarget.style.borderColor = "#00adfc";
-                        e.currentTarget.style.color = "#00adfc";
-                        e.currentTarget.style.backgroundColor = "rgba(0,173,252,0.07)";
-                    }}
-                    onMouseOut={e => {
-                        e.currentTarget.style.borderColor = chipBorder;
-                        e.currentTarget.style.color = chipColor;
-                        e.currentTarget.style.backgroundColor = "transparent";
-                    }}
-                    >
-                    {s}
-                    </button>
-                ))}
-                </div>
-            )}
-
-            {/* ── Input ── */}
+            {/* ── Menú de preguntas frecuentes ── */}
             <div style={{
                 padding: "10px 12px",
                 borderTop: `1px solid ${footerBorder}`,
-                display: "flex", gap: 8, alignItems: "center",
+                display: "flex", flexDirection: "column", gap: 6,
                 backgroundColor: panelBg,
                 flexShrink: 0,
             }}>
-                <input
-                type="text"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Escribe tu pregunta..."
-                disabled={isLoading}
-                style={{
-                    flex: 1, height: 40, padding: "0 13px", borderRadius: 10,
-                    border: `1.5px solid ${inputBorder}`,
-                    backgroundColor: inputBg,
-                    color: inputColor,
-                    fontSize: 13.5, fontFamily: "var(--font-body)", outline: "none",
-                    transition: "border-color 0.2s",
-                }}
-                onFocus={e => { e.currentTarget.style.borderColor = "#00adfc"; }}
-                onBlur={e => { e.currentTarget.style.borderColor = inputBorder; }}
-                />
+                <p style={{
+                    fontSize: 11, fontWeight: 600, margin: "0 0 2px",
+                    color: dark ? "#616161" : "#9e9e9e",
+                    textTransform: "uppercase", letterSpacing: "0.05em",
+                }}>
+                    Preguntas frecuentes
+                </p>
+                {FAQ.map((faq) => (
                 <button
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || isLoading}
-                style={{
-                    width: 40, height: 40, borderRadius: 10, border: "none",
-                    backgroundColor: input.trim() && !isLoading
-                    ? "#00adfc"
-                    : dark ? "#303030" : "#E0E0E0",
-                    color: input.trim() && !isLoading
-                    ? "#fff"
-                    : dark ? "#616161" : "#9E9E9E",
-                    cursor: input.trim() && !isLoading ? "pointer" : "default",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "all 0.2s", flexShrink: 0,
-                    boxShadow: input.trim() && !isLoading ? "0 2px 8px rgba(0,173,252,0.35)" : "none",
-                }}
+                    key={faq.question}
+                    onClick={() => handleQuestion(faq)}
+                    style={{
+                    width: "100%", textAlign: "left",
+                    padding: "8px 12px", borderRadius: 10,
+                    border: `1px solid ${chipBorder}`,
+                    backgroundColor: chipBg,
+                    color: chipColor,
+                    fontSize: 12.5, fontWeight: 500,
+                    fontFamily: "var(--font-body)", cursor: "pointer",
+                    transition: "all 0.18s",
+                    }}
+                    onMouseOver={e => {
+                    e.currentTarget.style.borderColor = "#00adfc";
+                    e.currentTarget.style.backgroundColor = "rgba(0,173,252,0.1)";
+                    e.currentTarget.style.color = dark ? "#5fd4ff" : "#004f7a";
+                    }}
+                    onMouseOut={e => {
+                    e.currentTarget.style.borderColor = chipBorder;
+                    e.currentTarget.style.backgroundColor = chipBg;
+                    e.currentTarget.style.color = chipColor;
+                    }}
                 >
-                <Send size={16} />
+                    {faq.question}
                 </button>
+                ))}
             </div>
             </div>
         )}
 
         <style>{`
-            @keyframes dot-bounce {
-                0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
-                40% { opacity: 1; transform: scale(1); }
-            }
             @media (max-width: 480px) {
                 .chatbot-panel {
                     width: calc(100vw - 32px) !important;
