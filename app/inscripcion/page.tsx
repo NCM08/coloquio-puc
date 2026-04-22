@@ -4,8 +4,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight, Lock, ShieldCheck } from "lucide-react";
-import InscripcionForm from "@/components/forms/InscripcionForm";
+import { ChevronRight, PauseCircle } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Formulario de Inscripción — VIII Coloquio Internacional de Sociología Clínica 2026",
@@ -65,76 +64,75 @@ export default function InscripcionPage() {
               lineHeight: 1.2,
             }}
           >
-            Inscripción Oficial al Coloquio
+            Formulario de Inscripción
           </h1>
           <p style={{ fontSize: 17, opacity: 0.85, maxWidth: 580, lineHeight: 1.65, margin: 0 }}>
-            Complete los tres pasos a continuación para registrar su participación en el
-            VIII Coloquio Internacional de Sociología Clínica 2026. Sus datos personales
-            y documentos adjuntos son tratados con estricta confidencialidad y almacenados
-            de forma segura mediante cifrado SSL.
+            Las inscripciones se encuentran temporalmente suspendidas. Vuelva a consultar
+            esta página próximamente para registrar su participación.
           </p>
-
-          {/* Indicadores de seguridad */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 20,
-              marginTop: 24,
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 7, opacity: 0.9 }}>
-              <Lock size={14} />
-              <span style={{ fontSize: 13 }}>Conexión cifrada SSL</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 7, opacity: 0.9 }}>
-              <ShieldCheck size={14} />
-              <span style={{ fontSize: 13 }}>Datos protegidos y encriptados</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 7, opacity: 0.9 }}>
-              <ShieldCheck size={14} />
-              <span style={{ fontSize: 13 }}>Archivos de acceso restringido</span>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* ── Contenedor principal ──────────────────────────────── */}
       <div style={{ maxWidth: 768, margin: "0 auto", padding: "48px 24px 80px" }}>
 
-        {/* ── Aviso importante antes del formulario ────────────── */}
+        {/* ── Banner: inscripciones pausadas ────────────────────── */}
         <div
           style={{
-            padding: "18px 22px",
-            borderRadius: 12,
-            backgroundColor: "rgba(251,191,36,0.08)",
-            border: "1px solid rgba(251,191,36,0.4)",
-            marginBottom: 36,
-            fontSize: 14,
-            lineHeight: 1.7,
-            color: "#92400E",
-          }}
-        >
-          <strong>Antes de continuar:</strong> Tenga a mano su comprobante de transferencia bancaria.
-          El pago debe realizarse <em>antes</em> de completar este formulario. Si aún no ha pagado,{" "}
-          <Link href="/inscripciones" style={{ color: "var(--color-accent)", fontWeight: 600 }}>
-            revise la tabla de valores e instrucciones de pago
-          </Link>
-          .
-        </div>
-
-        {/* ── Tarjeta del formulario ────────────────────────────── */}
-        <div
-          style={{
-            backgroundColor: "var(--color-card-bg, #FFFFFF)",
+            textAlign: "center",
+            padding: "56px 40px",
             borderRadius: 20,
-            padding: "clamp(28px, 5vw, 52px)",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-            border: "1px solid rgba(0,0,0,0.06)",
+            backgroundColor: "rgba(220,38,38,0.05)",
+            border: "1.5px solid rgba(220,38,38,0.3)",
+            marginBottom: 32,
           }}
         >
-          <InscripcionForm />
+          <PauseCircle
+            size={56}
+            style={{ color: "#DC2626", marginBottom: 20 }}
+          />
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(22px, 3.5vw, 30px)",
+              fontWeight: 700,
+              color: "#991B1B",
+              margin: "0 0 16px 0",
+              lineHeight: 1.25,
+            }}
+          >
+            Inscripciones temporalmente deshabilitadas
+          </h2>
+          <p
+            style={{
+              fontSize: 17,
+              color: "#6B7280",
+              lineHeight: 1.75,
+              maxWidth: 520,
+              margin: "0 auto 32px",
+            }}
+          >
+            Las inscripciones se encuentran temporalmente deshabilitadas mientras
+            actualizamos nuestros aranceles. Pronto publicaremos los nuevos valores.
+          </p>
+          <Link
+            href="/inscripciones"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "14px 32px",
+              borderRadius: 10,
+              backgroundColor: "var(--color-primary)",
+              color: "#FFFFFF",
+              fontFamily: "var(--font-display)",
+              fontSize: 16,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Ver información de aranceles
+          </Link>
         </div>
 
         {/* ── Pie de página informativo ─────────────────────────── */}
@@ -143,25 +141,16 @@ export default function InscripcionPage() {
             textAlign: "center",
             fontSize: 13,
             color: "#9CA3AF",
-            marginTop: 28,
             lineHeight: 1.65,
           }}
         >
-          ¿Tiene dudas sobre el proceso de inscripción?{" "}
-          <Link
-            href="/preguntas-frecuentes"
-            style={{ color: "var(--color-accent)", textDecoration: "none", fontWeight: 600 }}
-          >
-            Consulte las preguntas frecuentes
-          </Link>{" "}
-          o escríbanos a{" "}
+          ¿Tiene dudas?{" "}
           <a
             href="mailto:coloquiosociologiaclinica@uc.cl"
             style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}
           >
             coloquiosociologiaclinica@uc.cl
           </a>
-          .
         </p>
       </div>
     </div>

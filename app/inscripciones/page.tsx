@@ -7,20 +7,9 @@
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, AlertTriangle, ArrowRight, Info, RefreshCw, FileText, AlertCircle, MapPin, ClipboardList, ExternalLink } from "lucide-react";
+import { ChevronRight, ChevronDown, Info, FileText, AlertCircle, MapPin, PauseCircle } from "lucide-react";
 
-// ── Tipo de cambio referencial ────────────────────────────────
-const CLP_POR_USD = 950;
-
-function clpToUsd(clp: number): string {
-  return `~USD $${Math.round(clp / CLP_POR_USD).toLocaleString("es-CL")}`;
-}
-
-function formatClp(clp: number): string {
-  return `$${clp.toLocaleString("es-CL")}`;
-}
-
-// ── Valores reales de inscripción ─────────────────────────────
+// ── Valores de inscripción ────────────────────────────────────
 const TABLA_PRECIOS = [
   {
     categoria: "Estudiantes de pregrado",
@@ -66,7 +55,6 @@ const FAQ = [
 export default function InscripcionesPage() {
   const { dark } = useTheme();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [showUsd, setShowUsd] = useState(false);
 
   const bg          = dark ? "var(--color-dark-900)" : "#F7F7F7";
   const cardBg      = dark ? "var(--color-dark-800)" : "#FFFFFF";
@@ -74,7 +62,6 @@ export default function InscripcionesPage() {
   const textPrimary = dark ? "var(--color-dark-100)" : "#424242";
   const textSecondary = dark ? "var(--color-dark-400)" : "#6B6B6B";
   const headerBg    = dark ? "var(--color-dark-700)" : "#EEF2F7";
-  const accentColor = "var(--color-accent)";
 
   return (
     <div style={{ backgroundColor: bg, minHeight: "100vh", transition: "background-color 0.3s" }}>
@@ -113,103 +100,57 @@ export default function InscripcionesPage() {
       {/* ── Contenido principal ───────────────────────────────── */}
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "56px 24px" }}>
 
-        {/* Banner inscripción temprana */}
+        {/* Banner: inscripciones pausadas */}
         <div
           style={{
-            padding: "18px 24px",
-            borderRadius: 12,
-            backgroundColor: dark ? "rgba(251,140,0,0.08)" : "rgba(251,140,0,0.06)",
-            border: "1px solid rgba(251,140,0,0.3)",
+            padding: "28px 32px",
+            borderRadius: 14,
+            backgroundColor: dark ? "rgba(220,38,38,0.10)" : "rgba(220,38,38,0.06)",
+            border: "1.5px solid rgba(220,38,38,0.35)",
             display: "flex",
-            gap: 14,
+            gap: 18,
             alignItems: "flex-start",
             marginBottom: 48,
           }}
         >
-          <AlertTriangle size={22} style={{ color: "#FB8C00", flexShrink: 0, marginTop: 2 }} />
-          <p style={{ fontSize: 16, color: textPrimary, lineHeight: 1.65, margin: 0 }}>
-            <strong>Inscripción temprana</strong> disponible hasta el{" "}
-            <strong>30 de septiembre de 2026</strong>. Pasada esa fecha se aplicará un recargo.
-          </p>
-        </div>
-
-        {/* ── Encabezado de sección + botón conversión ─────────── */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 16,
-            marginBottom: 20,
-          }}
-        >
+          <PauseCircle size={28} style={{ color: "#DC2626", flexShrink: 0, marginTop: 2 }} />
           <div>
-            <h2
+            <p
               style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 26,
+                fontSize: 18,
                 fontWeight: 700,
-                color: textPrimary,
-                margin: "0 0 4px 0",
+                color: dark ? "#FCA5A5" : "#991B1B",
+                margin: "0 0 6px 0",
+                fontFamily: "var(--font-display)",
               }}
             >
-              Tabla de valores
-            </h2>
-            <p style={{ fontSize: 15, color: textSecondary, margin: 0 }}>
-              Valores en pesos chilenos (CLP) — incluyen IVA
+              Inscripciones temporalmente deshabilitadas
+            </p>
+            <p style={{ fontSize: 16, color: textPrimary, lineHeight: 1.7, margin: 0 }}>
+              Las inscripciones se encuentran temporalmente deshabilitadas mientras actualizamos
+              nuestros aranceles.{" "}
+              <strong>Pronto publicaremos los nuevos valores.</strong>
             </p>
           </div>
-
-          {/* Botón conversión CLP ↔ USD */}
-          <button
-            onClick={() => setShowUsd(!showUsd)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "10px 20px",
-              borderRadius: 10,
-              border: `1.5px solid ${showUsd ? accentColor : borderColor}`,
-              backgroundColor: showUsd
-                ? dark ? "rgba(var(--color-accent-rgb),0.12)" : "rgba(13,71,161,0.06)"
-                : cardBg,
-              color: showUsd ? accentColor : textSecondary,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: "var(--font-body)",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <RefreshCw size={15} style={{ transition: "transform 0.3s", transform: showUsd ? "rotate(180deg)" : "none" }} />
-            {showUsd ? "Ver en CLP" : "Ver en USD"}
-          </button>
         </div>
 
-        {/* Nota tipo de cambio (solo visible en modo USD) */}
-        {showUsd && (
-          <div
+        {/* ── Encabezado de sección ─────────────────────────────── */}
+        <div style={{ marginBottom: 20 }}>
+          <h2
             style={{
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              padding: "10px 16px",
-              borderRadius: 8,
-              backgroundColor: dark ? "rgba(255,255,255,0.04)" : "#F0F4FA",
-              border: `1px solid ${borderColor}`,
-              marginBottom: 16,
+              fontFamily: "var(--font-display)",
+              fontSize: 26,
+              fontWeight: 700,
+              color: textPrimary,
+              margin: "0 0 4px 0",
             }}
           >
-            <Info size={14} style={{ color: textSecondary, flexShrink: 0 }} />
-            <p style={{ fontSize: 13, color: textSecondary, margin: 0, lineHeight: 1.5 }}>
-              Conversión referencial usando tipo de cambio de{" "}
-              <strong style={{ color: textPrimary }}>1 USD = {CLP_POR_USD.toLocaleString("es-CL")} CLP</strong>.
-              El valor exacto puede variar al momento del pago.
-            </p>
-          </div>
-        )}
+            Tabla de valores
+          </h2>
+          <p style={{ fontSize: 15, color: textSecondary, margin: 0 }}>
+            Los nuevos aranceles serán publicados próximamente
+          </p>
+        </div>
 
         {/* ── Tabla de precios ──────────────────────────────────── */}
         <div
@@ -283,9 +224,6 @@ export default function InscripcionesPage() {
                   ? dark ? "rgba(255,255,255,0.025)" : "#FAFAFA"
                   : cardBg;
 
-                const valAsistente = showUsd ? clpToUsd(fila.asistente) : formatClp(fila.asistente);
-                const valExpositor = showUsd ? clpToUsd(fila.expositor) : formatClp(fila.expositor);
-
                 return (
                   <tr key={idx} style={{ backgroundColor: rowBg }}>
                     {/* Categoría */}
@@ -327,13 +265,13 @@ export default function InscripcionesPage() {
                       <span
                         style={{
                           fontFamily: "var(--font-display)",
-                          fontSize: 20,
-                          fontWeight: 700,
-                          color: textPrimary,
-                          transition: "all 0.2s",
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: textSecondary,
+                          fontStyle: "italic",
                         }}
                       >
-                        {valAsistente}
+                        Próximamente
                       </span>
                     </td>
 
@@ -350,13 +288,13 @@ export default function InscripcionesPage() {
                       <span
                         style={{
                           fontFamily: "var(--font-display)",
-                          fontSize: 20,
-                          fontWeight: 700,
-                          color: accentColor,
-                          transition: "all 0.2s",
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: textSecondary,
+                          fontStyle: "italic",
                         }}
                       >
-                        {valExpositor}
+                        Próximamente
                       </span>
                     </td>
                   </tr>
@@ -492,72 +430,42 @@ export default function InscripcionesPage() {
           </div>
         </div>
 
-        {/* ── CTA: Ir al Formulario ─────────────────────────────── */}
+        {/* ── Aviso: inscripciones pausadas (reemplaza CTA) ────── */}
         <div
           style={{
             textAlign: "center",
             marginBottom: 72,
             padding: "48px 32px",
             borderRadius: 20,
-            background: dark
-              ? "linear-gradient(135deg, rgba(13,71,161,0.18), rgba(0,150,136,0.12))"
-              : "linear-gradient(135deg, rgba(13,71,161,0.06), rgba(0,150,136,0.06))",
-            border: `1.5px solid ${dark ? "rgba(13,71,161,0.35)" : "rgba(13,71,161,0.18)"}`,
+            backgroundColor: dark ? "rgba(220,38,38,0.08)" : "rgba(220,38,38,0.05)",
+            border: "1.5px solid rgba(220,38,38,0.3)",
           }}
         >
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
-                backgroundColor: "var(--color-accent)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ClipboardList size={28} color="#fff" />
-            </div>
+            <PauseCircle size={48} style={{ color: "#DC2626" }} />
           </div>
           <h2
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 700,
-              color: textPrimary,
-              margin: "0 0 10px 0",
+              color: dark ? "#FCA5A5" : "#991B1B",
+              margin: "0 0 12px 0",
             }}
           >
-            ¿Listo para inscribirte?
+            Inscripciones temporalmente deshabilitadas
           </h2>
-          <p style={{ fontSize: 17, color: textSecondary, margin: "0 0 28px 0", lineHeight: 1.6, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-            Una vez revisados los valores y condiciones, completa tu registro en el formulario oficial del coloquio.
-          </p>
-          <Link
-            href="/inscripcion"
+          <p
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "18px 44px",
-              borderRadius: 12,
-              background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-600))",
-              color: "#FFFFFF",
-              fontFamily: "var(--font-display)",
-              fontSize: 19,
-              fontWeight: 700,
-              textDecoration: "none",
-              boxShadow: "var(--shadow-accent)",
-              transition: "opacity 0.2s, transform 0.2s",
-              letterSpacing: 0.3,
+              fontSize: 17,
+              color: textSecondary,
+              lineHeight: 1.7,
+              maxWidth: 520,
+              margin: "0 auto",
             }}
           >
-            Ir al Formulario de Inscripción
-            <ArrowRight size={20} />
-          </Link>
-          <p style={{ fontSize: 14, color: textSecondary, marginTop: 16 }}>
-            Tenga a mano su credencial institucional antes de comenzar.
+            Las inscripciones se encuentran temporalmente deshabilitadas mientras actualizamos
+            nuestros aranceles. Pronto publicaremos los nuevos valores.
           </p>
         </div>
 
